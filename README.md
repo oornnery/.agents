@@ -49,3 +49,9 @@ with on-demand loading.
 | python   | Python conventions, async, type hints, uv toolchain |
 | fastapi  | FastAPI APIs, Annotated style, DI, streaming        |
 | jx       | Jinja server-rendered components (JX)               |
+
+## Acknowledgments
+
+The FastAPI skill is based on the official
+[FastAPI agents skill](https://github.com/fastapi/fastapi/tree/master/fastapi/.agents/skills)
+maintained by the FastAPI project.
