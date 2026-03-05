@@ -5,34 +5,34 @@ with on-demand loading.
 
 ## Structure
 
-```text
-.agents/
-├── CLAUDE.md           # Project instructions (entrypoint for agents)
-├── AGENTS.md           # Symlink → CLAUDE.md
-├── .rumdl.toml         # Markdown lint/format config
-├── .gitignore
-└── skills/
-    ├── python/         # Core Python skill
-    │   ├── SKILL.md
-    │   └── references/
-    │       ├── httpx.md
-    │       ├── pydantic.md
-    │       ├── pytest.md
-    │       ├── rich.md
-    │       ├── typer.md
-    │       └── uv.md
-    ├── fastapi/        # FastAPI skill
-    │   ├── SKILL.md
-    │   └── references/
-    │       ├── dependencies.md
-    │       ├── streaming.md
-    │       └── other-tools.md
-    └── jx/             # JX (Jinja components) skill
-        ├── SKILL.md
-        └── references/
-            ├── integrations.md
-            ├── migration-and-tooling.md
-            └── organization-and-patterns.md
+```bash
+ .
+├──  AGENTS.md -> CLAUDE.md
+├──  CLAUDE.md
+├── 󰂺 README.md
+└──  skills
+    ├──  fastapi
+    │   ├──  references
+    │   │   ├──  dependencies.md
+    │   │   ├──  other-tools.md
+    │   │   └──  streaming.md
+    │   └──  SKILL.md
+    ├──  jx
+    │   ├──  references
+    │   │   ├──  integrations.md
+    │   │   ├──  migration-and-tooling.md
+    │   │   └──  organization-and-patterns.md
+    │   └──  SKILL.md
+    └──  python
+        ├──  references
+        │   ├──  httpx.md
+        │   ├──  pydantic.md
+        │   ├──  pytest.md
+        │   ├──  rich.md
+        │   ├──  typer.md
+        │   └──  uv.md
+        └──  SKILL.md
+
 ```
 
 ## How It Works
