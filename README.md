@@ -1,79 +1,51 @@
-# Agent Rules, Skills, and Workflows
+# .agents
 
-Organization of the coding-agent knowledge base, clearly separated into:
+Agent knowledge base for AI coding assistants. Skill-based architecture
+with on-demand loading.
 
-- `Rules / Instructions / Memory` (always on)
-- `Workflows / Prompts` (manual execution)
-- `Skills` (on-demand plugins in domain containers)
-- `Agents` (optional personas/modes)
-
-## Current Structure
+## Structure
 
 ```text
-.agent/
-├── .rumdl.toml              # Markdown lint/format config
-├── instructions/
-│   └── rules/                # Always-on rules
-├── settings.local.json       # Local permissions/memory
-├── workflows/                # Manual macros/flows
-├── prompts/                  # Reusable prompt files
-├── skills/                   # Active skills (one folder per domain)
-├── agents/                   # Official personas (single + multi-agent)
-└── MIGRATION_MAP.md          # Full migration mapping
+.agents/
+├── CLAUDE.md           # Project instructions (entrypoint for agents)
+├── AGENTS.md           # Symlink → CLAUDE.md
+├── .rumdl.toml         # Markdown lint/format config
+├── .gitignore
+└── skills/
+    ├── python/         # Core Python skill
+    │   ├── SKILL.md
+    │   └── references/
+    │       ├── httpx.md
+    │       ├── pydantic.md
+    │       ├── pytest.md
+    │       ├── rich.md
+    │       ├── typer.md
+    │       └── uv.md
+    ├── fastapi/        # FastAPI skill
+    │   ├── SKILL.md
+    │   └── references/
+    │       ├── dependencies.md
+    │       ├── streaming.md
+    │       └── other-tools.md
+    └── jx/             # JX (Jinja components) skill
+        ├── SKILL.md
+        └── references/
+            ├── integrations.md
+            ├── migration-and-tooling.md
+            └── organization-and-patterns.md
 ```
 
-## Classification Rules
+## How It Works
 
-1. `instructions/rules`: short mandatory rules.
-2. `memory`: persistent local settings.
-3. `workflows` and `prompts`: manually triggered macros.
-4. `skills/<domain>/SKILL.md`: skill entrypoint.
-5. `skills/<domain>/**/*.md`: local complementary content for that skill (including submodules).
+1. **CLAUDE.md** is the entrypoint — agents read it for stack, commands, and conventions.
+2. **Skills** are loaded on demand when working in a specific domain.
+3. Each skill has a **SKILL.md** (entrypoint) and **references/** (detailed submodules).
+4. References are loaded only when needed — not all at once.
 
-## Rule Loading (Layers)
+## Active Skills
 
-- Layer 0 (always): `00-core`, `04-safe-commands`
-- Layer 1 (contextual): `02-architecture`, `03-tooling`, `05-git-workflow`, `06-handoff`, `07-code-review`, `08-context-map`, `11-rlm-context`
-- Layer 2 (multi-agent/pipeline only): `90-agent-protocol`
-
-Canonical source: `.agent/instructions/rules/README.md`
-
-## Official Agent Set
-
-- `runner`
-- `researcher`
-- `reviewer`
-- `tester`
-- `refactor`
-- `python-engineer`
-- `node-engineer`
-- `go-engineer`
-- `rust-engineer`
-- `platform-engineer`
-
-Canonical source: `.agent/agents/README.md`
-
-## Active Skill Set
-
-- `design-system`
-- `explorer`
-- `go`
-- `node`
-- `python`
-- `python/fastapi`
-- `python/jx`
-- `python/pytest`
-- `rust`
-- `testing`
-
-## Notes
-
-- Stack-specific commands are canonical in stack skills.
-- Validation orchestration is canonical in `.agent/skills/testing/SKILL.md`.
-- Markdown lint/format uses `uvx rumdl` with repo config in `.rumdl.toml`.
-- Table formatting is enabled via `MD060` (aligned table columns).
-- Code review is canonical in `.agent/instructions/rules/07-code-review.md`.
-- Handoff/session transfer is canonical in `.agent/instructions/rules/06-handoff.md`.
-- Context mapping is canonical in `.agent/instructions/rules/08-context-map.md`.
-- In Node projects, select profile and manager/runtime from `.agent/skills/node/`.
-- Previously removed content was not automatically restored.
+| Skill    | Description                                         |
+| -------- | --------------------------------------------------- |
+| python   | Python conventions, async, type hints, uv toolchain |
+| fastapi  | FastAPI APIs, Annotated style, DI, streaming        |
+| jx       | Jinja server-rendered components (JX)               |
