@@ -116,24 +116,81 @@ FastAPI and Flask.
 
 JX and HTMX pair well because both center on server-rendered HTML.
 
-Use a full page for normal navigation and a smaller component for HTMX:
+### Fragment rendering pattern
+
+Centralize rendering helpers so routes stay thin:
 
 ```python
+from typing import Any
 from fastapi import Request
+from fastapi.responses import HTMLResponse
 
 
 def is_htmx(request: Request) -> bool:
     return request.headers.get("HX-Request") == "true"
 
 
-@router.get("/users/list", response_class=HTMLResponse)
-async def user_list(request: Request):
-    users = await fetch_users()
-    template = "UserList.jinja" if is_htmx(request) else "pages/UsersPage.jinja"
-    return catalog.render(template, users=users)
+def render_page(page: PageRenderData, *, status_code: int = 200) -> HTMLResponse:
+    html = render_template(page.template, **page.context.model_dump())
+    return HTMLResponse(content=html, status_code=status_code)
+
+
+def render_fragment(template: str, *, status_code: int = 200, **ctx: Any) -> HTMLResponse:
+    html = render_template(template, **ctx)
+    return HTMLResponse(content=html, status_code=status_code)
 ```
 
-HTMX-friendly button component:
+Route that serves both full pages and htmx fragments:
+
+```python
+@router.get("/users", response_class=HTMLResponse)
+async def user_list(request: Request):
+    users = await fetch_users()
+    if is_htmx(request):
+        return render_fragment("@features/UserList.jinja", users=users)
+    page = build_users_page(users)
+    return render_page(page)
+```
+
+### Response handling for 4xx/5xx
+
+By default htmx does NOT swap on error responses. Enable it in JS so
+inline validation errors display correctly:
+
+```javascript
+import htmx from "htmx.org";
+
+window.htmx = htmx;
+htmx.config.responseHandling = [
+    { code: "204", swap: false },
+    { code: ".*", swap: true },
+];
+```
+
+### URL sync with hx-push-url
+
+Use `hx-push-url="true"` for in-page navigation that should update the
+browser URL (e.g. tag filters, pagination):
+
+```jinja
+<Tag
+    href="/blog/tags/python"
+    hx-get="/blog/tags/python"
+    hx-target="#tag-posts"
+    hx-swap="outerHTML"
+    hx-push-url="true"
+/>
+```
+
+### Fragment scope
+
+When swapping, the `hx-target` element is replaced. Make sure **all** UI
+that needs updating is inside the target. For example, if tag pills AND
+posts need to update together, wrap them in the same target container.
+
+### HTMX-friendly component
+
+JX's `attrs` passthrough lets htmx attributes flow naturally:
 
 ```jinja
 {# def label #}
@@ -193,10 +250,87 @@ Use Alpine for:
 Best practice: use Alpine for UI state, HTMX for server round-trips, and JX for
 the HTML source of truth.
 
+## Stimulus
+
+Stimulus provides lifecycle-bound controllers for complex client behavior
+that benefits from connect/disconnect hooks (e.g. scroll tracking, observer
+patterns). It complements Alpine (simple state) and htmx (server fragments).
+
+Register controllers in the JS entry point:
+
+```javascript
+import { Application } from "@hotwired/stimulus";
+import TocController from "./controllers/toc-controller.js";
+
+const app = Application.start();
+app.register("toc", TocController);
+```
+
+Attach to JX templates via `data-controller`:
+
+```jinja
+<div data-controller="toc">
+  {{ content }}
+</div>
+```
+
+Use Stimulus when you need:
+
+- `connect()`/`disconnect()` lifecycle (event listener cleanup)
+- Target tracking across DOM mutations
+- Complex scroll, intersection, or resize observers
+- Behavior that should auto-bind/unbind when elements enter/leave the DOM
+
+Use Alpine instead for simple toggles, local state, and reactive bindings.
+
+## JS Build System (esbuild)
+
+Bundle Alpine, Stimulus, htmx, and custom JS into a single IIFE with esbuild:
+
+```javascript
+// esbuild.config.mjs
+import esbuild from "esbuild";
+
+await esbuild.build({
+    entryPoints: ["app/static/js/src/main.js"],
+    bundle: true,
+    minify: true,
+    format: "iife",
+    target: "es2018",
+    outfile: "app/static/js/main.js",
+});
+```
+
+The entry point registers all frameworks:
+
+```javascript
+import Alpine from "@alpinejs/csp";
+import { Application } from "@hotwired/stimulus";
+import htmx from "htmx.org";
+
+// Alpine data factories
+Alpine.data("navbar", navbar);
+Alpine.data("palette", palette);
+window.Alpine = Alpine;
+Alpine.start();
+
+// htmx
+window.htmx = htmx;
+
+// Stimulus controllers
+const stimulusApp = Application.start();
+stimulusApp.register("toc", TocController);
+```
+
+Use the CSP-safe Alpine build (`@alpinejs/csp`) to avoid inline `eval()`.
+
 ## Combined Stack Rules
 
 - Keep SEO- and content-critical rendering on the server with JX.
 - Use HTMX for partial requests and DOM swaps.
 - Use Alpine for interaction that does not need a server trip.
+- Use Stimulus for lifecycle-bound controllers with cleanup needs.
 - Keep components flexible by routing HTMX and Alpine attributes through `attrs`.
-- Serve component assets via your framework's static files or a reverse proxy; JX does not include built-in asset-serving middleware.
+- Bundle all JS with esbuild into a single IIFE — no module loader needed.
+- Serve component assets via your framework's static files or a reverse proxy;
+  JX does not include built-in asset-serving middleware.

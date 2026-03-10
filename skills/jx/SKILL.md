@@ -5,7 +5,8 @@ description: JX patterns for Jinja-based server-rendered Python apps. Use when b
 
 # JX
 
-Official JX skill to write Jinja-based server-rendered components with best practices, keeping up to date with the JX API.
+Official JX skill to write Jinja-based server-rendered components with best
+practices, keeping up to date with the JX API.
 
 ## Shared `Catalog` Singleton
 
@@ -82,10 +83,13 @@ Register all folders and packages **before** the first render call.
 
 ### Core Methods
 
-- `catalog.render(relpath, globals=None, **kwargs)` — render a component and return HTML.
-- `catalog.render_string(source, globals=None, **kwargs)` — render from a raw source string (not cached).
+- `catalog.render(relpath, globals=None, **kwargs)` — render a component and
+  return HTML.
+- `catalog.render_string(source, globals=None, **kwargs)` — render from a raw
+  source string (not cached).
 - `catalog.list_components()` — return all registered component relative paths.
-- `catalog.get_signature(relpath)` — return required/optional args, slots, css, js.
+- `catalog.get_signature(relpath)` — return required/optional args, slots,
+  css, js.
 - `catalog.collect_assets(output)` — copy package assets to an output folder.
 
 ## Component Files
@@ -290,11 +294,14 @@ Caller:
 
 ### `attrs` Methods
 
-- `attrs.render(**defaults)` — render all passthrough attrs as HTML string. For `class`, defaults are appended (not replaced).
-- `attrs.set(**kwargs)` — force values. `False` removes. Class values are appended.
+- `attrs.render(**defaults)` — render all passthrough attrs as HTML string.
+  For `class`, defaults are appended (not replaced).
+- `attrs.set(**kwargs)` — force values. `False` removes. Class values are
+  appended.
 - `attrs.setdefault(**kwargs)` — only set values not already present.
 - `attrs.get(name, default=None)` — return a single attribute value.
-- `attrs.add_class(*values)` / `attrs.prepend_class(*values)` / `attrs.remove_class(*names)` — manipulate CSS classes.
+- `attrs.add_class(*values)` / `attrs.prepend_class(*values)` /
+  `attrs.remove_class(*names)` — manipulate CSS classes.
 - `attrs.classes` — property: all classes as space-separated string.
 - `attrs.as_dict` — property: all attributes as a sorted dict.
 
@@ -368,15 +375,22 @@ catalog = Catalog(
 
 ## Common Mistakes to Avoid
 
-- **Lowercase filenames**: use `Card.jinja`, not `card.jinja`.
 - **Missing imports**: every `<Component />` tag needs a `{# import #}`.
 - **String expressions**: use `data={{ [1,2,3] }}`, not `data="[1,2,3]"`.
 - **Colon syntax**: use `count={{ expr }}`, not `:count="expr"`.
 - **Escaping content**: use `{{ content }}`, not `{{ content | e }}`.
 - **Globals as dict**: use `Catalog("c", key=val)`, not `Catalog("c", globals={...})`.
-- **Assets in templates**: use `{{ assets.render() }}`, not `{{ catalog.render_assets() }}`.
+- **Assets in templates**: use `{{ assets.render() }}`, not
+  `{{ catalog.render_assets() }}`.
 - **Catalog per request**: create one singleton, not a new `Catalog()` per handler.
 - **Adding folders late**: register all folders before the first `render()` call.
+- **Hardcoded colors**: never use raw hex or Tailwind palette names (`blue-500`,
+  `#7c7cff`) in components — always use semantic tokens (`accent`, `success`,
+  `warn`, `danger`) so components respond to theme and palette changes.
+- **Plain CSS var in Tailwind config**: `var(--accent)` breaks opacity modifiers
+  (`bg-accent/10`). Use `rgb(var(--accent-rgb) / <alpha-value>)` instead.
+- **Hover only on links**: apply `cursor-pointer` explicitly on `<span>` tags
+  that are interactive — browsers do not inherit it from CSS hover rules.
 
 ## Validation with `jx check`
 
@@ -395,9 +409,12 @@ for testing strategies, CI setup, `jx collect_assets`, and JinjaX migration.
 ## Integrations
 
 See [the integrations reference](references/integrations.md) for FastAPI,
-Flask, Django, HTMX, and Alpine.js integration guidance.
+Flask, Django, HTMX (fragment rendering, 4xx config, URL sync), Alpine.js,
+Stimulus (lifecycle controllers), and esbuild build system guidance.
 
 ## Organization
 
 See [the organization reference](references/organization-and-patterns.md) for
-project structure, prefixed folders, SVG components, and reusable UI patterns.
+project structure, prefixed folders, recursive subfolder imports, SVG components,
+semantic color tokens with RGB channels, component variant dict pattern, and
+status variant templates.
