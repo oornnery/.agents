@@ -11,6 +11,14 @@ with on-demand loading.
 ├──  CLAUDE.md
 ├── 󰂺 README.md
 └──  skills
+    ├──  frontend
+    │   ├──  references
+    │   │   ├──  basecoat.md
+    │   │   ├──  solid-islands-jinja.md
+    │   │   ├──  solid.md
+    │   │   ├──  solidstart.md
+    │   │   ├──  tailwind.md
+    │   └──  SKILL.md
     ├──  fastapi
     │   ├──  references
     │   │   ├──  dependencies.md
@@ -22,6 +30,11 @@ with on-demand loading.
     │   │   ├──  integrations.md
     │   │   ├──  migration-and-tooling.md
     │   │   └──  organization-and-patterns.md
+    │   └──  SKILL.md
+    ├──  markdown
+    │   ├──  references
+    │   │   ├──  best-practices.md
+    │   │   └──  rumdl.md
     │   └──  SKILL.md
     └──  python
         ├──  references
@@ -44,11 +57,13 @@ with on-demand loading.
 
 ## Active Skills
 
-| Skill    | Description                                         |
-| -------- | --------------------------------------------------- |
-| python   | Python conventions, async, type hints, uv toolchain |
-| fastapi  | FastAPI APIs, Annotated style, DI, streaming        |
-| jx       | Jinja server-rendered components (JX)               |
+| Skill    | Description                                            |
+| -------- | ------------------------------------------------------ |
+| python   | Python conventions, async, type hints, uv toolchain    |
+| fastapi  | FastAPI APIs, Annotated style, DI, streaming           |
+| jx       | Jinja server-rendered components (JX)                  |
+| frontend | Frontend bootstrap, JS/TS tooling, Tailwind, Basecoat  |
+| markdown | Markdown writing, structure, rumdl configuration       |
 
 ## Acknowledgments
 

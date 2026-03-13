@@ -37,15 +37,21 @@ uv run pytest -v
 On-demand knowledge modules in `.agents/skills/`. Load the relevant skill
 when working in its domain.
 
-| Skill                  | When to use                              |
-| ---------------------- | ---------------------------------------- |
-| `python/SKILL.md`      | General Python code, conventions, async  |
-| `fastapi/SKILL.md`     | FastAPI APIs, routes, dependencies       |
-| `jx/SKILL.md`          | Jinja server-rendered components (JX)    |
+| Skill               | When to use                                           |
+| ------------------- | ----------------------------------------------------- |
+| `python/SKILL.md`   | General Python code, conventions, async, uv toolchain |
+| `fastapi/SKILL.md`  | FastAPI APIs, routes, dependencies                    |
+| `jx/SKILL.md`       | Jinja server-rendered components (JX)                 |
+| `frontend/SKILL.md` | Frontend bootstrap, JS/TS tooling, Tailwind, Basecoat |
+| `markdown/SKILL.md` | Markdown writing, documentation structure, rumdl lint |
 
 Each skill has a `references/` folder with detailed submodules (httpx,
-pydantic, pytest, rich, typer, uv, streaming, dependencies, etc.).
-Load these on demand — not all at once.
+pydantic, pytest, rich, typer, uv, streaming, dependencies, Tailwind,
+Basecoat, rumdl, etc.). Load these on demand — not all at once.
+
+Use `markdown/SKILL.md` when the task is primarily about documentation or
+Markdown linting. The validation sequence below still includes
+`uv run rumdl check .` as the repo-wide check.
 
 ## Conventions
 
