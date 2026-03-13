@@ -8,6 +8,11 @@ description: JX patterns for Jinja-based server-rendered Python apps. Use when b
 Official JX skill to write Jinja-based server-rendered components with best
 practices, keeping up to date with the JX API.
 
+When a JX page needs client-side interactivity beyond small HTML sprinkles,
+load `../frontend/references/solid-islands-jinja.md` and prefer Solid islands
+mounted into specific server-rendered slots instead of rewriting the whole page
+as a client app.
+
 ## Shared `Catalog` Singleton
 
 Create one shared `Catalog` in a dedicated module and import it everywhere.

@@ -1,14 +1,19 @@
 ---
 name: python
-description: Python best practices, conventions, and uv-based toolchain. Use when writing, reviewing, or refactoring Python code. Covers code style, type hints, async patterns, logging, dependency management, validation pipeline, and routes to submodules (FastAPI, JX, testing, HTTP client, TUI, CLI).
+description: Python best practices, conventions, and uv-based toolchain. Use
+  when writing, reviewing, or refactoring Python code. Covers code style, type
+  hints, async patterns, logging, dependency management, validation pipeline,
+  editor tooling, and routes to submodules (FastAPI, JX, testing, HTTP client,
+  TUI, CLI).
 ---
 
 # Python
 
 Official Python skill for writing clean, Pythonic code with modern tooling.
 
-> *"Beautiful is better than ugly. Explicit is better than implicit. Simple is better than complex."*
-> — The Zen of Python
+> *"Beautiful is better than ugly. Explicit is better than implicit. Simple is
+> better than complex."*
+> -- The Zen of Python
 
 ## Documentation
 
@@ -17,9 +22,9 @@ Official Python skill for writing clean, Pythonic code with modern tooling.
 - uv LLMs: <https://docs.astral.sh/uv/llms.txt>
 - Ruff: <https://docs.astral.sh/ruff/>
 - Ruff LLMs: <https://docs.astral.sh/ruff/llms.txt>
+- Pyright: <https://microsoft.github.io/pyright/>
 - Ty: <https://ty.astral.sh/>
 - pytest: <https://docs.pytest.org/>
-- rumdl: <https://rumdl.com/docs/>
 - Rich: <https://rich.readthedocs.io/en/stable/>
 - httpx: <https://www.python-httpx.org/>
 - Pydantic: <https://docs.pydantic.dev/latest/>
@@ -27,17 +32,18 @@ Official Python skill for writing clean, Pythonic code with modern tooling.
 
 ## Submodules
 
-| Submodule                | When to load                                    |
-| ------------------------ | ----------------------------------------------- |
-| `fastapi/SKILL.md`       | FastAPI APIs and Pydantic models                |
-| `jx/SKILL.md`            | Jinja-based server-rendered components          |
-| `references/pytest.md`   | Test authoring, coverage, failure triage        |
-| `references/httpx.md`    | Outbound HTTP calls (sync/async)                |
-| `references/typer.md`    | CLI applications                                |
-| `references/rich.md`     | Console output, tables, progress bars           |
-| `references/pydantic.md` | Validation, serialization, model patterns       |
-| `references/uv.md`       | uv, ruff, ty, rumdl, pytest, taskipy, packaging |
-| Architecture (below)     | Layer boundaries and project layout             |
+| Submodule                | When to load                                  |
+| ------------------------ | --------------------------------------------- |
+| `fastapi/SKILL.md`       | FastAPI APIs and Pydantic models              |
+| `jx/SKILL.md`            | Jinja-based server-rendered components        |
+| `../markdown/SKILL.md`   | Markdown docs, structure, rumdl configuration |
+| `references/pytest.md`   | Test authoring, coverage, failure triage      |
+| `references/httpx.md`    | Outbound HTTP calls (sync/async)              |
+| `references/typer.md`    | CLI applications                              |
+| `references/rich.md`     | Console output, tables, progress bars         |
+| `references/pydantic.md` | Validation, serialization, model patterns     |
+| `references/uv.md`       | uv, ruff, pyright, ty, pytest, packaging      |
+| Architecture (below)     | Layer boundaries and project layout           |
 
 ---
 
@@ -45,12 +51,12 @@ Official Python skill for writing clean, Pythonic code with modern tooling.
 
 Key principles to apply as a design lens:
 
-- **Explicit over implicit** — no magic, make intent clear.
-- **Simple over complex** — the simplest solution that works.
-- **Flat over nested** — early returns, avoid deep indentation.
-- **Readability counts** — code is read far more than written.
-- **Errors should never pass silently** — handle or propagate, never swallow.
-- **One obvious way** — follow established patterns, don't invent new ones.
+- **Explicit over implicit** - no magic, make intent clear.
+- **Simple over complex** - the simplest solution that works.
+- **Flat over nested** - early returns, avoid deep indentation.
+- **Readability counts** - code is read far more than written.
+- **Errors should never pass silently** - handle or propagate, never swallow.
+- **One obvious way** - follow established patterns, do not invent new ones.
 
 Full text: `python -c "import this"`
 
@@ -60,8 +66,8 @@ Full text: `python -c "import this"`
 
 ### Style
 
-- `pathlib` over `os.path` — always.
-- f-strings only — avoid `.format()` and `%` formatting.
+- `pathlib` over `os.path` - always.
+- f-strings only - avoid `.format()` and `%` formatting.
 - Prefer early returns over deep nesting.
 - Avoid mutable global state.
 - Use `__all__` to define public API in modules.
@@ -69,6 +75,7 @@ Full text: `python -c "import this"`
 ```python
 # DO THIS
 from pathlib import Path
+
 
 def load_config(path: Path) -> dict:
     if not path.exists():
@@ -79,6 +86,7 @@ def load_config(path: Path) -> dict:
 ```python
 # DO NOT DO THIS
 import os
+
 
 def load_config(path):
     if os.path.exists(path):
@@ -94,18 +102,18 @@ def load_config(path):
 - `PascalCase` for classes.
 - `UPPER_SNAKE` for constants.
 - Prefix private helpers with `_`.
-- Descriptive names over abbreviations — `user_count`, not `uc`.
+- Descriptive names over abbreviations - `user_count`, not `uc`.
 
 ### Imports
 
-- Group: stdlib → third-party → local, separated by blank lines.
+- Group: stdlib -> third-party -> local, separated by blank lines.
 - Absolute imports preferred over relative.
 - Let Ruff sort and organize via `isort` rules.
 
 ### Data Structures
 
 - Use `dataclasses` for plain data containers.
-- Use Pydantic `BaseModel` when validation/serialization is needed.
+- Use Pydantic `BaseModel` when validation or serialization is needed.
 - Use `TypedDict` for dictionaries with known keys.
 - Use `NamedTuple` for lightweight immutable records.
 - Prefer `enum.Enum` over string constants for fixed sets.
@@ -135,7 +143,7 @@ class User:
 - Use modern syntax: `str | None`, `list[str]`, `dict[str, int]`.
 - Type all public functions and methods.
 - Use `TypeVar` and `Generic` for reusable typed containers.
-- Use `Protocol` for structural subtyping (duck typing with types).
+- Use `Protocol` for structural subtyping.
 
 ```python
 from typing import TypedDict
@@ -159,7 +167,7 @@ class Serializable(Protocol):
 
 ## Async
 
-- Use `asyncio` patterns only — never block the event loop.
+- Use `asyncio` patterns only - never block the event loop.
 - Prefer `async with` for async resources.
 - Use `asyncio.gather` with explicit error handling.
 - Use `asyncio.TaskGroup` (3.11+) for structured concurrency.
@@ -177,14 +185,17 @@ async def fetch_all(urls: list[str]) -> list[dict]:
 ### Async Anti-Patterns
 
 ```python
-# DO NOT DO THIS — blocks the event loop
+# DO NOT DO THIS - blocks the event loop
 import time
 
+
 async def bad_handler():
-    time.sleep(5)  # blocks everything
+    time.sleep(5)
+
 
 # DO THIS
 import asyncio
+
 
 async def good_handler():
     await asyncio.sleep(5)
@@ -194,17 +205,17 @@ async def good_handler():
 
 ## Logging and Console Output
 
-- Use stdlib `logging` — **never `print` in application/library code.**
+- Use stdlib `logging` - **never `print` in application or library code.**
 - Configure logging once at the entrypoint with `RichHandler`.
-- `logging` → operational logs. `rich.console.Console` → user-facing CLI output.
+- `logging` is for operational logs. `rich.console.Console` is for user-facing
+  CLI output.
 
 ```python
 import logging
 
-logger = logging.getLogger(__name__)
-
-# Entrypoint setup
 from rich.logging import RichHandler
+
+logger = logging.getLogger(__name__)
 
 logging.basicConfig(
     level=logging.INFO,
@@ -220,40 +231,45 @@ See `references/rich.md` for full console output patterns.
 
 ## Toolchain
 
-| Tool      | Purpose                                            |
-| --------- | -------------------------------------------------- |
-| `uv`      | Package manager, virtualenv, runner                |
-| `ruff`    | Formatter + linter (replaces black, isort, flake8) |
-| `ty`      | Type checker (Astral)                              |
-| `rumdl`   | Markdown linter and formatter                      |
-| `pytest`  | Test runner                                        |
-| `taskipy` | Optional task runner                               |
+| Tool      | Purpose                                         |
+| --------- | ----------------------------------------------- |
+| `uv`      | Package manager, virtualenv, runner             |
+| `ruff`    | Formatter and linter                            |
+| `pyright` | Editor-oriented type analysis and LSP companion |
+| `ty`      | Primary project type checker                    |
+| `pytest`  | Test runner                                     |
+| `taskipy` | Optional task runner                            |
 
 Config lives in `pyproject.toml`. Lock file: `uv.lock`.
 
 ### Quick Reference
 
 ```bash
-uv sync                                   # Install from lockfile
-uv add <pkg>                              # Add runtime dep
-uv add --dev <pkg>                        # Add dev dep
-uv run ruff format . && uv run ruff check . --fix  # Format + lint
-uv run ty check                           # Type check
-uv run rumdl check . && uv run rumdl fmt .          # Markdown lint + format
-uv run pytest -v                          # Test
+uv sync
+uv add <pkg>
+uv add --dev <pkg>
+uv run ruff format .
+uv run ruff check . --fix
+uv run ty check
+uv run pytest -v
+pyright --version
 ```
 
 ### Validation Sequence (Fail Fast)
 
 ```bash
-uv run ruff format --check .     # 1. Format
-uv run ruff check .              # 2. Lint
-uv run rumdl check .             # 3. Markdown
-uv run ty check                  # 4. Types
-uv run pytest -v                 # 5. Tests
+uv run ruff format --check .
+uv run ruff check .
+uv run ty check
+uv run pytest -v
 ```
 
-See `references/uv.md` for full uv workflow, pyproject.toml config, packaging, publishing, and taskipy setup.
+Use `ty` as the primary project type checker. Use `pyright` as complementary
+editor tooling or to validate local language-server setup. For Markdown linting
+and `rumdl` config, load `../markdown/SKILL.md`.
+
+See `references/uv.md` for full uv workflow, `pyproject.toml` config,
+packaging, publishing, and taskipy setup.
 
 ---
 

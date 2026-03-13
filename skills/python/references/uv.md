@@ -1,13 +1,14 @@
 # Uv Reference
 
-Complete uv workflow: project setup, dependency management, dev toolchain, virtual environments, packaging, and publishing.
+Complete uv workflow: project setup, dependency management, dev toolchain,
+virtual environments, packaging, and publishing.
 
 ## Documentation
 
 - uv Docs: <https://docs.astral.sh/uv/>
 - Ruff Docs: <https://docs.astral.sh/ruff/>
+- Pyright Docs: <https://microsoft.github.io/pyright/>
 - Ty Docs: <https://ty.astral.sh/>
-- rumdl Docs: <https://rumdl.com/docs/>
 - pytest Docs: <https://docs.pytest.org/>
 - taskipy Docs: <https://github.com/taskipy/taskipy>
 
@@ -17,15 +18,29 @@ Complete uv workflow: project setup, dependency management, dev toolchain, virtu
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
+## Required Python Tools
+
+Use `uv tool install` when you want local machine tooling outside a single
+project environment:
+
+```bash
+uv tool install ruff
+uv tool install pyright
+uv tool install ty
+```
+
+Use `markdown/SKILL.md` for `rumdl` installation, config, and Markdown-specific
+lint workflows.
+
 ## Project Setup
 
 ### Create New Project
 
 ```bash
-uv init myapp                    # New project
-uv init myapp --lib              # Library project
-uv init myapp --app              # Application project
-cd myapp && uv sync              # Install dependencies
+uv init myapp
+uv init myapp --lib
+uv init myapp --app
+cd myapp && uv sync
 ```
 
 ### Project Structure
@@ -44,10 +59,10 @@ myapp/
 ### Python Version Management
 
 ```bash
-uv python install 3.12           # Install a Python version
-uv python install 3.11 3.12      # Install multiple versions
-uv python list                   # List available versions
-uv python pin 3.12               # Pin version for project (.python-version)
+uv python install 3.12
+uv python install 3.11 3.12
+uv python list
+uv python pin 3.12
 ```
 
 ## Dependency Management
@@ -55,47 +70,46 @@ uv python pin 3.12               # Pin version for project (.python-version)
 ### Add Dependencies
 
 ```bash
-uv add httpx                     # Runtime dependency
-uv add httpx pydantic rich       # Multiple at once
-uv add "httpx>=0.27"             # With version constraint
-uv add httpx --optional api      # Optional dependency group
+uv add httpx
+uv add httpx pydantic rich
+uv add "httpx>=0.27"
+uv add httpx --optional api
 ```
 
 ### Add Dev Dependencies
 
 ```bash
-uv add --dev ruff                # Dev dependency
+uv add --dev ruff
 uv add --dev pytest pytest-cov pytest-asyncio pytest-xdist pytest-mock
-uv add --dev ty                  # Type checker
-uv add --dev rumdl               # Markdown linter
-uv add --dev taskipy             # Task runner
+uv add --dev ty
+uv add --dev taskipy
 ```
 
 ### Remove Dependencies
 
 ```bash
-uv remove httpx                  # Remove runtime dep
-uv remove --dev ruff             # Remove dev dep
+uv remove httpx
+uv remove --dev ruff
 ```
 
 ### Sync and Lock
 
 ```bash
-uv sync                          # Install from lockfile
-uv sync --frozen                 # Fail if lockfile is outdated
-uv sync --no-dev                 # Production install (no dev deps)
-uv lock                          # Update lockfile without installing
-uv lock --upgrade                # Upgrade all deps to latest compatible
-uv lock --upgrade-package httpx  # Upgrade specific package
+uv sync
+uv sync --frozen
+uv sync --no-dev
+uv lock
+uv lock --upgrade
+uv lock --upgrade-package httpx
 ```
 
 ### Inspect Dependencies
 
 ```bash
-uv tree                          # Dependency tree
-uv tree --depth 1                # Shallow tree
-uv pip list                      # List installed packages
-uv pip show httpx                # Package details
+uv tree
+uv tree --depth 1
+uv pip list
+uv pip show httpx
 ```
 
 ## Running Commands
@@ -103,19 +117,19 @@ uv pip show httpx                # Package details
 ### Uv Run
 
 ```bash
-uv run python script.py          # Run with project env
-uv run python -m myapp.main      # Module mode
-uv run pytest -v                 # Run dev tools
-uv run ruff check .              # Run linter
-uv run ty check                  # Run type checker
+uv run python script.py
+uv run python -m myapp.main
+uv run pytest -v
+uv run ruff check .
+uv run ty check
 ```
 
-### Run Without Project (Ephemeral)
+### Run Without Project
 
 ```bash
 uv run --with httpx python -c "import httpx; print(httpx.get('https://example.com'))"
-uvx ruff check .                 # Run tool without installing
-uvx --from ruff ruff format .    # Explicit package source
+uvx ruff check .
+uvx --from ruff ruff format .
 ```
 
 ## Dev Toolchain
@@ -123,48 +137,39 @@ uvx --from ruff ruff format .    # Explicit package source
 ### Standard Dev Stack
 
 ```bash
-uv add --dev ruff pytest pytest-cov ty rumdl taskipy
+uv add --dev ruff pytest pytest-cov ty taskipy
 ```
 
-### Formatting and Lint (Ruff)
+### Formatting and Lint
 
 ```bash
-uv run ruff format .                      # Format code
-uv run ruff format --check .              # Check format (CI)
-uv run ruff check .                       # Lint
-uv run ruff check . --fix                 # Auto-fix safe issues
-uv run ruff check . --fix --unsafe-fixes  # Auto-fix aggressive
-uv run ruff rule E501                     # Explain a rule
+uv run ruff format .
+uv run ruff format --check .
+uv run ruff check .
+uv run ruff check . --fix
+uv run ruff check . --fix --unsafe-fixes
+uv run ruff rule E501
 ```
 
-### Type Checking (Ty)
+### Type Checking
 
 ```bash
-uv run ty check                  # Check entire project
-uv run ty check src tests        # Check specific paths
-uv run ty check src/myapp/api    # Check single directory
+uv run ty check
+uv run ty check src tests
+uv run ty check src/myapp/api
 ```
 
-### Markdown Lint (Rumdl)
+### Testing
 
 ```bash
-uv run rumdl init                # Create .rumdl.toml config
-uv run rumdl check .             # Check markdown files
-uv run rumdl check --fix .       # Auto-fix markdown issues
-uv run rumdl fmt .               # Format markdown files
+uv run pytest -v
+uv run pytest -v -x
+uv run pytest tests/unit/ -v
+uv run pytest -k "test_user" -v
+uv run pytest -v --cov=src --cov-report=term-missing
 ```
 
-### Testing (Pytest)
-
-```bash
-uv run pytest -v                 # Run all tests
-uv run pytest -v -x              # Stop on first failure
-uv run pytest tests/unit/ -v     # Run specific directory
-uv run pytest -k "test_user" -v  # Run by pattern
-uv run pytest -v --cov=src --cov-report=term-missing  # With coverage
-```
-
-### Task Runner (Taskipy)
+### Task Runner
 
 Config in `pyproject.toml`:
 
@@ -173,141 +178,73 @@ Config in `pyproject.toml`:
 format = "ruff format ."
 lint = "ruff check . --fix"
 typecheck = "ty check"
-mdlint = "rumdl check ."
 test = "pytest -v"
-check = "task format && task lint && task mdlint && task typecheck && task test"
+check = "task format && task lint && task typecheck && task test"
 ```
 
 ```bash
-uv run task format               # Run single task
-uv run task check                # Run full validation
+uv run task format
+uv run task check
 ```
 
 ## Validation Sequence
 
-Run in order — fail fast on early stages:
+Run in order:
 
 ```bash
-# 1. Format (code)
 uv run ruff format --check .
-
-# 2. Lint (code)
 uv run ruff check .
-
-# 3. Lint (markdown)
-uv run rumdl check .
-
-# 4. Type check
 uv run ty check
-
-# 5. Test
 uv run pytest -v
 ```
+
+Project-wide validation may still include `uv run rumdl check .`, but the setup
+and authoring guidance for that belongs in `markdown/SKILL.md`.
 
 ## Virtual Environments
 
 ```bash
-uv venv                          # Create .venv in project root
-uv venv --python 3.12            # With specific Python version
-uv venv /path/to/venv            # Custom location
-source .venv/bin/activate         # Activate (optional — uv run handles this)
+uv venv
+uv venv --python 3.12
+uv venv /path/to/venv
+source .venv/bin/activate
 ```
 
-uv auto-discovers `.venv` — you rarely need to activate manually.
+uv auto-discovers `.venv`, so manual activation is usually optional.
 
-## Pyproject.toml
-
-### Complete Project Config
-
-```toml
-[project]
-name = "myapp"
-version = "0.1.0"
-description = "Short description"
-requires-python = ">=3.12"
-readme = "README.md"
-license = "MIT"
-dependencies = [
-    "httpx>=0.27",
-    "pydantic>=2.0",
-    "rich>=13.0",
-]
-
-[project.optional-dependencies]
-dev = [
-    "pytest>=8.0",
-    "pytest-cov>=5.0",
-    "pytest-asyncio>=0.24",
-    "ruff>=0.8",
-    "ty>=0.1",
-    "rumdl>=0.1",
-    "taskipy>=1.13",
-]
-
-[project.scripts]
-myapp = "myapp.cli:app"
-
-[project.entry-points."myapp.plugins"]
-auth = "myapp_auth:plugin"
-
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-```
-
-### Ruff Config
+## Recommended `pyproject.toml`
 
 ```toml
 [tool.ruff]
-target-version = "py312"
-line-length = 120
+line-length = 100
+target-version = "py311"
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "N", "UP", "B", "SIM", "RUF"]
-ignore = ["E501"]
+select = ["E", "F", "I", "B", "UP"]
+fix = true
 
-[tool.ruff.lint.isort]
-known-first-party = ["myapp"]
-```
+[tool.ruff.format]
+quote-style = "single"
 
-### Pytest Config
+[tool.pyright]
+typeCheckingMode = "standard"
+reportMissingImports = true
 
-```toml
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-python_files = ["test_*.py"]
-python_functions = ["test_*"]
-addopts = ["-v", "--strict-markers", "--tb=short"]
-markers = [
-    "slow: long-running tests",
-    "integration: integration-level tests",
-]
-```
-
-### Coverage Config
-
-```toml
-[tool.coverage.run]
-source = ["src"]
-branch = true
-omit = ["*/tests/*", "*/__init__.py"]
-
-[tool.coverage.report]
-show_missing = true
-skip_covered = false
+[tool.ty]
+strict = true
 ```
 
 ## Building and Publishing
 
 ```bash
-uv build                         # Build sdist + wheel
-uv build --sdist                 # Source distribution only
-uv build --wheel                 # Wheel only
-uv publish                       # Publish to PyPI
-uv publish --token $PYPI_TOKEN   # With explicit token
+uv build
+uv build --sdist
+uv build --wheel
+uv publish
+uv publish --token $PYPI_TOKEN
 ```
 
-## Scripts (Standalone)
+## Scripts
 
 Run single-file scripts with inline dependencies:
 
@@ -325,34 +262,25 @@ print(response.json())
 ```
 
 ```bash
-uv run script.py                 # Auto-installs deps in ephemeral env
+uv run script.py
 ```
 
-## Global Tools
+## Validation Checklist
+
+Use this after bootstrapping local Python tooling:
 
 ```bash
-uv tool install ruff             # Install globally
-uv tool install --with ruff-lsp ruff  # With extras
-uv tool list                     # List installed tools
-uv tool upgrade ruff             # Upgrade tool
-uv tool uninstall ruff           # Remove tool
-uvx ruff check .                 # Run without installing (ephemeral)
-```
-
-## Cache Management
-
-```bash
-uv cache clean                   # Clear all caches
-uv cache clean httpx             # Clear specific package cache
-uv cache dir                     # Show cache directory
+ruff --version
+pyright --version
+ty --version
 ```
 
 ## Guardrails
 
-- Always use `uv` over `pip` — it handles environments, resolution, and locking.
-- Commit `uv.lock` to version control for reproducible installs.
+- Always use `uv` over `pip`.
+- Commit `uv.lock` for reproducible installs.
 - Use `uv sync --frozen` in CI to catch lockfile drift.
-- Use `uv sync --no-dev` for production deployments.
-- Pin Python version with `.python-version` file.
-- Use `--dev` for all tooling packages (ruff, pytest, ty, rumdl, taskipy).
-- Prefer `uv run` over activating virtualenvs.
+- Use `uv sync --no-dev` for production installs.
+- Pin Python version with `.python-version`.
+- Use `--dev` for project-local tooling packages.
+- Prefer `uv run` over manually activating virtualenvs.
