@@ -44,6 +44,9 @@ when working in its domain.
 | `jx/SKILL.md`       | Jinja server-rendered components (JX)                 |
 | `frontend/SKILL.md` | Frontend bootstrap, JS/TS tooling, Tailwind, Basecoat |
 | `markdown/SKILL.md` | Markdown writing, documentation structure, rumdl lint |
+| `commit/SKILL.md`   | Commit changes with small logical commits             |
+| `refactor/SKILL.md` | Deep audit, clean code, SOLID, security review        |
+| `rtk/SKILL.md`      | RTK setup, custom filters, token optimization         |
 
 Each skill has a `references/` folder with detailed submodules (httpx,
 pydantic, pytest, rich, typer, uv, streaming, dependencies, Tailwind,
