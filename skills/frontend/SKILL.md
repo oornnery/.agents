@@ -28,17 +28,17 @@ projects, not a mandatory repo-wide standard.
 
 ## Submodules
 
-| Submodule                           | When to load                                                 |
-| ----------------------------------- | ------------------------------------------------------------ |
-| `references/solid.md`               | SolidJS setup, components, signals, router, state, resources |
-| `references/solid-islands-jinja.md` | Solid islands with Jinja2 and JX                             |
-| `references/solidstart.md`          | SolidStart app structure, file routes, meta                  |
-| `references/tailwind.md`            | Tailwind setup and semantic token baseline                   |
-| `references/basecoat.md`            | Basecoat CSS, theming, JS imports, macros                    |
-| `references/testing.md`             | Vitest, testing components, Solid Testing Library            |
-| `references/vite-tooling.md`        | Vite config, path aliases, code splitting                    |
-| `references/accessibility.md`       | Semantic HTML, WAI-ARIA, forms, screen readers               |
-| `../markdown/SKILL.md`              | Docs, README updates, rumdl validation                       |
+| Submodule                     | When to load                                                 |
+| ----------------------------- | ------------------------------------------------------------ |
+| `references/solid.md`         | SolidJS setup, components, signals, router, state, resources |
+| `references/solid-islands.md` | Solid islands with Jinja2 and JX                             |
+| `references/solidstart.md`    | SolidStart app structure, file routes, meta                  |
+| `references/tailwind.md`      | Tailwind setup and semantic token baseline                   |
+| `references/basecoat.md`      | Basecoat CSS, theming, JS imports, macros                    |
+| `references/testing.md`       | Vitest, testing components, Solid Testing Library            |
+| `references/vite-tooling.md`  | Vite config, path aliases, code splitting                    |
+| `references/accessibility.md` | Semantic HTML, WAI-ARIA, forms, screen readers               |
+| `../markdown/SKILL.md`        | Docs, README updates, rumdl validation                       |
 
 ---
 
