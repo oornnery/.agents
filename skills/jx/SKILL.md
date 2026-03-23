@@ -5,13 +5,60 @@ description: JX patterns for Jinja-based server-rendered Python apps. Use when b
 
 # JX
 
-Official JX skill to write Jinja-based server-rendered components with best
-practices, keeping up to date with the JX API.
+Official JX 0.10 skill for Jinja-based server-rendered components. Aligned
+with the upstream JX repo skill.
 
 When a JX page needs client-side interactivity beyond small HTML sprinkles,
-load `../frontend/references/solid-islands-jinja.md` and prefer Solid islands
+load `../frontend/references/solid-islands.md` and prefer Solid islands
 mounted into specific server-rendered slots instead of rewriting the whole page
 as a client app.
+
+## Core Principles
+
+1. **Native HTML first.** Prefer built-in elements and APIs before JavaScript:
+   - `<dialog>` + `.showModal()` for modals — close via
+     `<form method="dialog">`, Escape key dismisses by default.
+   - Popover API (`popover` + `popovertarget`) for dropdowns, tooltips, and
+     all floating/overlay UI — renders in the top layer, escapes
+     `overflow: hidden`.
+   - `<details>` for accordions — use the `name` attribute for exclusive
+     groups.
+   - Native `<form>` validation — `required`, `pattern`, `type="email"`, etc.
+
+2. **Tailwind v4 for styling.** Utility classes directly in markup. Tailwind
+   v4 uses a CSS-first config model (no `tailwind.config.js`).
+
+3. **Vanilla JS as ES modules.** When JavaScript is unavoidable, write it as a
+   small ES module declared via `{#js component.js #}`. Keep scripts minimal,
+   focused, and progressively enhancing.
+
+4. **Framework-agnostic.** No `url_for`, `csrf_token()`, or other
+   framework-specific helpers. Accept URLs and tokens as props.
+
+5. **Components are fragments.** Never output `<!DOCTYPE>`, `<html>`, `<head>`,
+   or `<body>`. Components are rendered inside an existing page.
+
+## When to Use JavaScript
+
+| Interaction                 | Solution                                                         |
+| --------------------------- | ---------------------------------------------------------------- |
+| Modal dialog                | `<dialog>` + `.showModal()` — close via `<form method="dialog">` |
+| Backdrop dismiss            | `closedby="any"` on `<dialog>`                                   |
+| Dropdown menu               | Popover API (`popover` + `popovertarget`)                        |
+| Tooltip                     | Popover API with `popover="hint"`                                |
+| Floating listbox / combobox | Popover API (`popover="manual"`) + JS for filtering              |
+| Show/hide panel             | `<details>` or Popover API                                       |
+| Form validation             | Native `required`, `pattern`, `type` attrs                       |
+| Cancel bypassing validation | `formmethod="dialog"` + `formnovalidate` on the button           |
+| Tabs                        | `<details name="...">` for accordion-style, or JS for true tabs  |
+| Clipboard copy              | JS (`navigator.clipboard`)                                       |
+| Dynamic list filtering      | JS                                                               |
+| Keyboard shortcuts          | JS                                                               |
+| Complex animations          | CSS `@starting-style` + transitions                              |
+
+When writing JS: declare via `{#js component.js #}`, write as an ES module
+(`type="module"` is the JX default), use event delegation on `document` where
+possible, keep it small — one focused behavior per file.
 
 ## Shared `Catalog` Singleton
 
@@ -99,7 +146,29 @@ Register all folders and packages **before** the first render call.
 
 ## Component Files
 
-A JX component is a `.jinja` file with a TitleCased name: `Card.jinja`, `UserTable.jinja`.
+A JX component is a `.jinja` file. Use `snake_case` filenames, with a
+`CamelCased` root CSS class and `kebab-cased` utility classes:
+
+```html+jinja title="tab_group.jinja"
+<div {{ attrs.render(class="TabGroup") }}>
+  <select class="tab-group-control">
+  {{ content }}
+</div>
+```
+
+For components that need JS, output a companion `.js` file declared via
+`{#js ... #}`:
+
+```text
+components/
+  button.jinja
+  card.jinja
+  modal.jinja
+  modal.js          <- companion JS when needed
+  forms/
+    input.jinja
+    select.jinja
+```
 
 Keep metadata comments at the top in this order:
 
@@ -313,6 +382,41 @@ Caller:
 Python-style underscores in kwargs are converted to dashes (`aria_label` →
 `aria-label`). Attributes starting with `_` are silently ignored.
 
+### Put All Attributes Inside `attrs.render()`
+
+Do not scatter attributes as bare HTML — place them all inside the
+`attrs.render()` call. Calculate complex values beforehand with `{% set %}`.
+
+Do this:
+
+```html+jinja
+{% set state_classes = "selected-classes" if selected else "enabled-classes" %}
+
+<button {{ attrs.render(
+  role="tab",
+  aria_selected="true" if selected else "false",
+  aria_controls=target,
+  tabindex="0" if selected else "-1",
+  disabled=(tag == "button" and disabled),
+  class="Tab " ~ state_classes,
+) }}>
+  {{ content }}
+</button>
+```
+
+instead of this:
+
+```html+jinja
+{# DO NOT DO THIS — attrs scattered as bare HTML attributes #}
+<button role="tab"
+  aria-selected="{{ 'true' if selected else 'false' }}"
+  aria-controls="{{ target }}"
+  {{ attrs.render(class="Tab") }}
+>
+  {{ content }}
+</button>
+```
+
 ## CSS and JS Assets
 
 Declare assets at the top of the component:
@@ -332,14 +436,27 @@ Render them from the layout using the `assets` global (injected by `catalog.rend
 </head>
 ```
 
-Available helpers: `assets.render()`, `assets.render_css()`, `assets.render_js()`,
-`assets.collect_css()`, `assets.collect_js()`.
+In JX 0.10, `assets` is exposed as a **dict** with callable values, not a
+Component object. Available dict keys:
+
+- `assets.render_css()` — generate `<link>` tags
+- `assets.render_js()` — generate `<script>` tags (module by default)
+- `assets.render()` — generate both CSS and JS tags
+- `assets.collect_css()` — list of CSS URLs
+- `assets.collect_js()` — list of JS URLs
 
 CSS is emitted before JS. JS is `<script type="module">` by default. Repeated
 declarations are deduplicated. Assets from imported children are collected
 recursively.
 
 Do this:
+
+```jinja
+{{ assets.render_css() }}
+{{ assets.render_js() }}
+```
+
+or this:
 
 ```jinja
 {{ assets.render() }}
@@ -351,6 +468,74 @@ instead of this:
 {# DO NOT DO THIS — catalog is not available in templates #}
 {{ catalog.render_assets() }}
 ```
+
+### `render_js` Parameters
+
+`assets.render_js(module=True, defer=True)` — both default to `True`.
+
+- `module=True` emits `<script type="module">` (ES modules, the default).
+- `module=False` emits plain `<script>` — use for IIFE bundles.
+- `defer=True` adds the `defer` attribute to non-module scripts.
+
+### JS Build for External Libraries
+
+JX does **not** process, rewrite, hash, or bundle asset URLs — they are used
+exactly as written. Three approaches for external JS libraries:
+
+1. **CDN** — add `<script>` tags in the layout for libs like htmx, Alpine:
+
+   ```html+jinja
+   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3/dist/cdn.min.js"></script>
+   ```
+
+2. **Local static** — download to a static folder, reference via `{#js #}`:
+
+   ```jinja
+   {# js "/static/vendor/htmx.min.js" #}
+   ```
+
+3. **Build tool** — use esbuild or Vite externally to bundle npm dependencies,
+   then reference the output path:
+
+   ```jinja
+   {# js "/static/js/main.js" #}
+   ```
+
+For approach 3, see [the integrations reference](references/integrations.md)
+for a full esbuild config bundling Alpine, Stimulus, and htmx into a single
+IIFE.
+
+The `asset_resolver` callback on `Catalog` transforms URLs at render time —
+useful for mapping package-relative paths to browser-accessible URLs:
+
+```python
+catalog = Catalog(
+    "components",
+    asset_resolver=lambda url, prefix: f"/static/vendor/{prefix}/{url}",
+)
+```
+
+## Animations with `transitions.css`
+
+Tailwind v4 lacks utilities for `@starting-style` and
+`transition-behavior: allow-discrete`, needed for smooth enter/exit animations
+on `<dialog>` and popover elements. Use a shared `transitions.css` file
+instead of per-component CSS. JX's asset deduplication ensures it loads once.
+
+Declare it in any component that needs animations:
+
+```jinja
+{#css transitions.css #}
+```
+
+Three animation patterns:
+
+- **Default dialog (fade + scale)** — applies to all `<dialog>` elements.
+- **`slide-from-left`** — class for drawers from the left edge (mobile nav).
+- **`slide-from-right`** — class for drawers from the right edge (panels).
+
+The CSS uses `@starting-style` and `allow-discrete` — well-supported in
+modern browsers, no JavaScript involved.
 
 ## Jinja Environment
 
@@ -389,6 +574,12 @@ catalog = Catalog(
   `{{ catalog.render_assets() }}`.
 - **Catalog per request**: create one singleton, not a new `Catalog()` per handler.
 - **Adding folders late**: register all folders before the first `render()` call.
+- **Typed params with quotes**: when a `{# def #}` declares a typed param like
+  `rows: int = 4`, the caller must pass `rows=5` (no quotes), not `rows="5"`.
+  Quoted values are strings and will raise `InvalidPropType` at runtime.
+- **Params that accept mixed types**: if a param can receive both `str` and
+  `int` (e.g., a form `value`), omit the type hint to skip validation:
+  `{# def value="" #}` instead of `{# def value: str = "" #}`.
 - **Hardcoded colors**: never use raw hex or Tailwind palette names (`blue-500`,
   `#7c7cff`) in components — always use semantic tokens (`accent`, `success`,
   `warn`, `danger`) so components respond to theme and palette changes.
@@ -396,6 +587,44 @@ catalog = Catalog(
   (`bg-accent/10`). Use `rgb(var(--accent-rgb) / <alpha-value>)` instead.
 - **Hover only on links**: apply `cursor-pointer` explicitly on `<span>` tags
   that are interactive — browsers do not inherit it from CSS hover rules.
+
+## Color Mode
+
+Before generating components, confirm which color mode the user wants:
+
+- **Light only** (default) — no `dark:` prefixes needed.
+- **Dark only** — dark backgrounds, light text; no `dark:` prefixes needed.
+- **Both** — light as base, add `dark:` variants for all color-bearing
+  utilities: backgrounds, text, borders, rings, placeholders, shadows, and
+  hover/focus state colors.
+
+If unspecified, default to **light only**. When generating both modes, apply
+`dark:` variants to every color-dependent utility.
+
+## Checklist Before Output
+
+1. Props have sensible defaults — only truly required data lacks a default.
+2. `attrs.render()` is on the root element with default classes.
+3. Accessibility — correct ARIA attributes, keyboard navigability, labels,
+   `focus-visible` styles.
+4. No framework-specific helpers — no `url_for`, `csrf_token()`.
+5. Native HTML first — no JS for interactions the browser handles natively.
+6. Tailwind classes only — no custom CSS unless declared via `{#css #}`.
+7. No page shell — no `<!DOCTYPE>`, `<html>`, `<head>`, or `<body>`.
+8. Color mode matches the user's preference.
+
+## Test Files
+
+Only generate test files when explicitly asked. Create one `test_<name>.jinja`
+per **top-level** component (not internal sub-components). Each test file
+should:
+
+- Import the component with a relative path.
+- Pass realistic data exercising all features: required props, optional props
+  with non-default values, slots, edge cases.
+- Be self-contained — renderable with `catalog.render("test_<name>.jinja")`
+  without external context.
+- Include inline test data directly in the template.
 
 ## Validation with `jx check`
 
@@ -416,6 +645,12 @@ for testing strategies, CI setup, `jx collect_assets`, and JinjaX migration.
 See [the integrations reference](references/integrations.md) for FastAPI,
 Flask, Django, HTMX (fragment rendering, 4xx config, URL sync), Alpine.js,
 Stimulus (lifecycle controllers), and esbuild build system guidance.
+
+## Component Patterns
+
+See [the patterns reference](references/patterns.md) for production-ready
+component examples: Button, Modal (`<dialog>`), Dropdown (Popover API), Form
+Input, Data Table, and Sidebar Layout.
 
 ## Organization
 
