@@ -1,12 +1,14 @@
 ---
 name: commit
-description: Analyze staged and unstaged changes, group them into small logical commits with precise conventional commit messages. Use when the user asks to commit, save progress, or create commits from current changes. Never use `git add .`, never amend unless asked, never sign as Claude Code.
+description: Analyze staged and unstaged changes, group them into small logical commits with precise conventional commit messages. Use when the user asks to commit, save progress, or create commits from current changes. Never use `git add .`, never amend unless asked.
 ---
 
 # Commit
 
 Create small, focused commits from the current working tree changes. Each
 commit should represent one logical unit of change.
+
+Safety rules are in `rules/git.md` — they apply automatically.
 
 ## Process
 
@@ -84,17 +86,6 @@ EOF
 After each commit, run `git status` to confirm success and check
 remaining uncommitted changes. Repeat from step 2 until the working tree
 is clean or only intentionally untracked files remain.
-
-## Safety Rules
-
-- **Never** `git add .`, `git add -A`, or `git add --all`.
-- **Never** `git commit --amend` unless the user explicitly asks.
-- **Never** `git push` unless the user explicitly asks.
-- **Never** `git reset --hard`, `git checkout .`, or `git clean`.
-- **Never** sign commits as Claude Code or any AI identity.
-- **Never** use `--no-verify` to skip pre-commit hooks.
-- If a pre-commit hook fails, fix the issue and create a **new** commit.
-- Skip files that look like secrets (`.env`, `*.pem`, `credentials.*`).
 
 ## Examples
 
