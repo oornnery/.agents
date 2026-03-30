@@ -1,29 +1,25 @@
 # rumdl configuration file
-# See: https://github.com/rvben/rumdl#configuration
 
-[rules]
-# Select specific rules (empty = all rules)
-select = []
+[global]
+disable = ["MD013", "MD033"]
+exclude = [
+    ".git",
+    ".github",
+    "node_modules",
+    "vendor",
+    "dist",
+    "build",
+    "target",
+    "CHANGELOG.md",
+    "LICENSE.md",
+]
+respect_gitignore = true
 
-# Ignore specific rules
-ignore = []
+[MD003]
+style = "atx"
 
-# Rule-specific configuration
-[rules.MD013]
-line_length = 0
-code_blocks = false
-tables = false
-
-[rules.MD003]
-style = "atx" # Use ATX style headings (##)
-
-[rules.MD007]
-indent = 4 # 4 spaces for unordered list indentation
-
-# File patterns to include/exclude
-[files]
-include = ["**/*.md", "**/*.markdown"]
-exclude = ["node_modules/**", "target/**", "build/**", "dist/**"]
+[MD007]
+indent = 4
 
 [MD060]
 enabled = true

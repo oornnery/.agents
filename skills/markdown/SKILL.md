@@ -83,21 +83,16 @@ uv run rumdl init
 ### Recommended `.rumdl.toml`
 
 ```toml
-[rules]
-select = []
-ignore = []
+[global]
+disable = ["MD013", "MD033"]
+exclude = ["node_modules", "dist", "build", "target"]
+respect_gitignore = true
 
-[rules.MD013]
-line_length = 0
-code_blocks = false
-tables = false
-
-[rules.MD003]
+[MD003]
 style = "atx"
 
-[files]
-include = ["**/*.md", "**/*.markdown"]
-exclude = ["node_modules/**", "target/**", "build/**", "dist/**"]
+[MD007]
+indent = 4
 
 [MD060]
 enabled = true
