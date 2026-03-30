@@ -1,4 +1,9 @@
-# Rich Reference
+---
+name: rich
+description: Console output with Rich — formatting, tables, progress bars, tracebacks, logging. Load when building CLI output or styled console apps.
+---
+
+# Rich
 
 Console output, formatting, tables, progress bars, tracebacks, and logging integration with Rich.
 

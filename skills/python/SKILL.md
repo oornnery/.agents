@@ -30,20 +30,19 @@ Official Python skill for writing clean, Pythonic code with modern tooling.
 - Pydantic: <https://docs.pydantic.dev/latest/>
 - Typer: <https://typer.tiangolo.com/>
 
-## Submodules
+## Related Skills
 
-| Submodule                | When to load                                  |
-| ------------------------ | --------------------------------------------- |
-| `fastapi/SKILL.md`       | FastAPI APIs and Pydantic models              |
-| `jx/SKILL.md`            | Jinja-based server-rendered components        |
-| `../markdown/SKILL.md`   | Markdown docs, structure, rumdl configuration |
-| `references/pytest.md`   | Test authoring, coverage, failure triage      |
-| `references/httpx.md`    | Outbound HTTP calls (sync/async)              |
-| `references/typer.md`    | CLI applications                              |
-| `references/rich.md`     | Console output, tables, progress bars         |
-| `references/pydantic.md` | Validation, serialization, model patterns     |
-| `references/uv.md`       | uv, ruff, pyright, ty, pytest, packaging      |
-| Architecture (below)     | Layer boundaries and project layout           |
+| Skill               | When to load                                  |
+| ------------------- | --------------------------------------------- |
+| `pydantic/SKILL.md` | Validation, serialization, model patterns     |
+| `httpx/SKILL.md`    | Outbound HTTP calls (sync/async)              |
+| `pytest/SKILL.md`   | Test authoring, coverage, failure triage      |
+| `rich/SKILL.md`     | Console output, tables, progress bars         |
+| `typer/SKILL.md`    | CLI applications                              |
+| `uv/SKILL.md`       | uv, ruff, pyright, ty, pytest, packaging      |
+| `fastapi/SKILL.md`  | FastAPI APIs and Pydantic models              |
+| `jx/SKILL.md`       | Jinja-based server-rendered components        |
+| `markdown/SKILL.md` | Markdown docs, structure, rumdl configuration |
 
 ---
 
@@ -225,7 +224,7 @@ logging.basicConfig(
 )
 ```
 
-See `references/rich.md` for full console output patterns.
+See `rich/SKILL.md` for full console output patterns.
 
 ---
 
@@ -268,7 +267,7 @@ Use `ty` as the primary project type checker. Use `pyright` as complementary
 editor tooling or to validate local language-server setup. For Markdown linting
 and `rumdl` config, load `../markdown/SKILL.md`.
 
-See `references/uv.md` for full uv workflow, `pyproject.toml` config,
+See `uv/SKILL.md` for full uv workflow, `pyproject.toml` config,
 packaging, publishing, and taskipy setup.
 
 ---
@@ -507,7 +506,7 @@ hashed = scrypt(password.encode(), salt=salt, n=16384, r=8, p=1)
 ### Input Sanitization
 
 - Validate all external input at system boundaries.
-- Use Pydantic models for structured validation (see `references/pydantic.md`).
+- Use Pydantic models for structured validation (see `pydantic/SKILL.md`).
 - Never use `eval()`, `exec()`, or `__import__()` with user input.
 - Use parameterized queries — never format SQL strings.
 
@@ -580,64 +579,6 @@ def retry_request(
 - Document `Raises` only for exceptions callers should handle.
 - Skip docstrings on trivial/obvious methods (`__init__` with simple assignment, one-liner helpers).
 - Modules and classes get a one-line docstring if the name isn't self-explanatory.
-
----
-
-## Pydantic (Brief)
-
-Pydantic v2 is the standard for data validation and serialization in Python. Use it for API payloads, config, and any data that crosses system boundaries.
-
-```bash
-uv add pydantic pydantic-settings
-```
-
-```python
-from pydantic import BaseModel, ConfigDict, Field
-
-
-class User(BaseModel):
-    model_config = ConfigDict(strict=True, frozen=True)
-
-    name: str = Field(min_length=1, max_length=100)
-    email: str
-    age: int = Field(ge=0, le=150)
-```
-
-See `references/pydantic.md` for validators, serialization, settings, and advanced patterns.
-
----
-
-## Key Libraries (Brief)
-
-### Rich — Console Output and Formatting
-
-Rich provides styled console output, tables, progress bars, tracebacks, and logging integration. Use it for all user-facing CLI output.
-
-```bash
-uv add rich
-```
-
-See `references/rich.md` for full patterns.
-
-### Httpx — HTTP Client
-
-Modern async/sync HTTP client with connection pooling, timeouts, and typed responses. Use instead of `requests` in new projects.
-
-```bash
-uv add httpx
-```
-
-See `references/httpx.md` for client factories, error mapping, and testing.
-
-### Typer — CLI Framework
-
-Type-hint-driven CLI builder on top of Click. Handles argument parsing, help generation, and shell completion.
-
-```bash
-uv add typer rich
-```
-
-See `references/typer.md` for command patterns, async integration, and testing.
 
 ---
 

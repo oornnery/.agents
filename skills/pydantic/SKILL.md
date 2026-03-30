@@ -1,4 +1,9 @@
-# Pydantic Reference
+---
+name: pydantic
+description: Data validation, serialization, settings, and model patterns with Pydantic v2. Load when defining models, validating data, or managing config.
+---
+
+# Pydantic
 
 Data validation, serialization, settings management, and model patterns with Pydantic v2.
 
@@ -9,12 +14,28 @@ Data validation, serialization, settings management, and model patterns with Pyd
 - Serialization: <https://docs.pydantic.dev/latest/concepts/serialization/>
 - Settings: <https://docs.pydantic.dev/latest/concepts/pydantic_settings/>
 - Field: <https://docs.pydantic.dev/latest/concepts/fields/>
+- TypeAdapter: <https://docs.pydantic.dev/latest/concepts/type_adapter/>
+- Extra Types: <https://docs.pydantic.dev/latest/concepts/types/#pydantic-types>
 
 ## Install
 
 ```bash
 uv add pydantic
-uv add pydantic-settings  # for config/env management
+uv add pydantic-settings                    # config/env management
+uv add "pydantic[email,timezone]"           # email + timezone validation
+```
+
+### Optional Extras
+
+| Extra      | What it adds                                   |
+| ---------- | ---------------------------------------------- |
+| `email`    | `EmailStr` — validated email addresses         |
+| `timezone` | `TimeZoneName` — IANA timezone string          |
+
+### Complementary Packages
+
+```bash
+uv add pydantic-extra-types    # Phone, Country, Currency, MAC, ISBN, Color, Coordinate, SemanticVersion, ULID
 ```
 
 ## Model Basics
@@ -43,6 +64,28 @@ model_config = ConfigDict(
     populate_by_name=True, # Allow field name and alias
 )
 ```
+
+## TypeAdapter
+
+Validate non-model types without wrapping in a `BaseModel`:
+
+```python
+from pydantic import TypeAdapter
+
+adapter = TypeAdapter(list[int])
+
+# Validate
+result = adapter.validate_python(["1", "2", "3"])  # [1, 2, 3]
+
+# JSON
+result = adapter.validate_json(b'[1, 2, 3]')
+
+# Schema
+schema = adapter.json_schema()
+```
+
+Use `TypeAdapter` for validating function inputs, config fragments, or
+standalone types that don't warrant a full model.
 
 ## Validators
 
@@ -104,6 +147,24 @@ def split_tags(cls, v):
 @classmethod
 def normalize_name(cls, v: str) -> str:
     return v.title()
+```
+
+### Functional Validators (Annotated Style)
+
+```python
+from typing import Annotated
+from pydantic import AfterValidator, BeforeValidator
+
+
+def strip_lower(v: str) -> str:
+    return v.strip().lower()
+
+
+CleanStr = Annotated[str, AfterValidator(strip_lower)]
+
+
+class Form(BaseModel):
+    email: CleanStr  # automatically stripped and lowercased
 ```
 
 ## Serialization
@@ -306,4 +367,6 @@ except ValidationError as e:
 - Use `frozen=True` for immutable data objects.
 - Validate at boundaries — don't re-validate inside business logic.
 - Prefer `field_validator` over `model_validator` when validating a single field.
+- Prefer `Annotated` + functional validators for reusable validation logic.
 - Use `model_validate` over direct constructor for external data.
+- Use `TypeAdapter` for standalone type validation without models.

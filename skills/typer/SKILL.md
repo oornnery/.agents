@@ -1,4 +1,9 @@
-# Typer Reference
+---
+name: typer
+description: CLI development with Typer — commands, typed options, async, testing. Load when building CLI applications.
+---
+
+# Typer
 
 CLI development with Typer including command structure, typed options/arguments, async execution, and testing.
 

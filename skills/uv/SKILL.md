@@ -1,4 +1,9 @@
-# Uv Reference
+---
+name: uv
+description: Python package management with uv — project setup, deps, dev toolchain, venvs, publishing. Load when managing Python projects or dependencies.
+---
+
+# Uv
 
 Complete uv workflow: project setup, dependency management, dev toolchain,
 virtual environments, packaging, and publishing.
@@ -29,7 +34,14 @@ uv tool install pyright
 uv tool install ty
 ```
 
-Use `markdown/SKILL.md` for `rumdl` installation, config, and Markdown-specific
+Additional quality tools:
+
+```bash
+uv tool install rumdl                 # Markdown linter
+uv add --dev pre-commit               # Git pre-commit hooks
+```
+
+Use `markdown/SKILL.md` for `rumdl` config and Markdown-specific
 lint workflows.
 
 ## Project Setup
@@ -230,8 +242,8 @@ quote-style = "single"
 typeCheckingMode = "standard"
 reportMissingImports = true
 
-[tool.ty]
-strict = true
+[tool.ty.rules]
+possibly-unbound-attribute = "warn"
 ```
 
 ## Building and Publishing
@@ -265,6 +277,43 @@ print(response.json())
 uv run script.py
 ```
 
+## Pre-Commit
+
+```bash
+uv add --dev pre-commit
+uv run pre-commit install
+uv run pre-commit run --all-files
+```
+
+Config in `.pre-commit-config.yaml`:
+
+```yaml
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.11.0
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+```
+
+## Rumdl (Markdown Lint)
+
+```bash
+uv tool install rumdl
+uv run rumdl check .
+uv run rumdl fmt .
+```
+
+See `markdown/SKILL.md` for full rumdl configuration.
+
 ## Validation Checklist
 
 Use this after bootstrapping local Python tooling:
@@ -273,6 +322,7 @@ Use this after bootstrapping local Python tooling:
 ruff --version
 pyright --version
 ty --version
+rumdl --version
 ```
 
 ## Guardrails

@@ -1,4 +1,9 @@
-# Httpx Reference
+---
+name: httpx
+description: HTTP client patterns with httpx — sync/async, typed responses, retries, timeouts, testing. Load when making HTTP requests or integrating with external APIs.
+---
+
+# Httpx
 
 HTTP client patterns with httpx for sync and async integrations, typed responses, retries, timeouts, and testing.
 
@@ -13,6 +18,18 @@ HTTP client patterns with httpx for sync and async integrations, typed responses
 
 ```bash
 uv add httpx
+uv add "httpx[http2]"                # HTTP/2 support
+uv add "httpx[socks]"                # SOCKS proxy support
+uv add "httpx[brotli]"               # Brotli decompression
+uv add "httpx[zstd]"                 # Zstandard decompression
+```
+
+### Complementary Packages
+
+```bash
+uv add tenacity                      # Retry with backoff/jitter
+uv add httpx-sse                     # Server-Sent Events client
+uv add respx                         # httpx mocking for tests (alternative to MockTransport)
 ```
 
 ## Client Selection
@@ -31,6 +48,14 @@ def build_async_http_client() -> httpx.AsyncClient:
     timeout = httpx.Timeout(connect=3.0, read=10.0, write=10.0, pool=3.0)
     limits = httpx.Limits(max_connections=100, max_keepalive_connections=20)
     return httpx.AsyncClient(timeout=timeout, limits=limits, follow_redirects=False)
+```
+
+### With HTTP/2
+
+```python
+def build_h2_client() -> httpx.AsyncClient:
+    timeout = httpx.Timeout(connect=3.0, read=10.0, write=10.0, pool=3.0)
+    return httpx.AsyncClient(timeout=timeout, http2=True)
 ```
 
 ## FastAPI Lifecycle Pattern
@@ -118,6 +143,17 @@ async def fetch_with_retry(client: httpx.AsyncClient, url: str) -> httpx.Respons
     return response
 ```
 
+## Streaming Responses
+
+```python
+async def download_file(client: httpx.AsyncClient, url: str, path: Path) -> None:
+    async with client.stream("GET", url) as response:
+        response.raise_for_status()
+        with open(path, "wb") as f:
+            async for chunk in response.aiter_bytes(chunk_size=8192):
+                f.write(chunk)
+```
+
 ## Testing with MockTransport
 
 ```python
@@ -146,3 +182,4 @@ async def test_fetch_typed_user() -> None:
 - Validate payloads with typed schemas.
 - Map transport/status errors to domain errors at boundaries.
 - Log request metadata without leaking secrets.
+- Use `http2=True` for multiplexed connections to HTTP/2 servers.
