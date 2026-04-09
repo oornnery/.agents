@@ -6,7 +6,10 @@
       "Bash(.venv/bin/python -c \"from pydantic_ai.providers import infer_provider_class; print\\(infer_provider_class\\('xai'\\)\\)\")",
       "Bash(uv run:*)",
       "Bash(.venv/bin/ty --help)",
-      "Bash(.venv/bin/ty check:*)"
+      "Bash(.venv/bin/ty check:*)",
+      "Bash(python -X importtime -c ':*)",
+      "Bash(sort -t'|' -k2 -rn)",
+      "Bash(.venv/bin/python -X importtime -c \"from friday.cli.app import app\")"
     ]
   }
 }
