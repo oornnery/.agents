@@ -22,7 +22,9 @@ Before changing anything, build a mental model:
 
 ### Phase 2: Audit
 
-Launch 3 parallel agents focused on different concerns:
+Launch 3 parallel agents focused on different concerns. Use `model: "sonnet"`
+for each — the scope is well-defined. Reserve `model: "opus"` for the main
+orchestrator if the codebase is large or the architecture is complex.
 
 #### Agent 1: Clean Code and Readability
 
@@ -132,7 +134,8 @@ Briefly summarize:
 ## Simplify Pass (Post-Refactor)
 
 After the main refactor, optionally run a 3-agent simplify pass to catch
-remaining issues:
+remaining issues. Use `model: "haiku"` for these — they scan for patterns
+and don't require deep reasoning.
 
 ### Agent 1: Code Reuse
 

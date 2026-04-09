@@ -92,6 +92,10 @@ Brief note on well-done aspects (positive feedback matters).
 For thorough reviews, launch up to 4 agents in parallel, each focused on
 a specific concern. Consolidate findings into a single report.
 
+**Model recommendation:** use `model: "sonnet"` for each agent — the tasks
+are focused and well-scoped. Upgrade to `model: "opus"` only if the diff
+involves complex security logic or deep architectural changes.
+
 ### Agent 1: Code Quality Reviewer
 
 Focus: clean code, readability, and project conventions.
