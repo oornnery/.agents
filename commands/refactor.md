@@ -22,7 +22,7 @@ Before changing anything, build a mental model:
 
 ### Phase 2: Audit
 
-Launch parallel review agents focused on different concerns:
+Launch 3 parallel agents focused on different concerns:
 
 #### Agent 1: Clean Code and Readability
 
@@ -129,6 +129,30 @@ Briefly summarize:
 - **Do not add comments** explaining what the code does — make the code
   self-explanatory instead.
 
+## Simplify Pass (Post-Refactor)
+
+After the main refactor, optionally run a 3-agent simplify pass to catch
+remaining issues:
+
+### Agent 1: Code Reuse
+
+- Duplicate logic that should be unified
+- Existing utilities or helpers that are not being used
+- Standard library features that replace custom implementations
+
+### Agent 2: Code Quality
+
+- Naming improvements for recently changed code
+- Structural issues (nesting depth, parameter count)
+- Alignment with project conventions and standards
+
+### Agent 3: Efficiency
+
+- N+1 patterns in recently changed code
+- Unnecessary allocations or copies
+- Missing lazy evaluation (generators vs lists)
+- Redundant operations that can be eliminated
+
 ## Stack-Specific Guidance
 
 Load the relevant project skills before auditing:
@@ -137,7 +161,14 @@ Load the relevant project skills before auditing:
 - **FastAPI**: `fastapi/SKILL.md` — dependency injection, Annotated style.
 - **JX**: `jx/SKILL.md` — component conventions, attrs, assets.
 - **Frontend**: `frontend/SKILL.md` — Tailwind, Solid, accessibility.
+- **Architecture**: `architecture/SKILL.md` — SOLID, DDD, Clean Architecture.
 
 Follow whichever conventions the project already uses. When conventions
 conflict, prefer the project's established pattern over theoretical ideals.
 Consistency within the codebase beats "correctness" in isolation.
+
+## Related
+
+- `commands/review.md` — code review with specialized agents.
+- `commands/verify.md` — adversarial verification after changes.
+- `skills/architecture/SKILL.md` — architecture patterns and principles.

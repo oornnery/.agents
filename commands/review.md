@@ -87,9 +87,88 @@ Brief note on well-done aspects (positive feedback matters).
 | suggestion | Nice to have — readability, consistency        |
 | nitpick    | Trivial — style preference, minor cleanup      |
 
+## Specialized Review Agents
+
+For thorough reviews, launch up to 4 agents in parallel, each focused on
+a specific concern. Consolidate findings into a single report.
+
+### Agent 1: Code Quality Reviewer
+
+Focus: clean code, readability, and project conventions.
+
+- **Naming** — clear, intention-revealing names. No abbreviations.
+- **Function size** — functions over 30 lines likely do too much.
+- **Complexity** — cyclomatic complexity, deep nesting, long parameter lists.
+- **Dead code** — unused imports, functions, variables, unreachable branches.
+- **Magic values** — replace literals with named constants or enums.
+- **Consistency** — follows established project patterns and conventions.
+- **DRY** — near-duplicate code that should be unified (3+ instances).
+
+### Agent 2: Performance Reviewer
+
+Focus: efficiency and resource usage.
+
+- **N+1 queries** — database calls inside loops.
+- **Unbounded operations** — loops, queries, or reads without limits.
+- **Lazy loading** — large data should use generators or streaming.
+- **Caching** — repeated expensive computations that could be cached.
+- **Async** — blocking calls in async code, missing `await`.
+- **Memory** — large objects held longer than needed, connection leaks.
+- **Indexing** — database queries on unindexed columns.
+
+### Agent 3: Test Coverage Reviewer
+
+Focus: test adequacy for the changed code.
+
+- **Coverage** — are new/changed code paths tested?
+- **Edge cases** — empty inputs, boundaries, error paths tested?
+- **Behavior vs implementation** — tests verify behavior, not internals?
+- **BDD** — do tests clearly describe the expected behavior?
+- **Flakiness** — tests depend on order, time, or external state?
+- **Missing tests** — untested error handlers, validators, auth checks?
+
+### Agent 4: Security Reviewer
+
+Focus: security vulnerabilities and data protection.
+
+- **Input validation** — all external input validated at boundaries.
+- **Injection** — SQL injection, XSS, command injection, path traversal.
+- **Authentication** — auth checks on all protected routes.
+- **Authorization** — proper permission checks, not just auth.
+- **Secrets** — no hardcoded credentials, tokens, or API keys.
+- **Error leaking** — sensitive data not exposed in error messages or logs.
+- **Dependencies** — known vulnerabilities in added/updated packages.
+- **CORS/CSRF** — proper configuration for web APIs.
+
+### Consolidated Output
+
+Merge findings from all agents into a single report sorted by severity:
+
+```text
+## Summary
+[approve | request changes | comment only]
+
+## Critical (must fix)
+...
+
+## Warnings (should fix)
+...
+
+## Suggestions (nice to have)
+...
+
+## What Looks Good
+...
+```
+
 ## What NOT to Do
 
 - **Do not make changes yourself.** Review produces feedback, not code.
 - **Do not nitpick style** that the linter already handles.
 - **Do not block on personal preference** — if it works and is consistent, approve.
 - **Do not review generated files** (lock files, migrations, vendor).
+
+## Related
+
+- `commands/verify.md` — adversarial verification (run the code, not just read it).
+- `commands/refactor.md` — apply review findings via refactoring.

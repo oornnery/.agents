@@ -26,11 +26,15 @@ Understand what needs to be built:
 Design the system architecture:
 
 1. Choose the architecture pattern (layered, hexagonal, MVC, microservices).
+   See `skills/architecture/SKILL.md` for DDD, Clean Architecture, and Onion patterns.
 2. Define components and their responsibilities.
 3. Map data flow between components.
 4. Define API contracts (routes, types, payloads).
+   See `skills/api-design/SKILL.md` for REST conventions and BFF patterns.
 5. Choose technology stack and justify decisions.
 6. Identify integration points and external services.
+7. Write ADRs for significant decisions (database, framework, patterns).
+   See `skills/documentation/SKILL.md` for ADR template.
 
 Produce a **Mermaid architecture diagram**:
 
@@ -98,11 +102,12 @@ What this feature does and why.
 2. System returns paginated results
 3. User clicks result to view detail
 
-## Acceptance Criteria
+## Acceptance Criteria (BDD Format)
 
-- [ ] Search returns results matching name or email
-- [ ] Empty query returns all users (paginated)
-- [ ] Invalid input returns 422 with structured errors
+- [ ] Given a search query matching a name, when searching, then returns matching users
+- [ ] Given a search query matching an email, when searching, then returns matching users
+- [ ] Given an empty search query, when searching, then returns all users (paginated)
+- [ ] Given invalid input, when searching, then returns 422 with structured errors
 
 ## Edge Cases
 
@@ -301,15 +306,36 @@ App
 - **Do not skip diagrams.** Visual representations catch design issues early.
 - **Do not plan alone.** Validate assumptions with the user at each phase.
 
+### DDD Considerations
+
+If the project uses Domain-Driven Design:
+
+1. Identify **bounded contexts** — separate domains with their own models.
+2. Define **aggregates** — consistency boundaries for data changes.
+3. Map **domain events** — what happens when state changes.
+4. Design **repository interfaces** — data access abstraction.
+5. Separate **application services** (orchestration) from **domain services**
+   (business logic).
+
+See `skills/architecture/references/ddd.md` for detailed examples.
+
 ## Checklist
 
 Before finishing a plan, verify:
 
-- [ ] All requirements have acceptance criteria
+- [ ] All requirements have acceptance criteria (BDD format preferred)
 - [ ] Architecture diagram exists
 - [ ] API routes defined with types
 - [ ] Data models specified
 - [ ] Dependencies identified
 - [ ] Edge cases listed
-- [ ] Test strategy outlined
+- [ ] Test strategy outlined (TDD where applicable)
 - [ ] Security considerations addressed
+- [ ] ADRs written for key decisions
+
+## Related
+
+- `skills/architecture/SKILL.md` — DDD, Clean Architecture, SOLID
+- `skills/api-design/SKILL.md` — API design patterns
+- `skills/tdd/SKILL.md` — test-first workflow
+- `skills/documentation/SKILL.md` — ADR templates and documentation
