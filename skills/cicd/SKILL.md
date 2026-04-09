@@ -276,8 +276,228 @@ git merge main
 git push origin dev
 ```
 
+## GitHub CLI (`gh`) Reference
+
+The `gh` CLI is the primary interface for GitHub operations. Use it
+instead of the web UI whenever possible.
+
+### Pull Requests
+
+```bash
+# Create PR
+gh pr create --base dev --title "feat(scope): description" --body "..."
+
+# Create draft PR
+gh pr create --draft --title "WIP: feat(scope): description"
+
+# List open PRs
+gh pr list
+
+# View PR details
+gh pr view 42
+gh pr view 42 --json title,state,reviews,checks
+
+# View PR diff
+gh pr diff 42
+
+# Check PR status (CI checks)
+gh pr checks 42
+
+# Review a PR
+gh pr review 42 --approve
+gh pr review 42 --request-changes --body "Please fix..."
+gh pr review 42 --comment --body "Looks good overall"
+
+# Merge PR
+gh pr merge 42 --squash
+gh pr merge 42 --rebase
+gh pr merge 42 --merge
+
+# Close PR without merging
+gh pr close 42
+
+# Reopen PR
+gh pr reopen 42
+
+# Read PR comments
+gh api repos/{owner}/{repo}/pulls/42/comments
+```
+
+### Issues
+
+```bash
+# Create issue
+gh issue create --title "Bug: login fails on expired token" --body "..."
+gh issue create --label bug,urgent --assignee @me
+
+# List issues
+gh issue list
+gh issue list --label bug
+gh issue list --assignee @me
+gh issue list --state closed
+
+# View issue
+gh issue view 123
+
+# Close issue
+gh issue close 123 --reason completed
+gh issue close 123 --reason "not planned"
+
+# Reopen issue
+gh issue reopen 123
+
+# Add comment
+gh issue comment 123 --body "Fixed in #42"
+
+# Transfer issue to another repo
+gh issue transfer 123 owner/other-repo
+
+# Pin issue
+gh issue pin 123
+```
+
+### Workflows and Actions
+
+```bash
+# List workflow runs
+gh run list
+gh run list --workflow ci.yml
+gh run list --status failure
+
+# View a specific run
+gh run view 12345
+
+# Watch a running workflow
+gh run watch 12345
+
+# Re-run a failed workflow
+gh run rerun 12345
+gh run rerun 12345 --failed  # only failed jobs
+
+# Download artifacts from a run
+gh run download 12345
+
+# Trigger a workflow manually (workflow_dispatch)
+gh workflow run deploy.yml --ref main
+gh workflow run deploy.yml -f environment=staging
+
+# List workflows
+gh workflow list
+
+# View workflow definition
+gh workflow view ci.yml
+
+# Disable/enable a workflow
+gh workflow disable ci.yml
+gh workflow enable ci.yml
+```
+
+### Releases (Extended)
+
+```bash
+# Create release with auto-generated notes
+gh release create v1.2.0 --generate-notes
+
+# Create release from specific target
+gh release create v1.2.0 --target main --generate-notes
+
+# Edit existing release
+gh release edit v1.2.0 --notes "Updated notes"
+
+# Delete release (keeps the tag)
+gh release delete v1.2.0
+
+# Download release assets
+gh release download v1.2.0
+gh release download v1.2.0 --pattern "*.whl"
+```
+
+### Repository
+
+```bash
+# Clone
+gh repo clone owner/repo
+
+# Fork
+gh repo fork owner/repo
+
+# Create repo
+gh repo create my-project --public --clone
+
+# View repo info
+gh repo view
+gh repo view owner/repo --json name,description,stars
+
+# Set repo topics
+gh repo edit --add-topic python,fastapi,api
+
+# Set default branch
+gh repo edit --default-branch main
+
+# Enable/disable features
+gh repo edit --enable-wiki=false
+gh repo edit --enable-issues=true
+```
+
+### Gists
+
+```bash
+# Create gist
+gh gist create file.py --desc "Utility function"
+
+# Create secret gist
+gh gist create file.py --desc "Private snippet" --public=false
+
+# List gists
+gh gist list
+
+# View gist
+gh gist view abc123
+
+# Edit gist
+gh gist edit abc123
+```
+
+### GitHub API (Direct)
+
+For operations not covered by `gh` subcommands:
+
+```bash
+# Get repo info
+gh api repos/owner/repo
+
+# List PR review comments
+gh api repos/owner/repo/pulls/42/comments
+
+# Get workflow runs
+gh api repos/owner/repo/actions/runs --jq '.workflow_runs[:5]'
+
+# Create a label
+gh api repos/owner/repo/labels -f name="priority:high" -f color="d93f0b"
+
+# GraphQL query
+gh api graphql -f query='{ viewer { login } }'
+```
+
+### Environment and Auth
+
+```bash
+# Login
+gh auth login
+
+# Check auth status
+gh auth status
+
+# Switch between accounts
+gh auth switch
+
+# Set default repo for commands
+gh repo set-default owner/repo
+```
+
 ## Related
 
 - `git/SKILL.md` — branching, PRs, conventional commits.
-- `commands/commit.md` — commit workflow.
+- `commands/commit.md` — commit workflow, tags, releases, publishing.
+- `skills/documentation/SKILL.md` — GitHub Wiki, Pages, issue templates.
 - `uv/SKILL.md` — package building and publishing.

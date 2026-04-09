@@ -186,7 +186,33 @@ git branch -a
 git branch --merged main | grep -v main | xargs git branch -d
 ```
 
+## Worktrees
+
+Worktrees let you check out multiple branches simultaneously in separate
+directories, sharing the same `.git` database. Use them for parallel work
+without stashing or losing context.
+
+### Quick Reference
+
+```bash
+git worktree add ../hotfix-tree hotfix/critical-bug   # existing branch
+git worktree add -b feat/new ../feature-tree           # new branch
+git worktree list                                       # show all
+git worktree remove ../hotfix-tree                     # cleanup
+git worktree prune                                      # remove stale refs
+```
+
+### When to Use
+
+- Hotfix while mid-feature
+- PR review in isolation
+- Agent isolation (Claude Code `isolation: "worktree"`)
+- Verification without switching branches
+
+See `references/worktree.md` for full patterns and Claude Code integration.
+
 ## Related
 
 - `commands/commit.md` — commit workflow and message format.
 - `rules/git.md` — safety rules (always-on).
+- `references/worktree.md` — detailed worktree guide.
