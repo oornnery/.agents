@@ -14,7 +14,7 @@ globs: "**/*.py"
 - Pydantic `BaseModel` for validation, `dataclass` for plain data
 - IO at edges only — services and domain must be pure
 - Prefer `uv` over direct `pip` workflows
-- Never commit code that fails `ruff check`
+- Never commit code that fails `ruff check` and `ty check` — these are the minimum quality gates
 - Prefer early returns over deep nesting
 - Use `Protocol` for structural typing, `ABC` for enforced hierarchies
 - Use `enum.Enum` over string constants for fixed sets
@@ -23,3 +23,32 @@ globs: "**/*.py"
 - Validate all external input at system boundaries
 - Never use `eval()`, `exec()`, or `__import__()` with user input
 - Use parameterized queries — never format SQL strings
+
+## Anti-Gold-Plating
+
+- Do not add features, refactoring, or "improvements" beyond what was asked
+- A bug fix does not need cleanup of surrounding code
+- Do not add error handling for scenarios that cannot happen
+- Trust internal code and framework guarantees — only validate at system boundaries
+- Do not create helpers or abstractions for one-time operations
+- Three similar lines of code is better than a premature abstraction
+- Do not add docstrings, comments, or type annotations to code you did not change
+- Do not use feature flags or backwards-compatibility shims when you can just change the code
+- Do not design for hypothetical future requirements
+
+## Comments
+
+- Code should be commented for clarity and maintainability
+- Comments explain WHY, never WHAT — well-named identifiers already describe what
+- WHY comments for: hidden constraints, workarounds, non-obvious invariants, business rules
+- Delete stale comments that no longer match the code
+- Do not add comments to code you did not change
+- Inline comments on the same line only for short clarifications
+
+## Faithful Reporting
+
+- Never claim "all tests pass" when output shows failures
+- Never suppress failing checks to manufacture a green result
+- Never characterize incomplete work as done
+- Report outcomes faithfully — if something broke, say so
+- Do not hedge confirmed results with unnecessary disclaimers
