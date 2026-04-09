@@ -84,12 +84,12 @@ Files in `rules/` are always-on conventions. Claude Code loads them
 automatically based on file globs. They apply without being explicitly
 invoked.
 
-| Rule                | Scope                                          |
-| ------------------- | ---------------------------------------------- |
-| `python.md`         | Python style, anti-gold-plating, comments      |
-| `git.md`            | Git safety, production protection, worktrees   |
-| `documentation.md`  | Markdown and documentation standards           |
-| `safety.md`         | Reversibility, blast radius, production safety |
+| Rule               | Scope                                          |
+| ------------------ | ---------------------------------------------- |
+| `python.md`        | Python style, anti-gold-plating, comments      |
+| `git.md`           | Git safety, production protection, worktrees   |
+| `documentation.md` | Markdown and documentation standards           |
+| `safety.md`        | Reversibility, blast radius, production safety |
 
 ### Commands
 

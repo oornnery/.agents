@@ -18,11 +18,11 @@ Check what kind of project this is:
 ls pyproject.toml package.json Cargo.toml go.mod 2>/dev/null
 ```
 
-| File              | Stack          |
-| ----------------- | -------------- |
-| `pyproject.toml`  | Python (uv)    |
-| `package.json`    | Node.js        |
-| Both              | Fullstack      |
+| File             | Stack       |
+| ---------------- | ----------- |
+| `pyproject.toml` | Python (uv) |
+| `package.json`   | Node.js     |
+| Both             | Fullstack   |
 
 ### 2. Verify Toolchain
 
@@ -105,15 +105,15 @@ uv run pytest -v
 
 Based on the project structure, recommend which skills to load:
 
-| Detected                    | Suggested Skill        |
-| --------------------------- | ---------------------- |
-| FastAPI in dependencies     | `fastapi/SKILL.md`     |
-| Jinja templates present     | `jx/SKILL.md`          |
-| `package.json` present      | `frontend/SKILL.md`    |
-| CLI app (typer/click)       | `typer/SKILL.md`       |
-| Tests present               | `testing/SKILL.md`     |
-| HTTP client usage           | `httpx/SKILL.md`       |
-| Pydantic models             | `pydantic/SKILL.md`    |
+| Detected                | Suggested Skill     |
+| ----------------------- | ------------------- |
+| FastAPI in dependencies | `fastapi/SKILL.md`  |
+| Jinja templates present | `jx/SKILL.md`       |
+| `package.json` present  | `frontend/SKILL.md` |
+| CLI app (typer/click)   | `typer/SKILL.md`    |
+| Tests present           | `testing/SKILL.md`  |
+| HTTP client usage       | `httpx/SKILL.md`    |
+| Pydantic models         | `pydantic/SKILL.md` |
 
 ### 7. Submodule Setup (New Projects)
 

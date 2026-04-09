@@ -1,73 +1,52 @@
-# ty.toml — Python type checker configuration
-# Docs: https://ty.astral.sh/docs/configuration/
+# ty.toml
+# Docs: https://docs.astral.sh/ty/reference/configuration/
 # Run: uv run ty check
 
 [environment]
-# Point to the virtual environment managed by uv
-python = ".venv"
+# Com uv run, geralmente não precisa fixar o caminho da venv.
+# Se quiser forçar manualmente, descomente:
+# python = ".venv"
 
-# Python version to use for type resolution.
-# Should match requires-python in pyproject.toml.
+# Deve acompanhar o requires-python do projeto.
 python-version = "3.12"
 
-[src]
-# Directories to include in type checking.
-# Adjust if your layout differs (e.g. [".", "src/myapp"]).
-root = ["src"]
+# src.root foi depreciado; use environment.root.
+root = ["./src"]
+
+# Opcional:
+# Se o projeto precisa ser válido em qualquer OS, use "all".
+# python-platform = "all"
 
 [terminal]
-# output-format: "full" (default, with context) | "concise" | "github" | "junit"
+# "full" | "concise" | "github" | "junit"
 output-format = "full"
 
-# Treat warnings as errors in CI.
-# Uncomment in CI config or pass --error-on-warning on the command line.
-# error-on-warning = true
-
 [rules]
-# ── Enabled (off by default) ─────────────────────────────────────────────────
+# baseline
+all = "error"
 
-# Flag integer/float division by zero (e.g. `x / 0`).
-division-by-zero = "error"
-
-# Flag attribute access that could be missing at runtime.
-# Useful for catching optional chaining bugs early.
+# relaxamentos pontuais
 possibly-missing-attribute = "warn"
-
-# Flag imports that may not resolve (e.g. conditional platform imports).
 possibly-missing-import = "warn"
-
-# Flag references that may be unresolved at runtime.
 possibly-unresolved-reference = "warn"
 
-# Flag classes with dynamic bases that ty cannot fully analyze.
-# Enable to surface issues in meta-programming heavy code.
-# unsupported-dynamic-base = "warn"
-
-# ── Promoted (warn → error) ───────────────────────────────────────────────────
-
-# A `ty: ignore` comment referencing a rule that does not exist.
+# regras úteis para manter rígidas
+division-by-zero = "error"
 ignore-comment-unknown-rule = "error"
-
-# An `# type: ignore` comment that suppresses no diagnostics.
 unused-type-ignore-comment = "error"
-
-# An `# ty: ignore` comment that suppresses no diagnostics.
 unused-ignore-comment = "error"
-
-# Calling `reveal_type()` left in after debugging.
 undefined-reveal = "error"
-
-# Awaitable returned from async function but never awaited.
 unused-awaitable = "error"
 
-# ── Demoted (error → warn) ────────────────────────────────────────────────────
-
-# Accessing attributes on `Any`-typed values is unavoidable with some
-# third-party libraries that lack stubs. Demote to warn if needed.
+# opcional em projetos com libs dinâmicas
 # unresolved-attribute = "warn"
 
-# ── Disabled ─────────────────────────────────────────────────────────────────
+# opcional em metaprogramação pesada
+# unsupported-dynamic-base = "warn"
 
-# Accessing an attribute that might not exist on all union members.
-# Can be noisy in code that uses structural patterns heavily.
-# possibly-missing-attribute = "ignore"
+[[overrides]]
+include = ["tests/**", "**/test_*.py"]
+
+[overrides.rules]
+possibly-unresolved-reference = "warn"
+possibly-missing-import = "warn"

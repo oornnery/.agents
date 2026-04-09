@@ -27,10 +27,10 @@ uv add "pydantic[email,timezone]"           # email + timezone validation
 
 ### Optional Extras
 
-| Extra      | What it adds                                   |
-| ---------- | ---------------------------------------------- |
-| `email`    | `EmailStr` — validated email addresses         |
-| `timezone` | `TimeZoneName` — IANA timezone string          |
+| Extra      | What it adds                           |
+| ---------- | -------------------------------------- |
+| `email`    | `EmailStr` — validated email addresses |
+| `timezone` | `TimeZoneName` — IANA timezone string  |
 
 ### Complementary Packages
 

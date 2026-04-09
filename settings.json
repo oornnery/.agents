@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(.venv/bin/python -c \"import pydantic_ai; print\\(pydantic_ai.__version__\\)\")",
+      "Bash(.venv/bin/python -c \"from pydantic_ai import Agent; help\\(Agent.__init__\\)\")",
+      "Bash(.venv/bin/python -c \"from pydantic_ai.providers import infer_provider_class; print\\(infer_provider_class\\('xai'\\)\\)\")",
+      "Bash(uv run:*)",
+      "Bash(.venv/bin/ty --help)",
+      "Bash(.venv/bin/ty check:*)"
+    ]
+  }
+}

@@ -277,13 +277,13 @@ bases that don't belong in the code tree.
 
 ### When to Use Wiki vs In-Repo Docs
 
-| Use Wiki                           | Use In-Repo (`docs/`)            |
-| ---------------------------------- | -------------------------------- |
-| User guides and tutorials          | API reference (auto-generated)   |
-| Onboarding and setup instructions  | ADRs (tied to code decisions)    |
-| FAQ and troubleshooting            | CHANGELOG (tied to releases)     |
-| External contributor documentation | Configuration reference          |
-| Meeting notes and decisions        | Architecture docs (near code)    |
+| Use Wiki                           | Use In-Repo (`docs/`)          |
+| ---------------------------------- | ------------------------------ |
+| User guides and tutorials          | API reference (auto-generated) |
+| Onboarding and setup instructions  | ADRs (tied to code decisions)  |
+| FAQ and troubleshooting            | CHANGELOG (tied to releases)   |
+| External contributor documentation | Configuration reference        |
+| Meeting notes and decisions        | Architecture docs (near code)  |
 
 ### Wiki Structure
 
