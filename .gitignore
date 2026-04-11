@@ -1,3 +1,4 @@
 .*_cache/
 .mcp.json
-.claude
+.claude/
+settings.json

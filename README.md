@@ -1,12 +1,12 @@
-# .agents
+# skills
 
-Agent knowledge base for AI coding assistants. Organized into rules,
+My custom skills and agent knowledge base for AI coding assistants. Organized into rules,
 commands, and skills for on-demand loading.
 
 ## Usage
 
 ```bash
-git submodule add https://github.com/oornnery/.agents .claude
+git submodule add https://github.com/oornnery/skills .claude
 git submodule update --init
 git submodule update --remote   # propagate updates
 ```
