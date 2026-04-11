@@ -29,5 +29,9 @@ savings. Install: `rtk init -g`.
 
 ## Acknowledgments
 
-The FastAPI skill is based on the official
-[FastAPI agents skill](https://github.com/fastapi/fastapi/tree/master/fastapi/.agents/skills).
+- The FastAPI skill is based on the official
+  [FastAPI agents skill](https://github.com/fastapi/fastapi/tree/master/fastapi/.agents/skills).
+- Output token efficiency rules inspired by
+  [drona23/claude-token-efficient](https://github.com/drona23/claude-token-efficient).
+- Agent prompt research from
+  [Leonxlnx/agentic-ai-prompt-research](https://github.com/Leonxlnx/agentic-ai-prompt-research).
