@@ -124,31 +124,10 @@ git submodule add <repo-url> .claude
 git submodule update --init
 ```
 
-Copy project templates:
-
-```bash
-cp .claude/templates/CLAUDE.project.md CLAUDE.md
-cp .claude/templates/pyproject.toml pyproject.toml
-cp .claude/templates/.rumdl.toml .rumdl.toml
-cp .claude/templates/.pre-commit-config.yaml .pre-commit-config.yaml
-cp .claude/templates/.gitignore .gitignore
-cp .claude/templates/.env.example .env.example
-cp .claude/templates/settings.python.json .claude/settings.local.json
-```
-
-For CI/CD workflows:
-
-```bash
-mkdir -p .github/workflows
-cp .claude/templates/ci.yml .github/workflows/ci.yml
-cp .claude/templates/publish.yml .github/workflows/publish.yml
-```
-
-For containerized projects:
-
-```bash
-cp .claude/templates/Dockerfile Dockerfile
-```
+Copy relevant templates from `templates/` (CLAUDE.project.md, pyproject.toml,
+.rumdl.toml, .pre-commit-config.yaml, .gitignore, settings.python.json).
+For CI: copy `templates/ci.yml` and `templates/publish.yml` to `.github/workflows/`.
+For containers: copy `templates/Dockerfile`.
 
 Edit `CLAUDE.md` and `pyproject.toml` to match the project, then commit.
 

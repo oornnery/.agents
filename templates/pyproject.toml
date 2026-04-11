@@ -1,7 +1,7 @@
 [project]
 name = "myapp"
 version = "0.0.1"
-description = "My Python application"
+description = ""
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = []
@@ -12,6 +12,7 @@ build-backend = "hatchling.build"
 
 [dependency-groups]
 dev = ["ruff>=0.11", "ty>=0.0.26", "pre-commit>=4.0", "taskipy>=1.14"]
+
 test = [
     "pytest>=8.0",
     "pytest-cov>=6.0",
@@ -21,45 +22,29 @@ test = [
 ]
 
 [tool.ruff]
-src = ["src", "tests"]
 line-length = 100
 target-version = "py312"
 fix = true
-extend-exclude = ["build", "dist", ".venv", ".pytest_cache", ".ruff_cache"]
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "N", "UP", "B", "S", "SIM", "RUF"]
-fixable = ["ALL"]
+select = ["E", "F", "I", "B", "UP", "S", "RUF"]
+ignore = ["S101"]                               # allow assert in tests
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**/*.py" = ["S101"]
+"tests/**/*.py" = ["S"]
 
 [tool.ruff.format]
 quote-style = "single"
 
 [tool.ty.rules]
-all = "error"
+# https://ty.astral.sh/docs/configuration/rules
 possibly-unbound-attribute = "warn"
-possibly-unresolved-reference = "warn"
-index-out-of-bounds = "ignore"
-
-[tool.ty.src]
-include = ["src", "tests"]
-exclude = ["build", "dist", ".venv"]
 
 [tool.pytest.ini_options]
-minversion = "8.0"
 testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_functions = ["test_*"]
-addopts = [
-    "-ra",
-    "-v",
-    "--strict-markers",
-    "--tb=short",
-    "--cov=src",
-    "--cov-report=term-missing",
-]
+addopts = ["-v", "--strict-markers", "--tb=short"]
 markers = [
     "slow: long-running tests",
     "integration: integration-level tests",
@@ -76,10 +61,9 @@ show_missing = true
 skip_covered = false
 
 [tool.taskipy.tasks]
-format = "ruff format ."
-lint = "ruff check . --fix"
-lint-check = "ruff check ."
-typecheck = "ty check"
-test = "pytest"
-check = "task lint-check && task typecheck && task test"
-fix = "task format && task lint"
+fmt = "ruff format ."
+lint = "ruff check . --fix && ty check"
+test = "pytest -v"
+mdlint = "rumdl check . --fix"
+mdfmt = "rumdl format ."
+check = "task fmt && task lint && task mdlint && task mdfmt && task test"

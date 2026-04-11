@@ -23,45 +23,23 @@ git diff --stat --cached
 git log --oneline -5
 ```
 
-Understand what changed, what is staged, and the recent commit style.
-
 ### 2. Group Changes into Logical Units
-
-Analyze the diff and split changes into the smallest meaningful groups:
 
 - One commit per feature, fix, refactor, or doc change.
 - Separate unrelated file changes into distinct commits.
-- If a single file contains changes for two purposes, stage hunks
-  selectively with `git add -p`.
+- Use `git add -p` to stage hunks selectively when needed.
 
-### 3. Stage Files Explicitly
+### 3. Stage and Commit
 
-**Never use `git add .` or `git add -A`.** Always stage files by name:
+Stage files by name (see `rules/git.md` for safety rules).
+Warn if sensitive files (`.env`, credentials) are in the diff.
 
-```bash
-git add path/to/file1.py path/to/file2.py
-```
-
-Before staging, check that no sensitive files are included (`.env`,
-credentials, secrets, tokens). Warn the user if any are detected.
-
-### 4. Write the Commit Message
-
-Use Conventional Commits format:
-
-```text
-type(scope): concise imperative description
-
-Optional body explaining WHY, not WHAT.
-```
+Use Conventional Commits: `type(scope): concise imperative description`
 
 **Types:** `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`,
 `style`, `ci`, `build`.
 
-**Rules:**
-
-- Subject line max 72 characters, imperative mood ("add", not "added").
-- Scope is optional but recommended (module, component, or area).
+- Subject line max 72 characters, imperative mood.
 - Body only when the WHY is not obvious from the subject.
 - Reference issues when applicable: `Closes #123`.
 

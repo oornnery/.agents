@@ -93,9 +93,9 @@ uv run pytest -v
 | Flaky test              | Shared state, timing, or ordering issue      |
 | Works locally, fails CI | Env difference — deps, Python version, OS    |
 
-## What NOT to Do
+## Constraints
 
-- **Do not guess and patch.** Understand the root cause first.
-- **Do not add broad try/except** to silence errors.
-- **Do not change tests to match broken behavior.**
-- **Do not mix bug fixes with refactoring** in the same change.
+- Do not guess and patch -- understand root cause first.
+- Do not add broad try/except to silence errors.
+- Do not change tests to match broken behavior.
+- Do not mix bug fixes with refactoring.

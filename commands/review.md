@@ -165,12 +165,11 @@ Merge findings from all agents into a single report sorted by severity:
 ...
 ```
 
-## What NOT to Do
+## Constraints
 
-- **Do not make changes yourself.** Review produces feedback, not code.
-- **Do not nitpick style** that the linter already handles.
-- **Do not block on personal preference** — if it works and is consistent, approve.
-- **Do not review generated files** (lock files, migrations, vendor).
+- Review produces feedback, not code -- do not make changes.
+- Do not nitpick style the linter handles.
+- Do not review generated files (lock files, migrations, vendor).
 
 ## Related
 

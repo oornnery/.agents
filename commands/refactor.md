@@ -116,20 +116,12 @@ Briefly summarize:
 - What was intentionally skipped and why.
 - Any recommendations that require user input or are out of scope.
 
-## What NOT to Do
+## Constraints
 
-- **Do not change behavior.** Refactoring preserves external behavior.
-  If a behavior change is needed, flag it and let the user decide.
-- **Do not over-engineer.** Do not add abstractions "just in case."
-  Three similar lines are better than a premature framework.
-- **Do not add dependencies.** Do not introduce new libraries unless the
-  user approves.
-- **Do not rewrite from scratch.** Improve incrementally. A rewrite is a
-  separate decision.
-- **Do not touch generated files.** Lock files, migration files, and
-  auto-generated code are off-limits unless broken.
-- **Do not add comments** explaining what the code does — make the code
-  self-explanatory instead.
+- Preserve external behavior -- flag needed changes for user decision.
+- No new dependencies without user approval.
+- No rewrites from scratch -- improve incrementally.
+- No generated files (lock files, migrations) unless broken.
 
 ## Simplify Pass (Post-Refactor)
 
