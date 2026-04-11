@@ -571,4 +571,12 @@ tests/
 - Fail fast on lint/type errors before running full test suites.
 - Never commit code that fails `ruff check`.
 - Type check public APIs before merging.
-- Review coverage gaps — don't inflate with low-value assertions.
+- Review coverage gaps -- don't inflate with low-value assertions.
+
+## Related
+
+- `skills/pydantic/SKILL.md` -- data validation and settings management
+- `skills/fastapi/SKILL.md` -- web API framework patterns
+- `skills/typer/SKILL.md` -- CLI development with type hints
+- `skills/testing/SKILL.md` -- pytest mechanics and test strategy
+- `skills/uv/SKILL.md` -- package management and virtual environments

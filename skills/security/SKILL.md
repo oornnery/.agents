@@ -20,9 +20,43 @@ from `references/` based on the detected stack.
 
 1. Identify languages and frameworks in the project
 2. Load relevant references from `references/`
-3. Scan: entrypoints -> config -> auth -> input validation ->
-   templates/XSS -> file handling -> injection -> SSRF
+3. Scan using the OWASP checklist below
 4. Output findings in structured format
+
+## OWASP Checklist (Python)
+
+### Injection (Critical)
+
+- SQL: raw string queries, f-string in SQL, missing parameterization
+- Command: `subprocess` with `shell=True`, `os.system`, unsanitized args
+- Path traversal: user input in file paths without validation
+- Template: Jinja2 with `| safe` on user data
+
+### Authentication and Authorization
+
+- Missing auth checks on protected routes
+- Permission bypass (checking auth but not authorization)
+- Session/token mishandling (hardcoded secrets, weak algorithms)
+- Default credentials or admin backdoors
+
+### Data Exposure
+
+- Secrets in code: API keys, passwords, tokens (grep for patterns)
+- Sensitive data in logs or error responses
+- Missing `.env` / credential rotation
+- Overly permissive CORS
+
+### Input Validation
+
+- Missing Pydantic models at API boundaries
+- `strict=False` where `strict=True` is needed
+- Missing `extra="forbid"` allowing injection of unexpected fields
+- Unbounded input (no max length, no pagination limits)
+
+### Dependencies
+
+- Known CVEs in pinned versions
+- Unpinned dependencies allowing supply chain attacks
 
 ## Finding Format
 

@@ -2,3 +2,5 @@
 .mcp.json
 .claude/
 settings.json
+exemplos/
+.checkpoints/

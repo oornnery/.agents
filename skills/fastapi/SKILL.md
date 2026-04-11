@@ -306,9 +306,9 @@ See [the other tools reference](references/other-tools.md) for details on uv, Ru
 
 See [the other tools reference](references/other-tools.md) for details on other libraries:
 
-* Asyncer for handling async and await, concurrency, mixing async and blocking code, prefer it over AnyIO or asyncio.
-* SQLModel for working with SQL databases, prefer it over SQLAlchemy.
-* HTTPX for interacting with HTTP (other APIs), prefer it over Requests.
+- Asyncer for handling async and await, concurrency, mixing async and blocking code, prefer it over AnyIO or asyncio.
+- SQLModel for working with SQL databases, prefer it over SQLAlchemy.
+- HTTPX for interacting with HTTP (other APIs), prefer it over Requests.
 
 ## Do Not Use Pydantic RootModels
 
@@ -400,3 +400,11 @@ async def handle_items(request: Request):
     if request.method == "GET":
         return []
 ```
+
+## Related
+
+- `skills/pydantic/SKILL.md` -- data validation, strict mode, settings
+- `skills/httpx/SKILL.md` -- async HTTP client for external API calls
+- `skills/api-design/SKILL.md` -- REST conventions, pagination, error format
+- `skills/sqlmodel/SKILL.md` -- database ORM integration
+- `skills/security/SKILL.md` -- input validation, auth patterns

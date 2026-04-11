@@ -47,3 +47,9 @@ class Settings(BaseSettings):
 - Validate at boundaries -- don't re-validate inside business logic.
 - Use `computed_field` for derived values, `field_serializer` for custom output.
 - Use discriminated unions (`Field(discriminator="type")`) for polymorphic models.
+
+## Related
+
+- `skills/fastapi/SKILL.md` -- Pydantic models as request/response types
+- `skills/sqlmodel/SKILL.md` -- SQLModel extends Pydantic for ORM
+- `skills/python/SKILL.md` -- type hints and general patterns

@@ -28,28 +28,47 @@ uv run pytest -v
 
 Always-on conventions in `rules/`. Automatically loaded by Claude Code.
 
-| Rule                     | Scope                                                |
-| ------------------------ | ---------------------------------------------------- |
-| `rules/python.md`        | Python style, anti-gold-plating, comments            |
-| `rules/git.md`           | Git safety, production protection, worktrees         |
-| `rules/documentation.md` | Markdown and documentation standards                 |
-| `rules/safety.md`        | Reversibility, blast radius, production safety       |
-| `rules/output.md`        | Response style, anti-hallucination, token efficiency |
-| `rules/uv.md`            | uv over pip, uv run, uvx, lockfile conventions       |
+| Rule                      | Scope                                                |
+| ------------------------- | ---------------------------------------------------- |
+| `rules/python.md`         | Python style, anti-gold-plating, comments            |
+| `rules/git.md`            | Git safety, production protection, worktrees         |
+| `rules/documentation.md`  | Markdown and documentation standards                 |
+| `rules/safety.md`         | Reversibility, blast radius, production safety       |
+| `rules/output.md`         | Response style, anti-hallucination, token efficiency |
+| `rules/uv.md`             | uv over pip, uv run, uvx, lockfile conventions       |
+| `rules/agents.md`         | Agent orchestration, model selection, conventions    |
+| `rules/performance.md`    | Token efficiency, context management, cost awareness |
+
+## Agents
+
+Specialized personas in `agents/`. Constrained tools and model selection.
+
+| Agent                          | Model  | Purpose                              |
+| ------------------------------ | ------ | ------------------------------------ |
+| `agents/planner.md`            | opus   | Deep planning and architecture       |
+| `agents/reviewer.md`           | sonnet | Structured code review               |
+| `agents/security-reviewer.md`  | sonnet | Security vulnerability analysis      |
+| `agents/build-fixer.md`        | sonnet | Fix build/lint/type errors minimally |
+| `agents/tdd-guide.md`          | sonnet | Test-driven development enforcement  |
+| `agents/doc-updater.md`        | haiku  | Documentation maintenance            |
+| `agents/diagnostician.md`      | sonnet | Root cause analysis and diagnostics  |
 
 ## Commands
 
 Procedural workflows in `commands/`. Invoke when performing a task.
 
-| Command                | When to use                                       |
-| ---------------------- | ------------------------------------------------- |
-| `commands/commit.md`   | Commit changes with logical commits               |
-| `commands/refactor.md` | Deep audit, clean code, SOLID, 3-agent simplify   |
-| `commands/review.md`   | Code review with 4 specialized reviewer agents    |
-| `commands/verify.md`   | Adversarial verification -- try to break the code |
-| `commands/debug.md`    | Systematic debugging workflow                     |
-| `commands/setup.md`    | Project onboarding and env verification           |
-| `commands/plan.md`     | Planning with SDD, SPEC.md, ARCH.md, DDD, ADRs    |
+| Command                  | When to use                                       |
+| ------------------------ | ------------------------------------------------- |
+| `commands/commit.md`     | Commit changes with logical commits               |
+| `commands/refactor.md`   | Deep audit, clean code, SOLID, 3-agent simplify   |
+| `commands/review.md`     | Code review with specialized reviewer agents      |
+| `commands/verify.md`     | Adversarial verification -- try to break the code |
+| `commands/debug.md`      | Systematic debugging workflow                     |
+| `commands/setup.md`      | Project onboarding and env verification           |
+| `commands/plan.md`       | Planning with SDD, SPEC.md, ARCH.md, DDD, ADRs    |
+| `commands/tdd.md`        | Test-driven development workflow                  |
+| `commands/learn.md`      | Extract reusable patterns from session            |
+| `commands/checkpoint.md` | Mark and verify known-good states                 |
 
 ## Skills
 
@@ -69,3 +88,4 @@ optional `references/` submodules.
 | DevOps and Tools     | `git`, `graphite`, `cicd`, `rtk`, `gh-fix-ci`  |
 | Documentation        | `markdown`, `documentation`, `rich`            |
 | Agent Development    | `building-agents`                              |
+| Learned Patterns     | `learned` (extracted via `/learn` command)     |

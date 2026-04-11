@@ -101,3 +101,8 @@ style = "aligned"
 
 - Follow existing repo Markdown style before introducing new structure.
 - Use reference files for detailed policy; keep top-level docs focused.
+
+## Related
+
+- `skills/documentation/SKILL.md` -- README structure, ADRs, changelogs
+- `rules/documentation.md` -- always-on Markdown conventions
