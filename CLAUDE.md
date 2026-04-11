@@ -57,14 +57,15 @@ On-demand knowledge modules in `skills/`. Load the relevant skill
 when working in its domain. Each has a `SKILL.md` entrypoint and
 optional `references/` submodules.
 
-| Category              | Skills                                                       |
-| --------------------- | ------------------------------------------------------------ |
-| Language and Runtime  | `python`, `uv`, `typer`                                      |
-| Web and API           | `fastapi`, `httpx`, `api-design`, `jx`                       |
-| Frontend              | `frontend`, `design-system`                                  |
-| Data and Validation   | `pydantic`                                                   |
-| Testing and Quality   | `testing`, `tdd`                                             |
-| Architecture          | `architecture`, `rca`                                        |
-| DevOps and Tools      | `git`, `graphite`, `cicd`, `rtk`                             |
-| Documentation         | `markdown`, `documentation`, `rich`                          |
-| Agent Development     | `building-agents`                                            |
+| Category             | Skills                                         |
+| -------------------- | ---------------------------------------------- |
+| Language and Runtime | `python`, `uv`, `typer`                        |
+| Web and API          | `fastapi`, `httpx`, `api-design`, `jx`, `htmx` |
+| Frontend             | `frontend`, `design-system`                    |
+| Data and Validation  | `pydantic`, `sqlmodel`                         |
+| Testing and Quality  | `testing`, `tdd`                               |
+| Security             | `security`                                     |
+| Architecture         | `architecture`, `rca`                          |
+| DevOps and Tools     | `git`, `graphite`, `cicd`, `rtk`, `gh-fix-ci`  |
+| Documentation        | `markdown`, `documentation`, `rich`            |
+| Agent Development    | `building-agents`                              |
