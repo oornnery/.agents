@@ -35,6 +35,7 @@ Always-on conventions in `rules/`. Automatically loaded by Claude Code.
 | `rules/documentation.md` | Markdown and documentation standards                 |
 | `rules/safety.md`        | Reversibility, blast radius, production safety       |
 | `rules/output.md`        | Response style, anti-hallucination, token efficiency |
+| `rules/uv.md`            | uv over pip, uv run, uvx, lockfile conventions       |
 
 ## Commands
 
