@@ -126,26 +126,8 @@ def test_create_user(client):
 
 ### API TDD Workflow
 
-1. Write test for the happy path (201, 200)
-2. Make it pass with a minimal route
-3. Write test for validation errors (422)
-4. Add validation to make it pass
-5. Write test for edge cases (404, 409, 403)
-6. Handle each case in the implementation
-7. Refactor: extract service, add types, clean up
-
-## TDD for Domain Logic
-
-```python
-# Step 1: RED — define the behavior
-def test_apply_discount_reduces_total():
-    order = Order(items=[Item(price=100), Item(price=50)])
-    order.apply_discount(percent=10)
-    assert order.total == 135.0
-
-# Step 2: GREEN — implement Order.apply_discount
-# Step 3: REFACTOR — extract discount strategy if needed
-```
+Happy path -> validation errors -> edge cases -> refactor.
+Write test first for each, make it pass, then move to the next.
 
 ## TDD Workflow Commands
 
@@ -165,23 +147,17 @@ uv run pytest --cov=src --cov-report=term-missing -v
 
 ## Anti-Patterns
 
-| Anti-Pattern                           | Problem                                    | Fix                           |
-| -------------------------------------- | ------------------------------------------ | ----------------------------- |
-| Testing implementation, not behavior   | Breaks on every refactor                   | Test public API and outcomes  |
-| Writing tests after code               | Tests confirm assumptions, miss edge cases | Write test first              |
-| Large test steps                       | Takes too long to go green                 | Smaller, incremental tests    |
-| Testing private methods                | Couples to internals                       | Test through public interface |
-| Over-mocking                           | Tests pass but real code fails             | Prefer fakes over mocks       |
-| Writing multiple failing tests at once | Losing focus, hard to debug                | One red test at a time        |
+- Testing implementation instead of behavior -- breaks on every refactor.
+- Writing tests after code -- misses edge cases.
+- Large test steps -- break down into smaller increments.
+- Over-mocking -- prefer fakes over mocks.
+- Multiple failing tests at once -- one red test at a time.
 
 ## When NOT to Use TDD
 
-- **Prototyping / spikes** — exploring unknowns where the API is not clear yet.
-  Write tests after the spike, before merging.
-- **Generated code** — migrations, serializers, boilerplate. These are not
-  worth the overhead.
-- **Trivial wiring** — connecting a router to a service with no logic.
-  Integration tests cover this.
+- **Prototyping** -- write tests after the spike, before merging.
+- **Generated code** -- migrations, serializers, boilerplate.
+- **Trivial wiring** -- integration tests cover this.
 
 ## Related
 

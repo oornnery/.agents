@@ -1,17 +1,13 @@
 ---
 name: jx
-description: JX patterns for Jinja-based server-rendered Python apps. Use when building or refactoring `.jinja` components, configuring a `Catalog`, declaring arguments with `{# def #}`, importing child components with `{# import #}`, passing content and named slots, forwarding HTML attributes with `attrs`, managing component CSS or JS assets, organizing component libraries, integrating JX with FastAPI, Flask, or Django, combining with HTMX or Alpine.js, building SVG-based components, migrating from JinjaX, or validating templates with `jx check`.
+description: JX patterns for Jinja-based server-rendered components -- Catalog, {# def #}, {# import #}, slots, attrs, CSS/JS assets. Load when building .jinja components or integrating JX with FastAPI/Flask/Django.
 ---
 
 # JX
 
-Official JX 0.10 skill for Jinja-based server-rendered components. Aligned
-with the upstream JX repo skill.
-
-When a JX page needs client-side interactivity beyond small HTML sprinkles,
-load `../frontend/references/solid-islands.md` and prefer Solid islands
-mounted into specific server-rendered slots instead of rewriting the whole page
-as a client app.
+JX 0.10 skill for Jinja-based server-rendered components. For client-side
+interactivity beyond HTML sprinkles, use Solid islands
+(`../frontend/references/solid-islands.md`).
 
 ## Core Principles
 
@@ -62,61 +58,22 @@ possible, keep it small — one focused behavior per file.
 
 ## Shared `Catalog` Singleton
 
-Create one shared `Catalog` in a dedicated module and import it everywhere.
-This preserves parsing cache and avoids rebuilding component state on every
-request.
+Create one shared `Catalog` singleton and import it everywhere. Never
+create a new `Catalog()` per request.
 
 ```python
 # app/components.py
 from jx import Catalog
 
-catalog = Catalog("components", site_name="Example")
-```
-
-Do not do this:
-
-```python
-# DO NOT DO THIS
-@app.get("/")
-async def home():
-    catalog = Catalog("components")
-    return catalog.render("HomePage.jinja")
-```
-
-### Constructor Shape
-
-```python
-Catalog(
-    folder=None,           # optional single component folder (shortcut for add_folder)
-    *,
-    jinja_env=None,        # existing jinja2.Environment to reuse
-    extensions=None,       # extra Jinja extensions list
-    filters=None,          # dict of Jinja filters
-    tests=None,            # dict of Jinja tests
-    auto_reload=True,      # re-process files when mtime changes
-    asset_resolver=None,   # callable(url, prefix) -> resolved_url
-    **globals,             # keyword arguments become template globals
-)
-```
-
-Key points:
-
-- `folder` is a single path, not variadic. Use `add_folder()` for extra folders.
-- Globals are passed as **keyword arguments**, not as a `globals={}` dict.
-- `auto_reload=True` checks file mtimes and recompiles when changed.
-
-Do this:
-
-```python
 catalog = Catalog("components", site_name="Example", current_year=2026)
 ```
 
-instead of this:
+### Constructor
 
-```python
-# DO NOT DO THIS
-catalog = Catalog("components", globals={"site_name": "Example"})
-```
+- `folder` is a single path. Use `add_folder()` for extra folders.
+- Globals are **keyword arguments**, not `globals={}` dict.
+- `jinja_env=` reuses an existing Jinja environment.
+- `auto_reload=True` checks file mtimes.
 
 ### Adding Folders and Packages
 
@@ -202,21 +159,8 @@ validation (base types only).
 #}
 ```
 
-Only one `{# def #}` block is allowed per component. Never declare `content`
-or `attrs` — they are always implicit.
-
-Do this:
-
-```jinja
-{# def title #}
-```
-
-instead of this:
-
-```jinja
-{# DO NOT DO THIS #}
-{# def title, content, attrs #}
-```
+Only one `{# def #}` block per component. Never declare `content`
+or `attrs` -- they are always implicit.
 
 ## Imports with `{# import #}`
 
@@ -247,53 +191,12 @@ Relative imports (starting with `./`) resolve from the current file's directory:
 {# import "./Sibling.jinja" as Sibling #}
 ```
 
-Do not use components without importing:
-
-```jinja
-{# DO NOT DO THIS — will raise TemplateSyntaxError #}
-{# def title #}
-<Card title="{{ title }}">
-  <Button>OK</Button>
-</Card>
-```
-
 ## Passing Values
 
-Use normal HTML attributes for strings:
-
-```jinja
-<Button label="Save" />
-```
-
-Use double curly braces for non-string values (expressions):
-
-```jinja
-<Counter count={{ items | length }} />
-<UserCard user={{ current_user }} />
-<Chart data={{ [10, 20, 30] }} />
-```
-
-Boolean shorthand without a value passes `True`:
-
-```jinja
-<Modal open />
-```
-
-**Important**: JX does **not** support Vue-like `:attr` colon syntax. That syntax
-is commented out in the parser.
-
-Do this:
-
-```jinja
-<Counter count={{ items | length }} />
-```
-
-instead of this:
-
-```jinja
-{# DO NOT DO THIS — colon syntax is not supported #}
-<Counter :count="items | length" />
-```
+- String: `<Button label="Save" />`
+- Expression: `<Counter count={{ items | length }} />`
+- Boolean: `<Modal open />` (passes `True`)
+- JX does **not** support Vue-like `:attr` colon syntax.
 
 ## `content` Slot
 
@@ -382,40 +285,8 @@ Caller:
 Python-style underscores in kwargs are converted to dashes (`aria_label` →
 `aria-label`). Attributes starting with `_` are silently ignored.
 
-### Put All Attributes Inside `attrs.render()`
-
-Do not scatter attributes as bare HTML — place them all inside the
-`attrs.render()` call. Calculate complex values beforehand with `{% set %}`.
-
-Do this:
-
-```html+jinja
-{% set state_classes = "selected-classes" if selected else "enabled-classes" %}
-
-<button {{ attrs.render(
-  role="tab",
-  aria_selected="true" if selected else "false",
-  aria_controls=target,
-  tabindex="0" if selected else "-1",
-  disabled=(tag == "button" and disabled),
-  class="Tab " ~ state_classes,
-) }}>
-  {{ content }}
-</button>
-```
-
-instead of this:
-
-```html+jinja
-{# DO NOT DO THIS — attrs scattered as bare HTML attributes #}
-<button role="tab"
-  aria-selected="{{ 'true' if selected else 'false' }}"
-  aria-controls="{{ target }}"
-  {{ attrs.render(class="Tab") }}
->
-  {{ content }}
-</button>
-```
+Put all attributes inside `attrs.render()` -- do not scatter as bare HTML.
+Use `{% set %}` for complex values before the render call.
 
 ## CSS and JS Assets
 
@@ -428,140 +299,31 @@ Declare assets at the top of the component:
 <section class="card">{{ title }}</section>
 ```
 
-Render them from the layout using the `assets` global (injected by `catalog.render()`):
+Render in layout with `{{ assets.render() }}` (CSS + JS) or separately
+with `{{ assets.render_css() }}` / `{{ assets.render_js() }}`. Assets
+deduplicate automatically. JS is `<script type="module">` by default.
 
-```jinja
-<head>
-  {{ assets.render() }}
-</head>
-```
+Use `assets.render_js(module=False)` for IIFE bundles.
 
-In JX 0.10, `assets` is exposed as a **dict** with callable values, not a
-Component object. Available dict keys:
+### External JS
 
-- `assets.render_css()` — generate `<link>` tags
-- `assets.render_js()` — generate `<script>` tags (module by default)
-- `assets.render()` — generate both CSS and JS tags
-- `assets.collect_css()` — list of CSS URLs
-- `assets.collect_js()` — list of JS URLs
+JX does not bundle asset URLs. Use CDN `<script>` tags, local static via
+`{#js #}`, or esbuild/Vite output. Use `asset_resolver` callback on `Catalog`
+to transform URLs at render time.
 
-CSS is emitted before JS. JS is `<script type="module">` by default. Repeated
-declarations are deduplicated. Assets from imported children are collected
-recursively.
+See [integrations reference](references/integrations.md) for build tool configs.
 
-Do this:
+## Animations
 
-```jinja
-{{ assets.render_css() }}
-{{ assets.render_js() }}
-```
-
-or this:
-
-```jinja
-{{ assets.render() }}
-```
-
-instead of this:
-
-```jinja
-{# DO NOT DO THIS — catalog is not available in templates #}
-{{ catalog.render_assets() }}
-```
-
-### `render_js` Parameters
-
-`assets.render_js(module=True, defer=True)` — both default to `True`.
-
-- `module=True` emits `<script type="module">` (ES modules, the default).
-- `module=False` emits plain `<script>` — use for IIFE bundles.
-- `defer=True` adds the `defer` attribute to non-module scripts.
-
-### JS Build for External Libraries
-
-JX does **not** process, rewrite, hash, or bundle asset URLs — they are used
-exactly as written. Three approaches for external JS libraries:
-
-1. **CDN** — add `<script>` tags in the layout for libs like htmx, Alpine:
-
-   ```html+jinja
-   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3/dist/cdn.min.js"></script>
-   ```
-
-2. **Local static** — download to a static folder, reference via `{#js #}`:
-
-   ```jinja
-   {# js "/static/vendor/htmx.min.js" #}
-   ```
-
-3. **Build tool** — use esbuild or Vite externally to bundle npm dependencies,
-   then reference the output path:
-
-   ```jinja
-   {# js "/static/js/main.js" #}
-   ```
-
-For approach 3, see [the integrations reference](references/integrations.md)
-for a full esbuild config bundling Alpine, Stimulus, and htmx into a single
-IIFE.
-
-The `asset_resolver` callback on `Catalog` transforms URLs at render time —
-useful for mapping package-relative paths to browser-accessible URLs:
-
-```python
-catalog = Catalog(
-    "components",
-    asset_resolver=lambda url, prefix: f"/static/vendor/{prefix}/{url}",
-)
-```
-
-## Animations with `transitions.css`
-
-Tailwind v4 lacks utilities for `@starting-style` and
-`transition-behavior: allow-discrete`, needed for smooth enter/exit animations
-on `<dialog>` and popover elements. Use a shared `transitions.css` file
-instead of per-component CSS. JX's asset deduplication ensures it loads once.
-
-Declare it in any component that needs animations:
-
-```jinja
-{#css transitions.css #}
-```
-
-Three animation patterns:
-
-- **Default dialog (fade + scale)** — applies to all `<dialog>` elements.
-- **`slide-from-left`** — class for drawers from the left edge (mobile nav).
-- **`slide-from-right`** — class for drawers from the right edge (panels).
-
-The CSS uses `@starting-style` and `allow-discrete` — well-supported in
-modern browsers, no JavaScript involved.
+Use a shared `transitions.css` (`{#css transitions.css #}`) for `<dialog>` and
+popover enter/exit animations via `@starting-style` and `allow-discrete`.
+Patterns: default dialog (fade+scale), `slide-from-left`, `slide-from-right`.
 
 ## Jinja Environment
 
-By default, JX creates a `jinja2.Environment` with `autoescape=True`,
-`StrictUndefined`, and the `jinja2.ext.do` extension. Reuse an existing
-framework environment when you want shared globals and filters:
-
-```python
-from flask import Flask
-from jx import Catalog
-
-app = Flask(__name__)
-catalog = Catalog("components", jinja_env=app.jinja_env)
-```
-
-Or configure via constructor hooks:
-
-```python
-catalog = Catalog(
-    "components",
-    filters={"initials": lambda name: "".join(p[0] for p in name.split())},
-    tests={"admin": lambda user: getattr(user, "role", None) == "admin"},
-    extensions=["jinja2.ext.loopcontrols"],
-    current_year=2026,
-)
-```
+Default: `autoescape=True`, `StrictUndefined`, `jinja2.ext.do`. Pass
+`jinja_env=` to reuse a framework environment. Add `filters={}`, `tests={}`,
+`extensions=[]` via constructor.
 
 ## Common Mistakes to Avoid
 

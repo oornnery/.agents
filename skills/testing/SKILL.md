@@ -305,71 +305,10 @@ uv run pytest --durations=10 -v  # slowest tests
 - Each test can run independently.
 - Cleanup after yourself (tmp files, DB records).
 
-## BDD — Behavior-Driven Development
+## BDD and Property-Based Testing
 
-Write tests that describe system behavior, not implementation.
-
-### Given / When / Then
-
-Structure test names and bodies around behavior:
-
-```python
-def test_given_expired_token_when_accessing_protected_route_then_returns_401(client):
-    # Given: an expired authentication token
-    token = create_token(expired=True)
-
-    # When: accessing a protected route
-    response = client.get("/protected", headers={"Authorization": f"Bearer {token}"})
-
-    # Then: returns 401 Unauthorized
-    assert response.status_code == 401
-    assert response.json()["detail"] == "Token expired"
-```
-
-### BDD Naming Convention
-
-```python
-# Pattern: test_given_<precondition>_when_<action>_then_<expected>
-def test_given_empty_cart_when_checkout_then_raises_error(): ...
-def test_given_valid_user_when_login_then_returns_token(): ...
-def test_given_duplicate_email_when_register_then_returns_409(): ...
-```
-
-### Acceptance Criteria as Tests
-
-Map SPEC acceptance criteria directly to test functions:
-
-```python
-# AC: Users can search by name or email
-def test_search_users_by_name(client, sample_users): ...
-def test_search_users_by_email(client, sample_users): ...
-
-# AC: Empty query returns all users (paginated)
-def test_empty_search_returns_paginated_results(client, sample_users): ...
-```
-
-## Property-Based Testing (Hypothesis)
-
-For functions with broad input domains, use Hypothesis to generate edge cases:
-
-```python
-from hypothesis import given, strategies as st
-
-
-@given(st.text(min_size=1, max_size=100))
-def test_slugify_always_returns_lowercase(text):
-    result = slugify(text)
-    assert result == result.lower()
-
-
-@given(st.integers(min_value=0), st.integers(min_value=0))
-def test_add_is_commutative(a, b):
-    assert add(a, b) == add(b, a)
-```
-
-Use when: mathematical properties, serialization round-trips, parsers,
-data transformations. Skip when: tests depend on specific fixtures or
-external state.
+See `skills/tdd/SKILL.md` for BDD patterns (Given/When/Then, acceptance
+criteria mapping) and property-based testing with Hypothesis.
 
 ## Test Integrity
 

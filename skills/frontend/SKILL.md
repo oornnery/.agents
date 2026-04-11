@@ -122,34 +122,8 @@ npm install -g prettier
 instead of skipping straight to CSS libraries without a stable lint and format
 baseline.
 
-### Config Shape
-
-- Keep `eslint.config.js` minimal unless the project already requires a layered
-  preset structure.
-- Keep `prettier.config.js` small and predictable.
-- Prefer one formatter and one linter path instead of overlapping tools with
-  competing rewrites.
-
-Recommended defaults:
-
-### `eslint.config.js`
-
-```js
-import js from '@eslint/js'
-
-export default [js.configs.recommended]
-```
-
-### `prettier.config.js`
-
-```js
-export default {
-  semi: false,
-  singleQuote: true,
-  trailingComma: 'es5',
-  printWidth: 100,
-}
-```
+Keep `eslint.config.js` and `prettier.config.js` minimal. Prefer one
+formatter and one linter path -- no overlapping tools.
 
 ---
 

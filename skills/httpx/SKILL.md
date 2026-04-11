@@ -1,42 +1,16 @@
 ---
 name: httpx
-description: HTTP client patterns with httpx — sync/async, typed responses, retries, timeouts, testing. Load when making HTTP requests or integrating with external APIs.
+description: HTTP client patterns with httpx -- sync/async, typed responses, retries, timeouts, testing. Load when making HTTP requests or integrating with external APIs.
 ---
 
 # Httpx
 
-HTTP client patterns with httpx for sync and async integrations, typed responses, retries, timeouts, and testing.
-
-## Documentation
-
-- httpx Docs: <https://www.python-httpx.org/>
-- Timeouts: <https://www.python-httpx.org/advanced/timeouts/>
-- Exceptions: <https://www.python-httpx.org/exceptions/>
-- Transports and MockTransport: <https://www.python-httpx.org/advanced/transports/>
-
-## Install
+HTTP client patterns. See [httpx docs](https://www.python-httpx.org/).
 
 ```bash
 uv add httpx
-uv add "httpx[http2]"                # HTTP/2 support
-uv add "httpx[socks]"                # SOCKS proxy support
-uv add "httpx[brotli]"               # Brotli decompression
-uv add "httpx[zstd]"                 # Zstandard decompression
-```
-
-### Complementary Packages
-
-```bash
 uv add tenacity                      # Retry with backoff/jitter
-uv add httpx-sse                     # Server-Sent Events client
-uv add respx                         # httpx mocking for tests (alternative to MockTransport)
 ```
-
-## Client Selection
-
-- Use `httpx.AsyncClient` in async apps (FastAPI, workers, async services).
-- Use `httpx.Client` in sync-only scripts and CLIs.
-- Reuse clients — do not create one per request.
 
 ## Canonical Async Client Factory
 
@@ -50,15 +24,7 @@ def build_async_http_client() -> httpx.AsyncClient:
     return httpx.AsyncClient(timeout=timeout, limits=limits, follow_redirects=False)
 ```
 
-### With HTTP/2
-
-```python
-def build_h2_client() -> httpx.AsyncClient:
-    timeout = httpx.Timeout(connect=3.0, read=10.0, write=10.0, pool=3.0)
-    return httpx.AsyncClient(timeout=timeout, http2=True)
-```
-
-## FastAPI Lifecycle Pattern
+## FastAPI Lifecycle
 
 ```python
 from contextlib import asynccontextmanager
@@ -74,112 +40,32 @@ async def lifespan(app: FastAPI):
     await app.state.http_client.aclose()
 
 
-app = FastAPI(lifespan=lifespan)
-
-
 def get_http_client(request: Request) -> httpx.AsyncClient:
     return request.app.state.http_client
-```
-
-## Request Pattern with Error Mapping
-
-```python
-import httpx
-
-
-async def fetch_user(client: httpx.AsyncClient, user_id: int) -> dict:
-    try:
-        response = await client.get(f"https://api.example.com/users/{user_id}")
-        response.raise_for_status()
-        return response.json()
-    except httpx.TimeoutException as exc:
-        raise RuntimeError("Upstream timeout") from exc
-    except httpx.HTTPStatusError as exc:
-        status = exc.response.status_code
-        if status == 404:
-            raise RuntimeError("User not found in upstream") from exc
-        raise RuntimeError(f"Upstream error: {status}") from exc
-```
-
-## Typed Responses with Pydantic
-
-```python
-from pydantic import BaseModel, ConfigDict
-import httpx
-
-
-class UpstreamUser(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-    id: int
-    email: str
-    active: bool
-
-
-async def fetch_typed_user(client: httpx.AsyncClient, user_id: int) -> UpstreamUser:
-    response = await client.get(f"https://api.example.com/users/{user_id}")
-    response.raise_for_status()
-    return UpstreamUser.model_validate(response.json())
-```
-
-## Retry Guidance
-
-`httpx` has no built-in retry policy.
-
-- Retry only idempotent methods by default (`GET`, `HEAD`).
-- Use bounded attempts with backoff and jitter.
-- Avoid retrying most `4xx` errors (except `429`).
-
-Example with `tenacity`:
-
-```python
-from tenacity import retry, stop_after_attempt, wait_exponential_jitter
-import httpx
-
-
-@retry(stop=stop_after_attempt(3), wait=wait_exponential_jitter(initial=0.5, max=5))
-async def fetch_with_retry(client: httpx.AsyncClient, url: str) -> httpx.Response:
-    response = await client.get(url)
-    response.raise_for_status()
-    return response
-```
-
-## Streaming Responses
-
-```python
-async def download_file(client: httpx.AsyncClient, url: str, path: Path) -> None:
-    async with client.stream("GET", url) as response:
-        response.raise_for_status()
-        with open(path, "wb") as f:
-            async for chunk in response.aiter_bytes(chunk_size=8192):
-                f.write(chunk)
 ```
 
 ## Testing with MockTransport
 
 ```python
-import httpx
-import pytest
-
-
 def handler(request: httpx.Request) -> httpx.Response:
     if request.url.path == "/users/1":
-        return httpx.Response(200, json={"id": 1, "email": "a@example.com", "active": True})
+        return httpx.Response(200, json={"id": 1, "email": "a@example.com"})
     return httpx.Response(404, json={"detail": "not found"})
 
 
-@pytest.mark.asyncio
-async def test_fetch_typed_user() -> None:
+async def test_fetch_user() -> None:
     transport = httpx.MockTransport(handler)
-    async with httpx.AsyncClient(transport=transport, base_url="https://api.example.com") as client:
-        user = await fetch_typed_user(client, 1)
-        assert user.id == 1
+    async with httpx.AsyncClient(transport=transport, base_url="https://test") as client:
+        response = await client.get("/users/1")
+        assert response.status_code == 200
 ```
 
 ## Guardrails
 
-- Set explicit timeout values — never use defaults in production.
+- Set explicit timeout values -- never use defaults in production.
 - Reuse client instances for connection pooling.
-- Validate payloads with typed schemas.
+- Use `AsyncClient` in async apps, `Client` in sync scripts.
+- Validate responses with Pydantic models.
 - Map transport/status errors to domain errors at boundaries.
-- Log request metadata without leaking secrets.
+- Retry only idempotent methods (`GET`, `HEAD`), with backoff and jitter.
 - Use `http2=True` for multiplexed connections to HTTP/2 servers.

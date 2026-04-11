@@ -17,49 +17,9 @@ Official Python skill for writing clean, Pythonic code with modern tooling.
 
 ## Documentation
 
-- Python: <https://docs.python.org/3/>
 - uv: <https://docs.astral.sh/uv/>
-- uv LLMs: <https://docs.astral.sh/uv/llms.txt>
 - Ruff: <https://docs.astral.sh/ruff/>
-- Ruff LLMs: <https://docs.astral.sh/ruff/llms.txt>
-- Pyright: <https://microsoft.github.io/pyright/>
 - Ty: <https://ty.astral.sh/>
-- pytest: <https://docs.pytest.org/>
-- Rich: <https://rich.readthedocs.io/en/stable/>
-- httpx: <https://www.python-httpx.org/>
-- Pydantic: <https://docs.pydantic.dev/latest/>
-- Typer: <https://typer.tiangolo.com/>
-
-## Related Skills
-
-| Skill               | When to load                                  |
-| ------------------- | --------------------------------------------- |
-| `pydantic/SKILL.md` | Validation, serialization, model patterns     |
-| `httpx/SKILL.md`    | Outbound HTTP calls (sync/async)              |
-| `pytest/SKILL.md`   | Test authoring, coverage, failure triage      |
-| `rich/SKILL.md`     | Console output, tables, progress bars         |
-| `typer/SKILL.md`    | CLI applications                              |
-| `uv/SKILL.md`       | uv, ruff, pyright, ty, pytest, packaging      |
-| `fastapi/SKILL.md`  | FastAPI APIs and Pydantic models              |
-| `jx/SKILL.md`       | Jinja-based server-rendered components        |
-| `markdown/SKILL.md` | Markdown docs, structure, rumdl configuration |
-
----
-
-## The Zen of Python
-
-Key principles to apply as a design lens:
-
-- **Explicit over implicit** - no magic, make intent clear.
-- **Simple over complex** - the simplest solution that works.
-- **Flat over nested** - early returns, avoid deep indentation.
-- **Readability counts** - code is read far more than written.
-- **Errors should never pass silently** - handle or propagate, never swallow.
-- **One obvious way** - follow established patterns, do not invent new ones.
-
-Full text: `python -c "import this"`
-
----
 
 ## Code Conventions
 
@@ -241,34 +201,8 @@ See `rich/SKILL.md` for full console output patterns.
 
 Config lives in `pyproject.toml`. Lock file: `uv.lock`.
 
-### Quick Reference
-
-```bash
-uv sync
-uv add <pkg>
-uv add --dev <pkg>
-uv run ruff format .
-uv run ruff check . --fix
-uv run ty check
-uv run pytest -v
-pyright --version
-```
-
-### Validation Sequence (Fail Fast)
-
-```bash
-uv run ruff format --check .
-uv run ruff check .
-uv run ty check
-uv run pytest -v
-```
-
-Use `ty` as the primary project type checker. Use `pyright` as complementary
-editor tooling or to validate local language-server setup. For Markdown linting
-and `rumdl` config, load `../markdown/SKILL.md`.
-
-See `uv/SKILL.md` for full uv workflow, `pyproject.toml` config,
-packaging, publishing, and taskipy setup.
+See `uv/SKILL.md` for full uv workflow and `pyproject.toml` config.
+Use `ty` as primary type checker. Use `pyright` as editor companion.
 
 ---
 

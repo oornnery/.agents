@@ -1,187 +1,58 @@
 ---
 name: uv
-description: Python package management with uv — project setup, deps, dev toolchain, venvs, publishing. Load when managing Python projects or dependencies.
+description: Python package management with uv -- project setup, deps, dev toolchain, venvs, publishing. Load when managing Python projects or dependencies.
 ---
 
 # Uv
 
-Complete uv workflow: project setup, dependency management, dev toolchain,
-virtual environments, packaging, and publishing.
+Package management and dev toolchain. See [uv docs](https://docs.astral.sh/uv/).
 
-## Documentation
-
-- uv Docs: <https://docs.astral.sh/uv/>
-- Ruff Docs: <https://docs.astral.sh/ruff/>
-- Pyright Docs: <https://microsoft.github.io/pyright/>
-- Ty Docs: <https://ty.astral.sh/>
-- pytest Docs: <https://docs.pytest.org/>
-- taskipy Docs: <https://github.com/taskipy/taskipy>
-
-## Install Uv
+## Install
 
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-## Required Python Tools
-
-Use `uv tool install` when you want local machine tooling outside a single
-project environment:
-
-```bash
-uv tool install ruff
-uv tool install pyright
-uv tool install ty
-```
-
-Additional quality tools:
-
-```bash
-uv tool install rumdl                 # Markdown linter
-uv add --dev pre-commit               # Git pre-commit hooks
-```
-
-Use `markdown/SKILL.md` for `rumdl` config and Markdown-specific
-lint workflows.
-
 ## Project Setup
 
-### Create New Project
-
 ```bash
-uv init myapp
-uv init myapp --lib
-uv init myapp --app
-cd myapp && uv sync
-```
-
-### Project Structure
-
-```text
-myapp/
-├── pyproject.toml
-├── uv.lock
-├── .python-version
-├── src/
-│   └── myapp/
-│       └── __init__.py
-└── tests/
-```
-
-### Python Version Management
-
-```bash
-uv python install 3.12
-uv python install 3.11 3.12
-uv python list
-uv python pin 3.12
+uv init myapp                        # Create project
+uv init myapp --lib                  # Library layout
+uv sync                              # Install deps from lockfile
 ```
 
 ## Dependency Management
 
-### Add Dependencies
-
 ```bash
-uv add httpx
-uv add httpx pydantic rich
-uv add "httpx>=0.27"
-uv add httpx --optional api
-```
-
-### Add Dev Dependencies
-
-```bash
-uv add --dev ruff
-uv add --dev pytest pytest-cov pytest-asyncio pytest-xdist pytest-mock
-uv add --dev ty
-uv add --dev taskipy
-```
-
-### Remove Dependencies
-
-```bash
-uv remove httpx
-uv remove --dev ruff
-```
-
-### Sync and Lock
-
-```bash
-uv sync
-uv sync --frozen
-uv sync --no-dev
-uv lock
-uv lock --upgrade
-uv lock --upgrade-package httpx
-```
-
-### Inspect Dependencies
-
-```bash
-uv tree
-uv tree --depth 1
-uv pip list
-uv pip show httpx
+uv add httpx pydantic rich           # Add deps
+uv add --dev ruff pytest ty taskipy  # Add dev deps
+uv remove httpx                      # Remove dep
+uv sync --frozen                     # Reproducible install (CI)
+uv sync --no-dev                     # Production install
+uv lock --upgrade                    # Upgrade all
+uv tree --depth 1                    # Inspect deps
 ```
 
 ## Running Commands
 
-### Uv Run
-
 ```bash
 uv run python script.py
-uv run python -m myapp.main
 uv run pytest -v
 uv run ruff check .
-uv run ty check
-```
-
-### Run Without Project
-
-```bash
-uv run --with httpx python -c "import httpx; print(httpx.get('https://example.com'))"
-uvx ruff check .
-uvx --from ruff ruff format .
+uvx ruff check .                     # Run without project
 ```
 
 ## Dev Toolchain
 
-### Standard Dev Stack
-
 ```bash
-uv add --dev ruff pytest pytest-cov ty taskipy
+uv run ruff format .                 # Format
+uv run ruff format --check .         # Format check
+uv run ruff check . --fix            # Lint + fix
+uv run ty check                      # Type check
+uv run pytest -v                     # Test
 ```
 
-### Formatting and Lint
-
-```bash
-uv run ruff format .
-uv run ruff format --check .
-uv run ruff check .
-uv run ruff check . --fix
-uv run ruff check . --fix --unsafe-fixes
-uv run ruff rule E501
-```
-
-### Type Checking
-
-```bash
-uv run ty check
-uv run ty check src tests
-uv run ty check src/myapp/api
-```
-
-### Testing
-
-```bash
-uv run pytest -v
-uv run pytest -v -x
-uv run pytest tests/unit/ -v
-uv run pytest -k "test_user" -v
-uv run pytest -v --cov=src --cov-report=term-missing
-```
-
-### Task Runner
+## Task Runner
 
 Config in `pyproject.toml`:
 
@@ -194,36 +65,6 @@ test = "pytest -v"
 check = "task format && task lint && task typecheck && task test"
 ```
 
-```bash
-uv run task format
-uv run task check
-```
-
-## Validation Sequence
-
-Run in order:
-
-```bash
-uv run ruff format --check .
-uv run ruff check .
-uv run ty check
-uv run pytest -v
-```
-
-Project-wide validation may still include `uv run rumdl check .`, but the setup
-and authoring guidance for that belongs in `markdown/SKILL.md`.
-
-## Virtual Environments
-
-```bash
-uv venv
-uv venv --python 3.12
-uv venv /path/to/venv
-source .venv/bin/activate
-```
-
-uv auto-discovers `.venv`, so manual activation is usually optional.
-
 ## Recommended `pyproject.toml`
 
 ```toml
@@ -235,13 +76,6 @@ target-version = "py311"
 select = ["E", "F", "I", "B", "UP"]
 fix = true
 
-[tool.ruff.format]
-quote-style = "single"
-
-[tool.pyright]
-typeCheckingMode = "standard"
-reportMissingImports = true
-
 [tool.ty.rules]
 possibly-unbound-attribute = "warn"
 ```
@@ -250,31 +84,16 @@ possibly-unbound-attribute = "warn"
 
 ```bash
 uv build
-uv build --sdist
-uv build --wheel
-uv publish
 uv publish --token $PYPI_TOKEN
 ```
 
-## Scripts
-
-Run single-file scripts with inline dependencies:
+## Inline Script Dependencies
 
 ```python
 # /// script
 # requires-python = ">=3.12"
 # dependencies = ["httpx", "rich"]
 # ///
-
-import httpx
-from rich import print
-
-response = httpx.get("https://api.example.com/data")
-print(response.json())
-```
-
-```bash
-uv run script.py
 ```
 
 ## Pre-Commit
@@ -282,55 +101,15 @@ uv run script.py
 ```bash
 uv add --dev pre-commit
 uv run pre-commit install
-uv run pre-commit run --all-files
 ```
 
-Config in `.pre-commit-config.yaml`:
-
-```yaml
-repos:
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.11.0
-    hooks:
-      - id: ruff
-        args: [--fix]
-      - id: ruff-format
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
-    hooks:
-      - id: trailing-whitespace
-      - id: end-of-file-fixer
-      - id: check-yaml
-      - id: check-added-large-files
-```
-
-## Rumdl (Markdown Lint)
-
-```bash
-uv tool install rumdl
-uv run rumdl check .
-uv run rumdl fmt .
-```
-
-See `markdown/SKILL.md` for full rumdl configuration.
-
-## Validation Checklist
-
-Use this after bootstrapping local Python tooling:
-
-```bash
-ruff --version
-pyright --version
-ty --version
-rumdl --version
-```
+See `markdown/SKILL.md` for rumdl configuration.
 
 ## Guardrails
 
 - Always use `uv` over `pip`.
 - Commit `uv.lock` for reproducible installs.
 - Use `uv sync --frozen` in CI to catch lockfile drift.
-- Use `uv sync --no-dev` for production installs.
 - Pin Python version with `.python-version`.
 - Use `--dev` for project-local tooling packages.
 - Prefer `uv run` over manually activating virtualenvs.

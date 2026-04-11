@@ -1,30 +1,13 @@
 ---
 name: building-agents
-description: Comprehensive guide for building tool-using LLM agents in Python from first principles. Use this skill whenever the user wants to understand, design, or implement an agent, agent harness, ReAct loop, tool-calling system, autonomous assistant, orchestration runtime, multi-agent workflow, coding agent, research agent, personal assistant, or anything resembling Claude Code, Codex CLI, Cursor, Aider, or rasbt/mini-coding-agent. Covers the eight core components shared by every practical agent — runtime context, prompt shape, structured tools, validation and permissions, response parsing, context reduction, session memory, and bounded delegation — each adapted to idiomatic Python following the Zen of Python. Includes specialization recipes for coding, research, personal assistant, and ops agents.
+description: Building tool-using LLM agents in Python -- runtime context, prompt shape, tools, validation, parsing, context reduction, memory, delegation. Load when designing or implementing agents, ReAct loops, or multi-agent systems.
 ---
 
 # Building Tool-Using Agents in Python
 
 A field guide for building **LLM agents** — systems that reason over context, call tools, persist state, and act inside a bounded runtime.
 
-This skill is intentionally **generic**. The same eight components show up in every useful agent, whether it is:
-
-- a coding agent (Claude Code, Codex CLI, Cursor, `mini-coding-agent`)
-- a research agent
-- a CLI / terminal assistant
-- a personal assistant with memory
-- a workflow automator
-- a support / ops copilot
-- a knowledge / RAG agent
-- a multi-agent orchestrator
-
-The goal is not to teach a framework. The goal is to teach the **invariants** every agent shares, and to show what each one looks like in clean, pythonic code. Once you have the base, the second half of the skill shows how to **specialize** it for specific domains.
-
----
-
 ## The mental model
-
-An agent is **not** just a model with a clever prompt.
 
 An agent is a **runtime harness** around an LLM that does the practical work of:
 
@@ -198,8 +181,6 @@ class WorkspaceContext:
             f"  project_docs:\n{docs}"
         )
 ```
-
-**Pythonic notes.** `frozen=True` makes the snapshot hashable and signals immutability. `slots=True` saves memory. `from __future__ import annotations` lets you reference the class inside its own classmethod without quoting.
 
 ---
 
@@ -750,38 +731,6 @@ The canonical test pattern is a `FakeModelClient` that returns canned outputs fr
 
 ---
 
-## Pythonic principles, applied
-
-The Zen of Python (`import this`) maps onto agent design with unusual cleanness:
-
-| Zen line                                                    | What it means here                                                                                            |
-| ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| _Simple is better than complex_                             | One `Agent` class. No `BaseAgent → AgentMixin → SpecializedAgent`.                                            |
-| _Flat is better than nested_                                | Tools are `dict[str, Tool]`, not a `ToolRegistry` with a `ToolFactory`.                                       |
-| _Errors should never pass silently_                         | Tool failures are caught and turned into strings the model sees. The loop never crashes from a bad tool call. |
-| _Explicit is better than implicit_                          | Risky tools require an enum-typed approval policy, not a magic global.                                        |
-| _Readability counts_                                        | `dataclass(slots=True, frozen=True)` says "immutable value object" in one line.                               |
-| _In the face of ambiguity, refuse the temptation to guess_  | The agent calls `list_files` and `read_file` instead of hallucinating paths.                                  |
-| _There should be one obvious way to do it_                  | One parser, one dispatcher, one loop.                                                                         |
-| _If the implementation is hard to explain, it's a bad idea_ | If you cannot draw your agent in eight boxes, simplify.                                                       |
-| _Now is better than never_                                  | Ship the v1 loop in a week. Iterate from real use, not from speculation.                                      |
-
-**Concrete conventions for the codebase:**
-
-- `from __future__ import annotations` at the top of every file — lazy annotations, forward refs work everywhere
-- `pathlib.Path` everywhere; never `os.path.join`
-- `@dataclass(slots=True)` for everything that holds data; add `frozen=True` for snapshots
-- `StrEnum` for closed sets of strings (policies, risk levels, modes)
-- `Literal[...]` and `TypedDict` for parser return types and structured payloads
-- `Protocol` for the model interface — duck typing made explicit
-- `subprocess.run(..., check=False, capture_output=True, text=True)` — never `os.system`
-- match/case for parser branches if you prefer it to `if/elif`
-- `ruff` + `mypy --strict` clean from day one
-- Tests with `pytest`; the `FakeModelClient` pattern is canonical
-- Errors returned as strings the model can react to, not exceptions that crash the loop
-
-The more "framework-y" and magical the harness gets, the harder it is to debug. **The more boring it looks, the better it works.**
-
 ---
 
 ## Specialization recipes
@@ -962,26 +911,6 @@ That is a real agent. Stop here, use it for two weeks, then iterate.
 - Stateful long-horizon orchestration
 
 These show up in `pi-mono` and `learn-coding-agent` as **later layers**, not prerequisites. Adding them before the core loop is solid is a great way to ship a buggy framework instead of a working agent.
-
----
-
-## When to use this skill
-
-Trigger this skill whenever the user asks about:
-
-- building, designing, or understanding **any kind of agent**
-- LLM runtimes, harnesses, or scaffolds
-- tool-calling systems and ReAct loops
-- the architecture of Claude Code, Codex CLI, Cursor, Aider, Devin, or `mini-coding-agent`
-- prompt caching strategies, transcript compaction, or session management
-- sandboxing, path containment, or approval gating for LLM-driven actions
-- subagent / delegation patterns
-- migrating from custom XML parsing to native tool use (Anthropic / OpenAI)
-- the "components of a coding agent" framing from Sebastian Raschka
-- specializing a generic agent runtime for coding, research, personal assistant, or ops
-- multi-agent orchestration
-
-It is equally useful for explaining existing agent code and for designing new ones.
 
 ---
 

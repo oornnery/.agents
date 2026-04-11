@@ -10,53 +10,12 @@ Git workflow knowledge. For commit conventions and safety rules, see
 
 ## Branching Strategy
 
-### Dev Branch (Preferred)
+See `skills/cicd/SKILL.md` for full branch strategy and release workflow.
 
-Never work directly on `main`/`master`. Always use a `dev` branch:
-
-- `main`/`master` is always deployable and protected.
-- `dev` is the integration branch — all work happens here or from here.
-- Feature branches branch from `dev`, merge back to `dev`.
-- When ready to release, merge `dev` into `main` via PR.
-
-```text
-main (protected, deployable)
-  └── dev (integration branch)
-       ├── feat/user-auth
-       ├── fix/token-refresh
-       └── feat/dashboard
-```
-
-```bash
-# Start from main
-git checkout main && git pull origin main
-
-# Create dev branch (once)
-git checkout -b dev
-git push -u origin dev
-
-# Feature branches from dev
-git checkout dev
-git checkout -b feat/add-user-search
-# work, commit, push
-gh pr create --base dev --title "feat(users): add search" --body "..."
-
-# Release: merge dev into main
-gh pr create --base main --head dev --title "chore: release v1.2.0"
-```
-
-### Trunk-Based (Alternative)
-
-- Main branch is always deployable.
-- Short-lived feature branches (1-3 days max).
-- Merge via squash or rebase for clean history.
-- Feature flags for incomplete work, not long-lived branches.
-
-### Feature Branch
-
-- Use when trunk-based isn't feasible (large features, team coordination).
-- Keep branches up to date with `git rebase dev`.
-- Merge back via PR with review.
+- **Dev branch** (preferred): `main` is protected, `dev` is integration.
+  Feature branches from `dev`, merge back via PR.
+- **Trunk-based** (alternative): short-lived branches (1-3 days), squash merge,
+  feature flags for incomplete work.
 
 ## PR Workflow
 

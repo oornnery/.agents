@@ -67,68 +67,17 @@ rtk init -g --uninstall
 
 ## How It Works
 
-The hook intercepts PreToolUse events for the `Bash` tool. The `rtk hook`
-binary reads the command, rewrites it via `rtk rewrite`, and returns the
-rewritten command to the agent. The agent sees compressed output without
-knowing RTK is involved.
-
-Four core compression strategies:
-
-1. **Filtering** — removes ANSI codes, boilerplate, verbose success messages
-2. **Grouping** — aggregates similar items (lint errors by rule, test
-   failures by suite)
-3. **Truncation** — preserves relevant context, cuts redundancy
-4. **Deduplication** — collapses repeated lines with occurrence counts
+The hook intercepts PreToolUse Bash events, rewrites commands via
+`rtk rewrite`, and returns compressed output. Strategies: filtering
+(ANSI, boilerplate), grouping (errors by rule), truncation, deduplication.
 
 ## Supported Commands
 
-### Git
-
-| Command      | Savings |
-| ------------ | ------- |
-| `git status` | ~80%    |
-| `git log`    | ~75-92% |
-| `git diff`   | ~70%    |
-| `git commit` | ~90%    |
-| `gh pr list` | ~26-87% |
-
-### Test Runners
-
-| Command           | Savings |
-| ----------------- | ------- |
-| `pytest`          | ~90%    |
-| `cargo test`      | ~90%    |
-| `vitest run`      | ~99%    |
-| `go test`         | ~90%    |
-| `playwright test` | ~94%    |
-
-### Linters and Type Checkers
-
-| Command             | Savings |
-| ------------------- | ------- |
-| `ruff check/format` | ~80%    |
-| `eslint` / `biome`  | ~84%    |
-| `tsc`               | ~83%    |
-| `mypy`              | ~80%    |
-| `cargo clippy`      | ~80%    |
-
-### Build Tools and Package Managers
-
-| Command       | Savings |
-| ------------- | ------- |
-| `cargo build` | ~80%    |
-| `next build`  | ~87%    |
-| `pnpm list`   | ~70-90% |
-| `pip install` | ~70-85% |
-
-### File Operations
-
-| Command        | Savings |
-| -------------- | ------- |
-| `ls` / `tree`  | ~80%    |
-| `grep` / `rg`  | ~75%    |
-| `find` / `fd`  | ~70%    |
-| `cat` / `read` | ~70%    |
+- **Git**: status ~80%, log ~75-92%, diff ~70%, commit ~90%
+- **Tests**: pytest/cargo test ~90%, vitest ~99%
+- **Linters**: ruff/eslint ~80-84%, tsc/mypy ~80-83%
+- **Builds**: cargo build ~80%, next build ~87%
+- **File ops**: ls/tree ~80%, grep/rg ~75%, find/fd ~70%
 
 ## Meta Commands
 
@@ -233,25 +182,16 @@ rtk proxy <cmd>               # Run raw, still track usage
 
 ## File Reading Modes
 
-`rtk read` has language-aware filter levels:
-
-- **NoFilter** — returns content unchanged
-- **MinimalFilter** — removes comments (preserves doc comments),
-  normalizes blank lines, trims whitespace
-- **AggressiveFilter** — retains only imports, signatures, and constants;
-  replaces function bodies with `// ... implementation`
-
+`rtk read` filter levels: NoFilter (unchanged), MinimalFilter (strips
+comments/blanks), AggressiveFilter (imports + signatures only).
 Data formats (JSON, YAML, TOML) bypass aggressive filtering.
 
 ## Best Practices
 
-- Use `rtk init -g` for global hook integration — most transparent
-- Let the hook handle rewrites automatically, do not manually prefix
-- Run `rtk gain` regularly to monitor savings
-- Run `rtk discover` to find missed optimization opportunities
-- Use `rtk proxy <cmd>` when you need full unfiltered output
-- Start with defaults; add custom TOML filters only for project-specific
-  tools
-- Always include inline `[[tests]]` in custom filters
-- The tee system saves raw output on failures to
-  `~/.local/share/rtk/tee/` — the agent can re-read without re-executing
+- Use `rtk init -g` for global hook -- most transparent
+- Let the hook rewrite automatically, do not manually prefix
+- Run `rtk gain` regularly, `rtk discover` for missed opportunities
+- Use `rtk proxy <cmd>` for full unfiltered output
+- Start with defaults; add TOML filters only for project-specific tools
+- Include `[[tests]]` in custom filters
+- Tee saves raw output on failures to `~/.local/share/rtk/tee/`
