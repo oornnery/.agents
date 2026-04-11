@@ -1,7 +1,7 @@
 # skills
 
 My custom skills and agent knowledge base for AI coding assistants. Organized into rules,
-commands, and skills for on-demand loading.
+commands, agents, and skills for on-demand loading.
 
 ## Usage
 
@@ -13,14 +13,15 @@ git submodule update --remote   # propagate updates
 
 ## Structure
 
-- **`CLAUDE.md`** -- entrypoint with stack, commands, and skills index.
+- **`CLAUDE.md`** -- entrypoint with stack, agents, commands, and skills index.
 - **`rules/`** -- always-on conventions, auto-loaded by file globs.
+- **`agents/`** -- specialized personas with constrained tools and model selection.
 - **`commands/`** -- procedural workflows invoked per task.
 - **`skills/`** -- domain knowledge modules loaded on demand.
-- **`hooks/`** -- versionable hook templates (RTK rewrite).
+- **`hooks/`** -- automation hooks (RTK rewrite, safety gate, autofix, lifecycle).
 - **`templates/`** -- project bootstrap files.
 
-See `CLAUDE.md` for the full index of rules, commands, and skills.
+See `CLAUDE.md` for the full index of rules, agents, commands, and skills.
 
 ## RTK Integration
 
@@ -35,3 +36,7 @@ savings. Install: `rtk init -g`.
   [drona23/claude-token-efficient](https://github.com/drona23/claude-token-efficient).
 - Agent prompt research from
   [Leonxlnx/agentic-ai-prompt-research](https://github.com/Leonxlnx/agentic-ai-prompt-research).
+- Agent orchestration patterns from
+  [WorldFlowAI/everything-claude-code](https://github.com/WorldFlowAI/everything-claude-code).
+- Production-ready plugin architecture from
+  [affaan-m/everything-claude-code](https://github.com/affaan-m/everything-claude-code).
