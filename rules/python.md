@@ -26,15 +26,12 @@ globs: "**/*.py"
 
 ## Anti-Gold-Plating
 
-- Do not add features, refactoring, or "improvements" beyond what was asked
-- A bug fix does not need cleanup of surrounding code
-- Do not add error handling for scenarios that cannot happen
-- Trust internal code and framework guarantees — only validate at system boundaries
-- Do not create helpers or abstractions for one-time operations
-- Three similar lines of code is better than a premature abstraction
-- Do not add docstrings, comments, or type annotations to code you did not change
-- Do not use feature flags or backwards-compatibility shims when you can just change the code
+- Do not add features, refactoring, or cleanup beyond what was asked
+- Do not add error handling for impossible scenarios -- trust framework guarantees
+- Do not create abstractions for one-time operations -- three similar lines is fine
+- Do not add docstrings, comments, or annotations to unchanged code
 - Do not design for hypothetical future requirements
+- Only validate at system boundaries, not internal code
 
 ## Comments
 
