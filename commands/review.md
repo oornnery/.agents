@@ -6,7 +6,11 @@ description: Structured code review of staged changes, a diff, or a pull request
 # Review
 
 Perform a structured code review. The goal is to produce actionable
-feedback — not to rewrite the code yourself.
+feedback -- not to rewrite the code yourself.
+
+**Agent routing:** For thorough reviews, launch `agents/reviewer.md` and
+`agents/security-reviewer.md` in parallel. Consolidate their findings
+into a single report.
 
 ## Process
 

@@ -6,8 +6,12 @@ description: Create structured planning documents (SDD, SPEC, ARCH) for a featur
 # Plan
 
 Create structured planning documents following Spec-Driven Development
-(SDD) methodology. Specifications are the source of truth — code serves
+(SDD) methodology. Specifications are the source of truth -- code serves
 the specification.
+
+**Agent routing:** For complex planning tasks requiring deep reasoning,
+invoke `agents/planner.md` (model: opus). The agent produces SPEC/ARCH/SDD
+artifacts following this methodology.
 
 ## Process
 
