@@ -9,44 +9,24 @@ description: HTMX 2.x patterns -- hx-* attributes, AJAX, OOB swaps, SSE, trigger
 
 Target: htmx 2.x. Servers respond with HTML fragments, not JSON.
 
-## Core Philosophy
-
-htmx extends HTML to handle AJAX, CSS transitions, WebSockets, and SSE
-directly from attributes. The server controls application state; the
-browser renders HTML.
-
-## Core Attributes
-
-| Attribute   | Purpose              | Default Trigger      |
-| ----------- | -------------------- | -------------------- |
-| `hx-get`    | Issue GET request    | click                |
-| `hx-post`   | Issue POST request   | click (form: submit) |
-| `hx-put`    | Issue PUT request    | click                |
-| `hx-patch`  | Issue PATCH request  | click                |
-| `hx-delete` | Issue DELETE request | click                |
-
 ## Key Attributes
 
-- `hx-target` -- where to place response (`this`, `closest <sel>`,
-  `next <sel>`, `find <sel>`)
-- `hx-swap` -- how to insert (`innerHTML`, `outerHTML`, `beforeend`,
-  `afterend`, `delete`, `none`). Modifiers: `swap:Xms`, `settle:Xms`,
-  `scroll:top`, `transition:true`
-- `hx-trigger` -- when to fire (`click`, `input changed delay:300ms`,
-  `load`, `revealed`, `every 5s`, `from:<selector>`)
+- `hx-get/post/put/patch/delete` -- issue HTTP request (default trigger: click)
+- `hx-target` -- where to place response (`this`, `closest <sel>`, `find <sel>`)
+- `hx-swap` -- how to insert (`innerHTML`, `outerHTML`, `beforeend`, `afterend`,
+  `delete`, `none`). Modifiers: `swap:Xms`, `scroll:top`, `transition:true`
+- `hx-trigger` -- when to fire (`click`, `input changed delay:300ms`, `load`,
+  `revealed`, `every 5s`, `from:<selector>`)
 - `hx-boost` -- progressive enhancement: converts links/forms to AJAX
 - `hx-indicator` -- show element during request (`.htmx-indicator` class)
-- `hx-disabled-elt` -- disable elements during request
-- `hx-confirm` -- confirmation dialog before request
 - `hx-sync` -- coordinate requests (`abort`, `drop`, `replace`, `queue`)
 - `hx-push-url` -- push URL to browser history
 - `hx-select` -- select subset of response to swap
-- `hx-include` -- include additional element values
-- `hx-vals` -- add extra values to request (JSON)
-- `hx-headers` -- add custom headers (JSON)
 - `hx-preserve` -- keep element unchanged during swaps (needs stable `id`)
+- `hx-confirm` -- confirmation dialog before request
+- `hx-vals/hx-headers` -- add extra values/headers (JSON format)
 
-## Common Patterns
+## Patterns
 
 ### Active Search
 
@@ -60,91 +40,56 @@ browser renders HTML.
 
 ### Out-of-Band Updates
 
-Server response updates multiple elements simultaneously:
-
 ```html
-<div id="main-content">Updated content</div>
-<div id="notification" hx-swap-oob="true">New notification!</div>
+<!-- Main response swapped into hx-target -->
+<div id="main-content">Updated</div>
+<!-- OOB: swapped by matching id -->
 <span id="counter" hx-swap-oob="true">42</span>
-```
-
-### Loading Indicator
-
-```html
-<button hx-get="/data" hx-indicator="#spinner" hx-disabled-elt="this">
-  Load <span id="spinner" class="htmx-indicator">...</span>
-</button>
 ```
 
 ### Infinite Scroll
 
 ```html
-<div hx-get="/items?page=2" hx-trigger="revealed" hx-swap="afterend">
-  Loading...
-</div>
+<div hx-get="/items?page=2" hx-trigger="revealed" hx-swap="afterend">...</div>
 ```
 
 ## Template Organization
 
-Serve full page for direct navigation, partial fragment for AJAX:
+Full page for direct navigation, partial for AJAX:
 
 ```python
 if request.headers.get("HX-Request"):
-    return render_template("_partial.html")
+    return render_template("_partial.html")  # prefix _ for partials
 else:
     return render_template("full_page.html")
 ```
 
-Convention: prefix partials with `_` (`_search_results.html`).
+## Response Headers
 
-## Server Response Headers
-
-| Header                  | Purpose                    |
-| ----------------------- | -------------------------- |
-| `HX-Redirect`           | Full page redirect         |
-| `HX-Push-Url`           | Push URL to history        |
-| `HX-Reswap`             | Override hx-swap value     |
-| `HX-Retarget`           | Override hx-target value   |
-| `HX-Trigger`            | Trigger client-side events |
-| `HX-Trigger-After-Swap` | Trigger after swap         |
+`HX-Redirect`, `HX-Push-Url`, `HX-Reswap`, `HX-Retarget`, `HX-Trigger`,
+`HX-Trigger-After-Swap`.
 
 ## Security
 
-- Escape all user content server-side (prevent XSS)
-- Include CSRF tokens: `<body hx-headers='{"X-CSRF-Token": "{{ csrf_token }}"}'>`
-- `htmx.config.selfRequestsOnly = true` (restrict request origins)
-- `htmx.config.allowScriptTags = false` (disable script processing)
-- Use `hx-disable` on untrusted content
+- Escape all user content server-side
+- CSRF: `<body hx-headers='{"X-CSRF-Token": "{{ csrf_token }}"}'>`
+- `htmx.config.selfRequestsOnly = true`
+- `htmx.config.allowScriptTags = false`
 
-## Events (htmx 2.x syntax)
+## Events (2.x syntax)
 
-```html
-<button hx-get="/data"
-  hx-on::before-request="console.log('Starting...')"
-  hx-on::after-swap="console.log('Done!')">
-  Load
-</button>
-```
-
-Note: `hx-on:click` for DOM events, `hx-on::after-swap` for htmx events
-(double colon).
-
-## Extensions
-
-Loaded as separate packages in htmx 2.x: `idiomorph` (morph swaps),
-`sse` (Server-Sent Events), `ws` (WebSockets), `head-support`,
-`response-targets` (target by HTTP status), `preload`.
+`hx-on:click` for DOM events, `hx-on::after-swap` for htmx events (double colon).
 
 ## Guardrails
 
-- Always use `hx-sync="this:abort"` on search/typeahead inputs
+- Use `hx-sync="this:abort"` on search/typeahead inputs
 - Use `input changed` not `keyup changed` (catches paste, autofill)
 - Keep element IDs stable for CSS transitions and OOB swaps
 - Use `hx-boost` for progressive enhancement before adding attributes
-- Forms: only named inputs are included in requests
-- Use `hx-on:` syntax (not `hx-on="..."`) in htmx 2.x
+- Only named inputs are included in requests
+- Extensions are separate packages in 2.x: `idiomorph`, `sse`, `ws`,
+  `head-support`, `response-targets`, `preload`
 
 ## Related
 
 - `skills/jx/SKILL.md` -- Jinja server-rendered components (pair with htmx)
-- `skills/frontend/SKILL.md` -- Tailwind, Solid for client-heavy UIs
