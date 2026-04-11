@@ -95,8 +95,9 @@ Output: `<repo-name>-threat-model.md`
 
 ## References
 
-- `references/python-fastapi-security.md` -- FastAPI-specific rules
-- `references/python-general-security.md` -- Python general security
+- `references/python-fastapi-security.md` -- FastAPI security rules
+- `references/python-django-security.md` -- Django security rules
+- `references/python-flask-security.md` -- Flask security rules
 - `references/javascript-frontend-security.md` -- Frontend XSS/CSP
 
 ## Related
