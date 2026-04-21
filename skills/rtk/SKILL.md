@@ -53,7 +53,7 @@ Example: `git status` becomes `rtk git status` transparently.
 
 ```bash
 rtk init --agent cursor     # Cursor
-rtk init --codex            # Codex CLI (AGENTS.md)
+rtk init --codex            # Codex CLI (base + variants)
 ```
 
 Windsurf and Cline use rules files (`.windsurfrules`, `.clinerules`)

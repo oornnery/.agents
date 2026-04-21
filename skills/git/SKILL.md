@@ -1,177 +1,151 @@
 ---
 name: git
-description: Git workflows, branching strategies, PR workflow, rebase vs merge, bisect. Load when working with branches, PRs, or complex git operations.
+description: Git safety, staging, commit workflow, branching, pull requests, rebase, bisect, tagging, and worktrees. Load when working with branches, commits, PRs, or recovering from tricky git situations.
 ---
 
-# Git Workflows
+# Git
 
-Git workflow knowledge. For commit conventions and safety rules, see
-`commands/commit.md` and `rules/git.md`.
+Use this skill when the main problem is a git workflow problem rather than a
+code problem.
 
-## Branching Strategy
+## Boundary
 
-See `skills/cicd/SKILL.md` for full branch strategy and release workflow.
+Use this skill for:
 
-- **Dev branch** (preferred): `main` is protected, `dev` is integration.
-  Feature branches from `dev`, merge back via PR.
-- **Trunk-based** (alternative): short-lived branches (1-3 days), squash merge,
-  feature flags for incomplete work.
+- safe staging and commit flow
+- branch and PR workflow
+- rebasing and syncing feature branches
+- bisecting regressions
+- stashing and worktrees
+- tags and release-oriented git operations
 
-## PR Workflow
+Pair with:
 
-### Creating PRs
+- `skills/cicd/SKILL.md` for GitHub Actions CI and release automation
+- `skills/quality/SKILL.md` when bisecting or isolating regressions
+- `skills/docs/SKILL.md` when the deliverable is release notes or changelog content
 
-```bash
-git push -u origin feat/my-feature
-gh pr create --title "feat(scope): description" --body "..."
-```
+## Core safety rules
 
-### Draft PRs
+- stage files by name, not `git add .` or `git add -A`
+- do not amend unless explicitly asked
+- do not push unless explicitly asked
+- do not skip hooks with `--no-verify`
+- do not use destructive resets or cleanup commands casually
+- do not delete a dirty worktree without warning
 
-Use drafts for work-in-progress that needs early feedback:
+## Common workflow
 
-```bash
-gh pr create --draft --title "WIP: feat(scope): description"
-```
+1. inspect the working tree
+2. group changes into logical units
+3. stage explicitly by file or hunk
+4. commit with a precise conventional message
+5. verify what remains uncommitted
 
-### PR Checklist
+Use `commands/commit.md` when the task is specifically about preparing
+commits from the current tree.
 
-- Title follows Conventional Commits format.
-- Description explains WHY, not just WHAT.
-- Tests pass (`uv run pytest -v`).
-- Lint and type checks pass.
-- No secrets or credentials committed.
-- No unrelated changes included.
+## Branching and PR workflow
 
-## Rebase Vs Merge
+Prefer short-lived feature branches and reviewable PRs.
 
-| Scenario                  | Use                |
-| ------------------------- | ------------------ |
-| Updating feature branch   | `git rebase`       |
-| Merging PR into main      | Squash merge       |
-| Preserving branch history | Merge commit       |
-| Cleaning up local commits | Interactive rebase |
+PR checklist:
 
-### Rebase (Preferred for Feature Branches)
+- title is a conventional commit style summary
+- description explains the WHY
+- validation passes for the changed surface
+- no secrets or unrelated changes are included
+
+Draft PRs are appropriate for early feedback on incomplete work.
+
+## Rebase vs merge
+
+| Scenario                  | Preferred action      |
+| ------------------------- | --------------------- |
+| update a feature branch   | `git rebase`          |
+| merge a completed PR      | squash merge          |
+| preserve explicit history | merge commit          |
+| isolate a regression      | `git bisect`          |
+
+### Rebase pattern
 
 ```bash
 git checkout feat/my-feature
 git fetch origin
 git rebase origin/main
-# Resolve conflicts if any, then:
-git push --force-with-lease
 ```
 
-### Squash Merge (Preferred for PRs)
-
-One clean commit on main per PR. Use GitHub's squash merge button or:
-
-```bash
-gh pr merge <number> --squash
-```
+If conflicts appear, resolve them carefully and continue. Force-push only when
+explicitly asked and only with `--force-with-lease`.
 
 ## Bisect
 
-Find the commit that introduced a regression:
+Use `git bisect` when a regression has a known good point:
 
 ```bash
 git bisect start
-git bisect bad              # current commit is broken
-git bisect good <commit>    # this commit was working
-
-# Git checks out a middle commit. Test it, then:
-git bisect good  # or git bisect bad
-
-# Repeat until git identifies the first bad commit
-git bisect reset  # when done
+git bisect bad
+git bisect good <commit>
 ```
 
-### Automated Bisect
+Then test each candidate commit until git identifies the first bad commit.
+
+Automated form:
 
 ```bash
 git bisect start HEAD <good-commit>
-git bisect run uv run pytest tests/test_specific.py -v
+git bisect run uv run pytest tests/path/to/test_file.py -v
 git bisect reset
 ```
 
-## Stashing
+## Stash
+
+Stash only when you truly need to park work temporarily:
 
 ```bash
-git stash                    # save working changes
-git stash -m "description"   # with a message
-git stash list               # see all stashes
-git stash pop                # apply and remove latest
-git stash apply stash@{2}    # apply specific stash
-git stash drop stash@{0}     # remove specific stash
+git stash
+git stash -m "description"
+git stash list
+git stash pop
 ```
 
-## Conventional Commits
+Prefer worktrees over repeated stashing when you need parallel work.
 
-```text
-type(scope): description
+## Tags and release flow
 
-Types: feat, fix, refactor, docs, test, chore, perf, style, ci, build
-```
-
-| Type       | When                                |
-| ---------- | ----------------------------------- |
-| `feat`     | New feature or capability           |
-| `fix`      | Bug fix                             |
-| `refactor` | Code change that doesn't fix/add    |
-| `docs`     | Documentation only                  |
-| `test`     | Adding or fixing tests              |
-| `chore`    | Maintenance (deps, config, tooling) |
-| `perf`     | Performance improvement             |
-| `ci`       | CI/CD changes                       |
-| `build`    | Build system changes                |
-
-## Useful Commands
+Use annotated tags for releases:
 
 ```bash
-# See what changed between branches
-git log main..HEAD --oneline
-git diff main...HEAD --stat
-
-# Find who changed a line
-git blame path/to/file.py
-
-# Show a specific commit
-git show <commit>
-
-# List branches
-git branch -a
-
-# Clean up merged branches
-git branch --merged main | grep -v main | xargs git branch -d
+git tag -a v1.2.0 -m "release 1.2.0"
 ```
+
+Create tags only after validation passes and only when release intent is clear.
 
 ## Worktrees
 
-Worktrees let you check out multiple branches simultaneously in separate
-directories, sharing the same `.git` database. Use them for parallel work
-without stashing or losing context.
+Use worktrees for:
 
-### Quick Reference
+- hotfixes while feature work is in progress
+- isolated PR review
+- verification without switching branches
+- parallel agent work
+
+Read `references/worktree.md` for the full worktree guide.
+
+## Useful commands
 
 ```bash
-git worktree add ../hotfix-tree hotfix/critical-bug   # existing branch
-git worktree add -b feat/new ../feature-tree           # new branch
-git worktree list                                       # show all
-git worktree remove ../hotfix-tree                     # cleanup
-git worktree prune                                      # remove stale refs
+git status
+git diff --stat
+git log --oneline -10
+git show <commit>
+git blame path/to/file.py
+git branch -a
+git worktree list
 ```
-
-### When to Use
-
-- Hotfix while mid-feature
-- PR review in isolation
-- Agent isolation (Claude Code `isolation: "worktree"`)
-- Verification without switching branches
-
-See `references/worktree.md` for full patterns and Claude Code integration.
 
 ## Related
 
-- `commands/commit.md` — commit workflow and message format.
-- `rules/git.md` — safety rules (always-on).
-- `references/worktree.md` — detailed worktree guide.
+- `commands/commit.md` -- prepare clean commits from the current tree
+- `commands/debug.md` -- investigate regressions before using `git bisect`
+- `references/worktree.md` -- worktree patterns and caveats

@@ -1,122 +1,92 @@
 # Git Worktrees
 
-Worktrees let you check out multiple branches simultaneously in separate
-directories, sharing the same `.git` database. This enables parallel work
-without stashing or switching branches.
+Worktrees let you check out multiple branches at once in separate directories
+while sharing the same `.git` database. Use them when switching branches would
+interrupt active work or create unnecessary stash churn.
 
-## When to Use Worktrees
+## When to use
 
-- **Hotfix while mid-feature**: work on a fix without losing feature context
-- **Code review**: check out the PR branch in a separate tree while keeping
-  your work intact
-- **Agent isolation**: run agents in their own worktree so changes do not
-  conflict with the main tree
-- **Parallel CI-like tasks**: run tests on one branch while developing on another
-- **Comparing implementations**: have two approaches side by side
+- hotfix while mid-feature
+- PR review in isolation
+- verification without leaving the current branch
+- parallel agent work with separate trees
+- comparing two implementations side by side
 
-## Core Commands
+## Core commands
 
 ```bash
-# Create a worktree for an existing branch
+# existing branch
 git worktree add ../hotfix-tree hotfix/critical-bug
 
-# Create a worktree with a new branch
+# new branch
 git worktree add -b feat/new-feature ../feature-tree
 
-# Create a worktree from a specific commit/tag
-git worktree add ../release-tree v2.1.0
+# detached verification tree
+git worktree add --detach ../verify-tree origin/feat/some-feature
 
-# List all worktrees
+# inspect and clean up
 git worktree list
-
-# Remove a worktree (after merging/completing work)
 git worktree remove ../hotfix-tree
-
-# Clean up stale worktree references
 git worktree prune
 ```
 
 ## Patterns
 
-### Worktree per PR Review
+### Hotfix during feature work
 
 ```bash
-# Reviewer checks out PR branch in a separate tree
-git worktree add ../review-pr-42 origin/feat/user-auth
-cd ../review-pr-42
+git worktree add -b hotfix/login-fix ../my-app-hotfix main
+cd ../my-app-hotfix
+# fix, validate, commit
+cd -
+git worktree remove ../my-app-hotfix
+```
+
+### Isolated review or verification
+
+```bash
+git worktree add --detach ../my-app-verify origin/feat/some-feature
+cd ../my-app-verify
 uv run pytest -v
-# When done:
+uv run ruff check .
 cd -
-git worktree remove ../review-pr-42
+git worktree remove ../my-app-verify
 ```
 
-### Worktree for Hotfix During Feature Work
+### Parallel agent work
+
+Use a worktree when two agents need to operate on different branches or when a
+review/verification pass should stay isolated from the implementation tree.
+
+## Caveats
+
+- all worktrees share the same `.git` directory
+- a branch checked out in one worktree cannot be checked out in another
+- detached HEAD worktrees are useful for read-only verification
+- always remove worktrees when done
+- never remove a worktree with uncommitted changes without warning
+
+If a worktree goes stale, run:
 
 ```bash
-# Currently working on feat/dashboard
-git worktree add -b hotfix/login-fix ../hotfix main
-cd ../hotfix
-# fix, commit, push, create PR
-cd -
-git worktree remove ../hotfix
+git worktree prune
 ```
 
-### Temporary Worktree for Verification
+## Directory convention
 
-```bash
-# Verify a branch without switching
-git worktree add --detach ../verify-tree origin/feat/some-feature
-cd ../verify-tree
-uv run pytest -v && uv run ruff check .
-cd -
-git worktree remove ../verify-tree
-```
-
-## Claude Code Integration
-
-Claude Code supports worktree isolation for sub-agents:
-
-```text
-Agent({
-  description: "Verify feature implementation",
-  isolation: "worktree",
-  prompt: "Run tests and verify the implementation..."
-})
-```
-
-When `isolation: "worktree"` is set:
-
-- The agent works on an isolated copy of the repo
-- Changes made by the agent do not affect the main tree
-- If the agent makes no changes, the worktree is automatically cleaned up
-- If changes exist, the worktree path and branch are returned in the result
-
-## Important Caveats
-
-- **Shared refs**: all worktrees share the same `.git` directory. A branch
-  checked out in one worktree cannot be checked out in another.
-- **Lock files**: if a worktree is on a network drive or external storage,
-  use `git worktree lock` to prevent accidental pruning.
-- **HEAD state**: a worktree can be in detached HEAD state (useful for
-  read-only verification).
-- **Cleanup**: always remove worktrees when done. Stale worktrees waste
-  disk space and can cause confusing branch lock errors.
-- **Submodules**: worktrees share submodule state. Run `git submodule update`
-  in new worktrees if submodules are used.
-
-## Directory Convention
-
-Keep worktrees adjacent to the main repo:
+Keep temporary worktrees adjacent to the main repo:
 
 ```text
 projects/
-├── my-app/              # main worktree
-├── my-app-hotfix/       # temporary worktree
-├── my-app-review-42/    # review worktree
-└── my-app-verify/       # verification worktree
+├── my-app/
+├── my-app-hotfix/
+├── my-app-review-42/
+└── my-app-verify/
 ```
+
+Use short, intention-revealing names so cleanup is obvious.
 
 ## Related
 
-- `skills/git/SKILL.md` — branching, PRs, rebase, bisect
-- `rules/git.md` — worktree safety rules
+- `skills/git/SKILL.md` -- broader git workflow guidance
+- `commands/verify.md` -- isolated verification flow
