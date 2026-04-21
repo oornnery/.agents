@@ -1,0 +1,29 @@
+<form
+  id="user-form"
+  hx-post="/users"
+  hx-target="#user-form"
+  hx-swap="outerHTML"
+  hx-disabled-elt="find button"
+  hx-indicator="#saving"
+>
+  <label for="name">Name</label>
+  <input id="name" name="name" value="{{ form.name or '' }}" required>
+  {% if errors.name %}
+  <p class="error">{{ errors.name }}</p>
+  {% endif %}
+
+  <label for="email">Email</label>
+  <input id="email" name="email" type="email" value="{{ form.email or '' }}" required>
+  {% if errors.email %}
+  <p class="error">{{ errors.email }}</p>
+  {% endif %}
+
+  {% if errors.form %}
+  <div class="error-summary">{{ errors.form }}</div>
+  {% endif %}
+
+  <div class="actions">
+    <button type="submit">Save</button>
+    <span id="saving" class="htmx-indicator">Saving...</span>
+  </div>
+</form>

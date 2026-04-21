@@ -1,0 +1,19 @@
+{% extends 'base.jinja' %}
+{% from 'components/badge.jinja' import status_badge %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+  <section class="page-intro">
+    <h2>{{ page_title }}</h2>
+    <p>Server-rendered page composed from a partial and a small reusable macro.</p>
+  </section>
+
+  <section class="filters">
+    {% for status in ['active', 'paused', 'done'] %}
+      {{ status_badge(status) }}
+    {% endfor %}
+  </section>
+
+  {% include 'partials/project_list.jinja' %}
+{% endblock %}

@@ -1,0 +1,570 @@
+
+# Python Observability
+
+Instrument Python applications with structured logs, metrics, and traces. When something breaks in production, you need to answer "what, where, and why" without deploying new code.
+
+## When to Use This Skill
+
+- Adding structured logging to applications
+- Implementing metrics collection with Prometheus
+- Setting up distributed tracing across services
+- Propagating correlation IDs through request chains
+- Bridging standard library logging into Logfire
+- Instrumenting frameworks and clients such as FastAPI, httpx, SQLAlchemy, and Redis
+- Debugging production issues
+- Building observability dashboards
+
+## Core Concepts
+
+### 1. Structured Logging
+
+Emit logs as JSON with consistent fields for production environments. Machine-readable logs enable powerful queries and alerts. For local development, consider human-readable formats.
+
+### 2. The Four Golden Signals
+
+Track latency, traffic, errors, and saturation for every service boundary.
+
+### 3. Correlation IDs
+
+Thread a unique ID through all logs and spans for a single request, enabling end-to-end tracing.
+
+### 4. Bounded Cardinality
+
+Keep metric label values bounded. Unbounded labels (like user IDs) explode storage costs.
+
+### 5. One Primary Observability Path
+
+Choose a primary stack for a service and extend it consistently.
+
+- if the project already uses `structlog`, Prometheus, and OpenTelemetry, extend that path
+- if the project already uses Logfire, prefer its native instrumentation and logging bridge
+- avoid layering multiple overlapping wrappers around the same framework or client
+
+## Quick Start
+
+```python
+import structlog
+
+structlog.configure(
+    processors=[
+        structlog.processors.TimeStamper(fmt="iso"),
+        structlog.processors.JSONRenderer(),
+    ],
+)
+
+logger = structlog.get_logger()
+logger.info("Request processed", user_id="123", duration_ms=45)
+```
+
+## Fundamental Patterns
+
+### Pattern 1: Structured Logging with Structlog
+
+Configure structlog for JSON output with consistent fields.
+
+```python
+import logging
+import structlog
+
+def configure_logging(log_level: str = "INFO") -> None:
+    """Configure structured logging for the application."""
+    structlog.configure(
+        processors=[
+            structlog.contextvars.merge_contextvars,
+            structlog.processors.add_log_level,
+            structlog.processors.TimeStamper(fmt="iso"),
+            structlog.processors.StackInfoRenderer(),
+            structlog.processors.format_exc_info,
+            structlog.processors.JSONRenderer(),
+        ],
+        wrapper_class=structlog.make_filtering_bound_logger(
+            getattr(logging, log_level.upper())
+        ),
+        context_class=dict,
+        logger_factory=structlog.PrintLoggerFactory(),
+        cache_logger_on_first_use=True,
+    )
+
+# Initialize at application startup
+configure_logging("INFO")
+logger = structlog.get_logger()
+```
+
+### Pattern 2: Consistent Log Fields
+
+Every log entry should include standard fields for filtering and correlation.
+
+```python
+import structlog
+from contextvars import ContextVar
+
+# Store correlation ID in context
+correlation_id: ContextVar[str] = ContextVar("correlation_id", default="")
+
+logger = structlog.get_logger()
+
+def process_request(request: Request) -> Response:
+    """Process request with structured logging."""
+    logger.info(
+        "Request received",
+        correlation_id=correlation_id.get(),
+        method=request.method,
+        path=request.path,
+        user_id=request.user_id,
+    )
+
+    try:
+        result = handle_request(request)
+        logger.info(
+            "Request completed",
+            correlation_id=correlation_id.get(),
+            status_code=200,
+            duration_ms=elapsed,
+        )
+        return result
+    except Exception as e:
+        logger.error(
+            "Request failed",
+            correlation_id=correlation_id.get(),
+            error_type=type(e).__name__,
+            error_message=str(e),
+        )
+        raise
+```
+
+### Pattern 3: Semantic Log Levels
+
+Use log levels consistently across the application.
+
+| Level     | Purpose                       | Examples                          |
+| --------- | ----------------------------- | --------------------------------- |
+| `DEBUG`   | Development diagnostics       | Variable values, internal state   |
+| `INFO`    | Request lifecycle, operations | Request start/end, job completion |
+| `WARNING` | Recoverable anomalies         | Retry attempts, fallback used     |
+| `ERROR`   | Failures needing attention    | Exceptions, service unavailable   |
+
+```python
+# DEBUG: Detailed internal information
+logger.debug("Cache lookup", key=cache_key, hit=cache_hit)
+
+# INFO: Normal operational events
+logger.info("Order created", order_id=order.id, total=order.total)
+
+# WARNING: Abnormal but handled situations
+logger.warning(
+    "Rate limit approaching",
+    current_rate=950,
+    limit=1000,
+    reset_seconds=30,
+)
+
+# ERROR: Failures requiring investigation
+logger.error(
+    "Payment processing failed",
+    order_id=order.id,
+    error=str(e),
+    payment_provider="stripe",
+)
+```
+
+Never log expected behavior at `ERROR`. A user entering a wrong password is `INFO`, not `ERROR`.
+
+### Pattern 4: Correlation ID Propagation
+
+Generate a unique ID at ingress and thread it through all operations.
+
+```python
+from contextvars import ContextVar
+import uuid
+import structlog
+
+correlation_id: ContextVar[str] = ContextVar("correlation_id", default="")
+
+def set_correlation_id(cid: str | None = None) -> str:
+    """Set correlation ID for current context."""
+    cid = cid or str(uuid.uuid4())
+    correlation_id.set(cid)
+    structlog.contextvars.bind_contextvars(correlation_id=cid)
+    return cid
+
+# FastAPI middleware example
+from fastapi import Request
+
+async def correlation_middleware(request: Request, call_next):
+    """Middleware to set and propagate correlation ID."""
+    # Use incoming header or generate new
+    cid = request.headers.get("X-Correlation-ID") or str(uuid.uuid4())
+    set_correlation_id(cid)
+
+    response = await call_next(request)
+    response.headers["X-Correlation-ID"] = cid
+    return response
+```
+
+Propagate to outbound requests:
+
+```python
+import httpx
+
+async def call_downstream_service(endpoint: str, data: dict) -> dict:
+    """Call downstream service with correlation ID."""
+    async with httpx.AsyncClient() as client:
+        response = await client.post(
+            endpoint,
+            json=data,
+            headers={"X-Correlation-ID": correlation_id.get()},
+        )
+        return response.json()
+```
+
+## Advanced Patterns
+
+### Pattern 5: The Four Golden Signals with Prometheus
+
+Track these metrics for every service boundary:
+
+```python
+from prometheus_client import Counter, Histogram, Gauge
+
+# Latency: How long requests take
+REQUEST_LATENCY = Histogram(
+    "http_request_duration_seconds",
+    "Request latency in seconds",
+    ["method", "endpoint", "status"],
+    buckets=[0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10],
+)
+
+# Traffic: Request rate
+REQUEST_COUNT = Counter(
+    "http_requests_total",
+    "Total HTTP requests",
+    ["method", "endpoint", "status"],
+)
+
+# Errors: Error rate
+ERROR_COUNT = Counter(
+    "http_errors_total",
+    "Total HTTP errors",
+    ["method", "endpoint", "error_type"],
+)
+
+# Saturation: Resource utilization
+DB_POOL_USAGE = Gauge(
+    "db_connection_pool_used",
+    "Number of database connections in use",
+)
+```
+
+Instrument your endpoints:
+
+```python
+import time
+from functools import wraps
+
+def track_request(func):
+    """Decorator to track request metrics."""
+    @wraps(func)
+    async def wrapper(request: Request, *args, **kwargs):
+        method = request.method
+        endpoint = request.url.path
+        start = time.perf_counter()
+
+        try:
+            response = await func(request, *args, **kwargs)
+            status = str(response.status_code)
+            return response
+        except Exception as e:
+            status = "500"
+            ERROR_COUNT.labels(
+                method=method,
+                endpoint=endpoint,
+                error_type=type(e).__name__,
+            ).inc()
+            raise
+        finally:
+            duration = time.perf_counter() - start
+            REQUEST_COUNT.labels(method=method, endpoint=endpoint, status=status).inc()
+            REQUEST_LATENCY.labels(method=method, endpoint=endpoint, status=status).observe(duration)
+
+    return wrapper
+```
+
+### Pattern 6: Bounded Cardinality
+
+Avoid labels with unbounded values to prevent metric explosion.
+
+```python
+# BAD: User ID has potentially millions of values
+REQUEST_COUNT.labels(method="GET", user_id=user.id)  # Don't do this!
+
+# GOOD: Bounded values only
+REQUEST_COUNT.labels(method="GET", endpoint="/users", status="200")
+
+# If you need per-user metrics, use a different approach:
+# - Log the user_id and query logs
+# - Use a separate analytics system
+# - Bucket users by type/tier
+REQUEST_COUNT.labels(
+    method="GET",
+    endpoint="/users",
+    user_tier="premium",  # Bounded set of values
+)
+```
+
+### Pattern 7: Timed Operations with Context Manager
+
+Create a reusable timing context manager for operations.
+
+```python
+from contextlib import contextmanager
+import time
+import structlog
+
+logger = structlog.get_logger()
+
+@contextmanager
+def timed_operation(name: str, **extra_fields):
+    """Context manager for timing and logging operations."""
+    start = time.perf_counter()
+    logger.debug("Operation started", operation=name, **extra_fields)
+
+    try:
+        yield
+    except Exception as e:
+        elapsed_ms = (time.perf_counter() - start) * 1000
+        logger.error(
+            "Operation failed",
+            operation=name,
+            duration_ms=round(elapsed_ms, 2),
+            error=str(e),
+            **extra_fields,
+        )
+        raise
+    else:
+        elapsed_ms = (time.perf_counter() - start) * 1000
+        logger.info(
+            "Operation completed",
+            operation=name,
+            duration_ms=round(elapsed_ms, 2),
+            **extra_fields,
+        )
+
+# Usage
+with timed_operation("fetch_user_orders", user_id=user.id):
+    orders = await order_repository.get_by_user(user.id)
+```
+
+### Pattern 8: OpenTelemetry Tracing
+
+Set up distributed tracing with OpenTelemetry.
+
+**Note:** OpenTelemetry is actively evolving. Check the [official Python documentation](https://opentelemetry.io/docs/languages/python/) for the latest API patterns and best practices.
+
+```python
+from opentelemetry import trace
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
+from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+
+def configure_tracing(service_name: str, otlp_endpoint: str) -> None:
+    """Configure OpenTelemetry tracing."""
+    provider = TracerProvider()
+    processor = BatchSpanProcessor(OTLPSpanExporter(endpoint=otlp_endpoint))
+    provider.add_span_processor(processor)
+    trace.set_tracer_provider(provider)
+
+tracer = trace.get_tracer(__name__)
+
+async def process_order(order_id: str) -> Order:
+    """Process order with tracing."""
+    with tracer.start_as_current_span("process_order") as span:
+        span.set_attribute("order.id", order_id)
+
+        with tracer.start_as_current_span("validate_order"):
+            validate_order(order_id)
+
+        with tracer.start_as_current_span("charge_payment"):
+            charge_payment(order_id)
+
+        with tracer.start_as_current_span("send_confirmation"):
+            send_confirmation(order_id)
+
+        return order
+```
+
+### Pattern 9: Logfire Logging and Spans
+
+If the project uses Logfire, prefer its native logging, spans, and instrumentation instead of building a parallel stack.
+
+#### Log Levels
+
+```python
+logfire.trace("Detailed trace {detail}", detail=x)
+logfire.debug("Debug info {state}", state=s)
+logfire.info("Normal operation {event}", event=e)
+logfire.notice("Notable event {event}", event=e)
+logfire.warn("Warning {issue}", issue=i)
+logfire.error("Error occurred {error}", error=err)
+logfire.fatal("Fatal error {error}", error=err)
+```
+
+#### Nested Spans
+
+Use spans to expose the structure of an operation, not just that it happened.
+
+```python
+with logfire.span("HTTP request {method} {url}", method="POST", url=url):
+    with logfire.span("Serialize payload"):
+        payload = model.model_dump_json()
+    with logfire.span("Send request"):
+        response = await client.post(url, content=payload)
+    logfire.info("Response {status}", status=response.status_code)
+```
+
+#### Standard Library Logging Integration
+
+For existing projects using the standard `logging` module, route log records through Logfire instead of rewriting every call site.
+
+```python
+from logging import basicConfig
+import logfire
+
+logfire.configure()
+basicConfig(handlers=[logfire.LogfireLoggingHandler()])
+```
+
+Or with `dictConfig`:
+
+```python
+from logging.config import dictConfig
+import logfire
+
+logfire.configure()
+dictConfig({
+    "version": 1,
+    "handlers": {
+        "logfire": {"class": "logfire.LogfireLoggingHandler"},
+    },
+    "root": {"handlers": ["logfire"]},
+})
+```
+
+#### Suppressing Noisy Libraries
+
+```python
+import logging
+
+logging.getLogger("httpcore").setLevel(logging.WARNING)
+logging.getLogger("httpx").setLevel(logging.WARNING)
+```
+
+#### Custom Metrics
+
+```python
+counter = logfire.metric_counter("orders_processed", unit="1")
+counter.add(1, {"status": "success"})
+
+histogram = logfire.metric_histogram("request_duration", unit="s")
+histogram.record(0.123, {"endpoint": "/api/users"})
+
+gauge = logfire.metric_gauge("active_connections")
+gauge.set(42)
+```
+
+#### Testing with capfire
+
+Use `capfire` to assert on emitted spans without sending telemetry to production.
+
+```python
+from logfire.testing import CaptureLogfire
+
+def test_order_processing(capfire: CaptureLogfire) -> None:
+    process_order(order_id=123)
+
+    spans = capfire.exporter.exported_spans_as_dict()
+    assert any(
+        span["attributes"].get("order_id") == 123
+        for span in spans
+    )
+```
+
+Configure Logfire with `send_to_logfire=False` in test fixtures to prevent production data leakage.
+
+### Pattern 10: Python Integration Reference
+
+If the service uses Logfire, these integrations are the most relevant entrypoints.
+
+#### Web Frameworks
+
+| Framework | Instrumentor                          | Needs app instance | Extra       |
+| --------- | ------------------------------------- | ------------------ | ----------- |
+| FastAPI   | `logfire.instrument_fastapi(app)`     | yes                | `fastapi`   |
+| Django    | `logfire.instrument_django(app)`      | yes                | `django`    |
+| Flask     | `logfire.instrument_flask(app)`       | yes                | `flask`     |
+| Starlette | `logfire.instrument_starlette(app)`   | yes                | `starlette` |
+| AIOHTTP   | `logfire.instrument_aiohttp_client()` | no                 | `aiohttp`   |
+
+#### HTTP Clients
+
+| Library  | Instrumentor                    | Extra      |
+| -------- | ------------------------------- | ---------- |
+| httpx    | `logfire.instrument_httpx()`    | `httpx`    |
+| requests | `logfire.instrument_requests()` | `requests` |
+
+#### Databases
+
+| Library    | Instrumentor                       | Extra        |
+| ---------- | ---------------------------------- | ------------ |
+| asyncpg    | `logfire.instrument_asyncpg()`     | `asyncpg`    |
+| psycopg    | `logfire.instrument_psycopg()`     | `psycopg`    |
+| psycopg2   | `logfire.instrument_psycopg2()`    | `psycopg2`   |
+| SQLAlchemy | `logfire.instrument_sqlalchemy()`  | `sqlalchemy` |
+| PyMongo    | `logfire.instrument_pymongo()`     | `pymongo`    |
+| MySQL      | `logfire.instrument_mysql()`       | `mysql`      |
+| SQLite3    | `logfire.instrument_sqlite3()`     | `sqlite3`    |
+| Redis      | `logfire.instrument_redis()`       | `redis`      |
+
+#### AI and LLM Frameworks
+
+| Framework     | Instrumentor                        | Extra           |
+| ------------- | ----------------------------------- | --------------- |
+| PydanticAI    | `logfire.instrument_pydantic_ai()`  | `pydantic-ai`   |
+| OpenAI        | `logfire.instrument_openai()`       | `openai`        |
+| Anthropic     | `logfire.instrument_anthropic()`    | `anthropic`     |
+| LiteLLM       | `logfire.instrument_litellm()`      | `litellm`       |
+| DSPy          | `logfire.instrument_dspy()`         | `dspy`          |
+| Google GenAI  | `logfire.instrument_google_genai()` | `google-genai`  |
+
+#### Task Queues and Other Integrations
+
+| Feature         | Instrumentor                          | Extra            |
+| --------------- | ------------------------------------- | ---------------- |
+| Celery          | `logfire.instrument_celery()`         | `celery`         |
+| System Metrics  | `logfire.instrument_system_metrics()` | `system-metrics` |
+| Pydantic Models | `logfire.instrument_pydantic()`       | built-in         |
+| AWS Lambda      | handler wrapper                       | `aws-lambda`     |
+
+#### Gunicorn Hook
+
+```python
+# gunicorn.conf.py
+import logfire
+
+def post_fork(server, worker):
+    logfire.configure()
+    logfire.instrument_fastapi(app)
+```
+
+## Best Practices Summary
+
+1. **Use structured logging** - JSON logs with consistent fields
+2. **Propagate correlation IDs** - Thread through all requests and logs
+3. **Track the four golden signals** - Latency, traffic, errors, saturation
+4. **Bound label cardinality** - Never use unbounded values as metric labels
+5. **Log at appropriate levels** - Don't cry wolf with ERROR
+6. **Include context** - User ID, request ID, operation name in logs
+7. **Use context managers** - Consistent timing and error handling
+8. **Separate concerns** - Observability code shouldn't pollute business logic
+9. **Test your observability** - Verify logs and metrics in integration tests
+10. **Set up alerts** - Metrics are useless without alerting
+11. **Prefer one instrumentation path** - Extend the existing stack instead of doubling telemetry

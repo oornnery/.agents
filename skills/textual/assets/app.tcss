@@ -1,0 +1,24 @@
+Screen {
+    layout: vertical;
+    padding: 1 2;
+}
+
+#name,
+#save,
+#status {
+    margin: 1 0;
+}
+
+ConfirmScreen {
+    align: center middle;
+}
+
+ConfirmScreen > Label,
+ConfirmScreen > Button {
+    width: 24;
+    margin: 1 0;
+}
+
+.primary {
+    background: $success;
+}

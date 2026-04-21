@@ -1,0 +1,17 @@
+<div class="search-panel">
+  <label for="query">Search</label>
+  <input
+    id="query"
+    name="query"
+    type="search"
+    placeholder="Filter users"
+    hx-get="/users/search"
+    hx-trigger="keyup changed delay:300ms"
+    hx-target="#results"
+    hx-swap="innerHTML"
+    hx-indicator="#loading"
+  >
+  <div id="loading" class="htmx-indicator">Loading...</div>
+</div>
+
+<div id="results"></div>

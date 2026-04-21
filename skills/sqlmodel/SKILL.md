@@ -1,41 +1,105 @@
 ---
 name: sqlmodel
-description: SQLModel async patterns with FastAPI -- models, relationships, CRUD,
-  sessions, migrations. Load when working with databases, SQLModel, Alembic,
-  or async database layers.
+description: SQLModel persistence patterns for Python services and applications.
+  Covers model design, async sessions, relationships, Alembic migrations, query
+  optimization, N+1 prevention, and production-safe schema changes. Load when
+  working with SQLModel, Alembic, relationships, async database layers, or
+  SQLAlchemy-backed persistence in Python.
 ---
 
 # SQLModel
 
-Async database patterns with SQLModel and Alembic.
+Persistence modeling, async sessions, relationships, migrations, and query
+loading patterns with SQLModel and Alembic.
+
+## Boundary
+
+Use this skill for persistence modeling, async sessions, relationships,
+transactions, migrations, and query optimization with SQLModel.
+
+- pair with `python` for general Python conventions, tooling, and FastAPI usage
+- pair with `arch` when repository boundaries, domain separation, or layering
+  matter
+- pair with `design` when API contract shape and persistence shape must stay
+  decoupled
+- pair with `quality` when query bugs, regressions, or migration failures need
+  tighter guards
+- pair with `security` when persistence changes touch auth data, tenant
+  isolation, secrets, or unsafe raw SQL
+
+## Reference Map
+
+- `references/advanced-models.md` -- advanced model patterns, relationships,
+  inheritance, mixins, field types, indexes, and constraints
+- `references/migrations.md` -- Alembic setup, schema and data migrations,
+  rollback patterns, production workflow, and troubleshooting
+- `references/queries-optimization.md` -- query patterns, eager loading, N+1
+  prevention, bulk operations, profiling, and performance testing
+
+## Assets and Scripts
+
+- `assets/models.py` -- table, create, read, update, timestamps, enums, and
+  many-to-many patterns
+- `scripts/init.py` -- starter script to initialize a database from imported
+  SQLModel metadata
+- `scripts/migrate.sh` -- migration helper wrapper around Alembic commands
+
+## What Stays Here
+
+Keep this file focused on defaults, async patterns, and the guardrails that
+matter most in day-to-day project work.
+
+- keep here: multiple-model pattern, async engine and session defaults, FastAPI
+  dependency wiring, relationship loading defaults, migration workflow, and
+  guardrails
+- move to refs: long examples, advanced model variants, detailed migration
+  strategies, query patterns, and deeper troubleshooting
+
+## Quick Start
 
 ```bash
-uv add sqlmodel sqlalchemy[asyncio] asyncpg alembic
+uv add sqlmodel sqlalchemy[asyncio] alembic
+uv add asyncpg
 ```
+
+Start with:
+
+1. explicit table, create, update, and public models
+2. one async session per request or job boundary
+3. reviewed Alembic migrations
+4. explicit relationship loading
 
 ## Multiple Model Pattern
 
 ```python
-from sqlmodel import SQLModel, Field
+from sqlmodel import Field, SQLModel
+
 
 class UserBase(SQLModel):
     name: str = Field(max_length=100)
     email: str = Field(max_length=255, unique=True)
 
+
 class User(UserBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
     hashed_password: str
 
+
 class UserCreate(UserBase):
     password: str = Field(min_length=8)
 
+
 class UserPublic(UserBase):
     id: int
+
 
 class UserUpdate(SQLModel):
     name: str | None = None
     email: str | None = None
 ```
+
+Use separate models because table shape, write input, and public response rarely
+have the same responsibilities.
 
 ## Async Engine and Session
 
@@ -43,32 +107,62 @@ class UserUpdate(SQLModel):
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-engine = create_async_engine("postgresql+asyncpg://...", pool_size=20, max_overflow=10)
-async_session = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+engine = create_async_engine(
+    "postgresql+asyncpg://...",
+    pool_size=20,
+    max_overflow=10,
+)
+async_session = async_sessionmaker(
+    engine,
+    class_=AsyncSession,
+    expire_on_commit=False,
+)
 ```
+
+Use `expire_on_commit=False` for async session workflows so returned objects
+remain usable after commit boundaries.
 
 ## FastAPI Dependency
 
 ```python
+from collections.abc import AsyncGenerator
+from typing import Annotated
+
+from fastapi import Depends
+from sqlmodel.ext.asyncio.session import AsyncSession
+
+
 async def get_session() -> AsyncGenerator[AsyncSession, None]:
     async with async_session() as session:
         yield session
 
+
 SessionDep = Annotated[AsyncSession, Depends(get_session)]
 ```
 
-## Relationships
+Use one session per request or job boundary. Keep transaction scope explicit.
+
+## Relationship Defaults
 
 ```python
+from sqlalchemy.orm import selectinload
+from sqlmodel import Field, Relationship, SQLModel, select
+
+
 class Team(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     name: str
     members: list["User"] = Relationship(back_populates="team")
+
+
+statement = select(Team).options(selectinload(Team.members))
 ```
 
-Prevent N+1: `select(Team).options(selectinload(Team.members))`
+In async code, prefer explicit loading strategy over accidental lazy loading.
+Default to `selectinload` for collections unless query shape clearly favors a
+join.
 
-## Alembic Async
+## Migration Workflow
 
 ```bash
 alembic init -t async alembic
@@ -78,17 +172,63 @@ alembic upgrade head
 
 Set `target_metadata = SQLModel.metadata` in `alembic/env.py`.
 
+Review autogenerated migrations before applying them. Do not trust
+autogenerate blindly for destructive, data-sensitive, or production-facing
+changes.
+
+## Production Migration Rules
+
+- one logical schema change per migration
+- test both upgrade and downgrade when feasible
+- add data migrations explicitly when schema changes need backfill or reshape
+- avoid editing already-applied migrations
+- stage nullable-first changes for large tables or zero-downtime rollouts
+- back up production data before risky migrations
+
+For production-heavy changes, load `references/migrations.md`.
+
+## Query and Performance Rules
+
+- prevent N+1 with explicit eager loading
+- index foreign keys and frequently filtered or ordered columns
+- select only what the use case needs
+- batch operations instead of row-by-row loops when volume matters
+- profile before optimizing
+- keep raw SQL narrow, justified, and parameterized
+
+For deeper query patterns, load `references/queries-optimization.md`.
+
+## Advanced Modeling Rules
+
+- use explicit link tables for many-to-many relationships
+- use mixins for reusable timestamps, soft delete, or audit columns
+- keep inheritance and polymorphism rare and deliberate
+- keep indexes, unique constraints, and cascades explicit
+- separate persistence models from API or domain contracts when responsibilities
+  differ
+
+For advanced patterns, load `references/advanced-models.md`.
+
 ## Guardrails
 
-- Use multiple model pattern -- never expose table models in responses
-- Always `expire_on_commit=False` for async sessions
-- Use `selectinload` for relationships -- prevent N+1
-- Validate at boundaries with Create/Update models
-- Use `async with session.begin()` for multi-step transactions
-- Index columns in WHERE/ORDER BY clauses
-- Never format SQL strings -- use query builders
+- use the multiple-model pattern -- never expose table models directly in
+  responses
+- always `expire_on_commit=False` for async sessions unless there is a very
+  specific reason not to
+- use `selectinload` or another explicit eager-loading strategy -- prevent N+1
+- validate at boundaries with create and update models
+- use `async with session.begin()` for multi-step transactions
+- index columns used in `WHERE`, `ORDER BY`, and relationship joins
+- never format SQL strings -- use query builders or parameterized SQL
+- keep domain logic out of ORM models when the project already uses service or
+  repository boundaries
+- treat migrations as reviewed changes, not generated boilerplate
 
-## Related
+## Review Focus
 
-- `skills/fastapi/SKILL.md` -- FastAPI API patterns
-- `skills/pydantic/SKILL.md` -- validation and serialization
+- check whether persistence and public contract models are separated
+- check whether async sessions have clear scope and cleanup
+- check for accidental lazy loading or hidden N+1 behavior
+- check whether migrations are safe for real data, not just schema shape
+- check whether indexes and constraints match the read and write patterns
+- check whether raw SQL is parameterized and justified

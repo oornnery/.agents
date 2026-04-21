@@ -1,0 +1,21 @@
+<section id="project-list" class="project-list">
+  {% if projects %}
+    <ul>
+      {% for project in projects %}
+        <li id="project-{{ project.id }}" class="project-card">
+          <div class="project-row">
+            <strong>{{ project.name }}</strong>
+            {% from 'components/badge.jinja' import status_badge %}
+            {{ status_badge(project.status) }}
+          </div>
+
+          {% if project.description %}
+            <p>{{ project.description }}</p>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="empty-state">No projects found.</p>
+  {% endif %}
+</section>

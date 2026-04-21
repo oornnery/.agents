@@ -1,582 +1,316 @@
 ---
 name: python
-description: Python best practices, conventions, and uv-based toolchain. Use
-  when writing, reviewing, or refactoring Python code. Covers code style, type
-  hints, async patterns, logging, dependency management, validation pipeline,
-  editor tooling, and routes to submodules (FastAPI, JX, testing, HTTP client,
-  TUI, CLI).
+description: Python guidance for project onboarding, uv, typing, testing, async, configuration, packaging, observability, resilience, resource management, FastAPI conventions, and common debug and build-fix patterns. Load when writing, reviewing, debugging, or maintaining Python code.
 ---
 
 # Python
 
-Official Python skill for writing clean, Pythonic code with modern tooling.
+Use this skill when the work is primarily Python code, Python tooling, or a
+Python project workflow.
 
-> *"Beautiful is better than ugly. Explicit is better than implicit. Simple is
-> better than complex."*
-> -- The Zen of Python
+## Reference Map
 
-## Documentation
+Use the core guidance in this file for default project workflow. Load only the
+focused reference that matches the task. Imported skills that previously had
+their own nested references now have that deeper material folded into the
+parent ref, so each file below is self-contained.
 
-- uv: <https://docs.astral.sh/uv/>
-- Ruff: <https://docs.astral.sh/ruff/>
-- Ty: <https://ty.astral.sh/>
+### Project and Toolchain
 
-## Code Conventions
+- `references/uv.md` -- dependency management, environments, Python installs,
+  lockfiles, and advanced `uv` workflows
+- `references/structure.md` -- module layout, package boundaries, and
+  public API structure
+- `references/config.md` -- environment variables, typed settings,
+  secrets, and config loading
+- `references/packaging.md` -- build metadata, packaging layouts, publishing,
+  and advanced packaging patterns
 
-### Style
+### Implementation and Correctness
 
-- `pathlib` over `os.path` - always.
-- f-strings only - avoid `.format()` and `%` formatting.
-- Prefer early returns over deep nesting.
-- Avoid mutable global state.
-- Use `__all__` to define public API in modules.
+- `references/style.md` -- formatting, linting, naming, docstrings, and
+  style defaults
+- `references/types.md` -- type hints, generics, protocols, narrowing,
+  and checker guidance
+- `references/errors.md` -- boundary validation, exception design, and
+  partial failure handling
+- `references/design.md` -- KISS, SRP, composition, layering, and
+  dependency injection
+- `references/anti-patterns.md` -- review checklist for common Python mistakes
 
-```python
-# DO THIS
-from pathlib import Path
+### Runtime Behavior
 
+- `references/async.md` -- asyncio, concurrency, cancellation, and
+  non-blocking IO
+- `references/jobs.md` -- workers, queues, idempotency, and job
+  orchestration
+- `references/resources.md` -- context managers, cleanup, streaming,
+  and lifetime control
+- `references/resilience.md` -- retries, backoff, timeouts, and fault-tolerance
+  patterns
+- `references/observability.md` -- structured logging, metrics, tracing, and
+  production diagnostics, instrumentation, and logging bridges
+- `references/perf.md` -- profiling, benchmarking, and optimization
+  techniques
 
-def load_config(path: Path) -> dict:
-    if not path.exists():
-        return {}
-    return json.loads(path.read_text())
+### Testing
+
+- `references/tests.md` -- pytest patterns, fixtures, mocking, coverage, and
+  advanced testing workflows
+
+## Assets
+
+Use these when a small but real project shape is more useful than another code
+block.
+
+- `assets/project/pyproject.toml` -- repo-aligned Python toolchain config
+- `assets/project/src/myapp/main.py` -- a small application entrypoint
+- `assets/project/src/myapp/settings.py` -- typed settings example
+- `assets/project/tests/test_main.py` -- a matching test module
+- `assets/project/scripts/report.py` -- a standalone `uv` script example
+
+## What Stays Here
+
+Keep this file lean and policy-level.
+
+- Keep here: onboarding, stack defaults, validation order, core Python
+  defaults, debugging workflow, build-fix order, review cues, and FastAPI
+  defaults
+- Move to refs: tool-specific setup, long examples, advanced variants,
+  framework-specific patterns, and subject-specific deep dives
+- Prefer loading one focused ref over growing this file with repeated examples
+- If guidance belongs to a single theme, keep it in that theme's ref instead of
+  duplicating it here
+
+## Project Onboarding
+
+Detect a Python project:
+
+```bash
+ls pyproject.toml 2>/dev/null
 ```
 
-```python
-# DO NOT DO THIS
-import os
+For this stack, `pyproject.toml` usually means a `uv`-managed Python project.
 
+Before editing:
 
-def load_config(path):
-    if os.path.exists(path):
-        with open(path, "r") as f:
-            return json.loads(f.read())
-    else:
-        return {}
+1. verify the toolchain
+2. identify validation entrypoints
+3. inspect project layout, config loading, and test layout
+4. check recent momentum with `git log --oneline -10`
+
+If dependencies are missing, install them with the native package manager for
+the stack.
+
+Check validation entrypoints in this order:
+
+1. task aliases in `pyproject.toml`
+2. direct `uv run` commands
+3. project README or scripts
+4. CI config if still unclear
+
+Primary refs: `references/uv.md`, `references/structure.md`,
+`references/config.md`, and `references/packaging.md`.
+
+## Map the Project
+
+Understand before changing:
+
+- repo layout and main packages
+- architecture style already in use
+- how configuration is loaded
+- where tests live and how they are grouped
+- current development momentum from recent commits
+
+## Default Stack
+
+- language: Python 3.12+
+- package manager: `uv`
+- linter and formatter: `ruff`
+- type checker: `ty`
+- test runner: `pytest`
+- markdown lint: `rumdl`
+- token optimizer: `rtk`
+
+## Validation Order
+
+Validate in order and fail fast:
+
+```bash
+uv run ruff format --check .
+uv run ruff check .
+uv run rumdl check .
+uv run ty check
+uv run pytest -v
 ```
 
-### Naming
+If the project exposes task aliases, prefer them:
 
-- `snake_case` for functions, variables, modules.
-- `PascalCase` for classes.
-- `UPPER_SNAKE` for constants.
-- Prefix private helpers with `_`.
-- Descriptive names over abbreviations - `user_count`, not `uc`.
-
-### Imports
-
-- Group: stdlib -> third-party -> local, separated by blank lines.
-- Absolute imports preferred over relative.
-- Let Ruff sort and organize via `isort` rules.
-
-### Data Structures
-
-- Use `dataclasses` for plain data containers.
-- Use Pydantic `BaseModel` when validation or serialization is needed.
-- Use `TypedDict` for dictionaries with known keys.
-- Use `NamedTuple` for lightweight immutable records.
-- Prefer `enum.Enum` over string constants for fixed sets.
-
-```python
-from dataclasses import dataclass, field
-from enum import Enum
-
-
-class Status(Enum):
-    ACTIVE = "active"
-    INACTIVE = "inactive"
-
-
-@dataclass(frozen=True, slots=True)
-class User:
-    name: str
-    email: str
-    status: Status = Status.ACTIVE
-    tags: list[str] = field(default_factory=list)
+```bash
+uv run task lint
+uv run task fmt
+uv run task test
+uv run task test-cov
 ```
 
----
+Primary refs: `references/style.md`, `references/types.md`, and
+`references/tests.md`.
 
-## Type Hints
+## Toolchain Verification
 
-- Use modern syntax: `str | None`, `list[str]`, `dict[str, int]`.
-- Type all public functions and methods.
-- Use `TypeVar` and `Generic` for reusable typed containers.
-- Use `Protocol` for structural subtyping.
-
-```python
-from typing import TypedDict
-
-
-class UserPayload(TypedDict):
-    name: str
-    email: str
-    active: bool
+```bash
+uv --version
+ruff --version
+ty --version
+python --version
 ```
 
-```python
-from typing import Protocol
+## Install Dependencies
 
+Use the native package manager:
 
-class Serializable(Protocol):
-    def to_dict(self) -> dict: ...
+```bash
+uv sync
 ```
 
----
-
-## Async
-
-- Use `asyncio` patterns only - never block the event loop.
-- Prefer `async with` for async resources.
-- Use `asyncio.gather` with explicit error handling.
-- Use `asyncio.TaskGroup` (3.11+) for structured concurrency.
-
-```python
-import asyncio
-
-
-async def fetch_all(urls: list[str]) -> list[dict]:
-    async with asyncio.TaskGroup() as tg:
-        tasks = [tg.create_task(fetch(url)) for url in urls]
-    return [t.result() for t in tasks]
-```
-
-### Async Anti-Patterns
-
-```python
-# DO NOT DO THIS - blocks the event loop
-import time
-
-
-async def bad_handler():
-    time.sleep(5)
-
-
-# DO THIS
-import asyncio
-
-
-async def good_handler():
-    await asyncio.sleep(5)
-```
-
----
-
-## Logging and Console Output
-
-- Use stdlib `logging` - **never `print` in application or library code.**
-- Configure logging once at the entrypoint with `RichHandler`.
-- `logging` is for operational logs. `rich.console.Console` is for user-facing
-  CLI output.
-
-```python
-import logging
-
-from rich.logging import RichHandler
-
-logger = logging.getLogger(__name__)
-
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(message)s",
-    datefmt="[%X]",
-    handlers=[RichHandler(rich_tracebacks=True, markup=True)],
-)
-```
-
-See `rich/SKILL.md` for full console output patterns.
-
----
-
-## Toolchain
-
-| Tool      | Purpose                                         |
-| --------- | ----------------------------------------------- |
-| `uv`      | Package manager, virtualenv, runner             |
-| `ruff`    | Formatter and linter                            |
-| `pyright` | Editor-oriented type analysis and LSP companion |
-| `ty`      | Primary project type checker                    |
-| `pytest`  | Test runner                                     |
-| `taskipy` | Optional task runner                            |
-
-Config lives in `pyproject.toml`. Lock file: `uv.lock`.
-
-See `uv/SKILL.md` for full uv workflow and `pyproject.toml` config.
-Use `ty` as primary type checker. Use `pyright` as editor companion.
-
----
-
-## Error Handling
-
-- Use specific exceptions — never bare `except:`.
-- Let unexpected errors propagate.
-- Create domain exceptions for business logic errors.
-- Use `from` for exception chaining.
-
-```python
-class UserNotFoundError(Exception):
-    def __init__(self, user_id: str) -> None:
-        self.user_id = user_id
-        super().__init__(f"User not found: {user_id}")
-
-
-def get_user(user_id: str) -> User:
-    try:
-        return repo.fetch(user_id)
-    except KeyError as exc:
-        raise UserNotFoundError(user_id) from exc
-```
-
----
-
-## Context Managers
-
-- Use `contextlib.contextmanager` / `asynccontextmanager` for resource management.
-- Prefer `with`/`async with` over manual setup/teardown.
-
-```python
-from contextlib import asynccontextmanager
-import httpx
-
-
-@asynccontextmanager
-async def http_session():
-    async with httpx.AsyncClient(timeout=10.0) as client:
-        yield client
-```
-
----
-
-## Pattern Matching (3.10+)
-
-Use `match`/`case` for structural dispatch — type routing, command handling, data destructuring. Use `if/elif` for simple boolean/range checks.
-
-```python
-match response.status_code:
-    case 200:
-        return response.json()
-    case 404:
-        raise NotFoundError()
-    case status if 500 <= status < 600:
-        raise ServerError(status)
-
-match event:
-    case {"type": "click", "button": button}:
-        return f"Clicked {button}"
-    case {"type": "scroll", "direction": "up" | "down" as d}:
-        return f"Scrolled {d}"
-    case _:
-        return "Unknown event"
-```
-
-Do not use `match` for trivial boolean checks (`match x > 0: case True: ...`).
-
----
-
-## Iterators and Generators
-
-Use generators for lazy evaluation — process large data without loading everything into memory. Prefer generator expressions over list comprehensions when you don't need the full list.
-
-```python
-from collections.abc import Iterator
-
-def read_chunks(path: Path, size: int = 8192) -> Iterator[bytes]:
-    with open(path, "rb") as f:
-        while chunk := f.read(size):  # walrus operator
-            yield chunk
-
-# Lazy (memory efficient) vs eager (loads all)
-total = sum(len(line) for line in open("data.txt"))  # generator
-lines = [line.strip() for line in open("data.txt")]   # list
-```
-
-Key `itertools`: `chain` (merge iterables), `islice` (take N), `batched` (3.12+, chunk items), `groupby` (group sorted data).
-
-Walrus operator (`:=`) — use for assignment in expressions. Avoid in complex expressions where it hurts readability.
-
----
-
-## Decorators
-
-- Always use `@wraps` — without it, the decorated function loses `__name__`, `__doc__`, `__module__`.
-- Use `ParamSpec` + `TypeVar` for typed decorators.
-
-```python
-from functools import wraps
-from typing import Callable, ParamSpec, TypeVar
-
-P = ParamSpec("P")
-R = TypeVar("R")
-
-
-def log_calls(func: Callable[P, R]) -> Callable[P, R]:
-    @wraps(func)
-    def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
-        logger.info("Calling %s", func.__name__)
-        return func(*args, **kwargs)
-    return wrapper
-```
-
-For parameterized decorators (e.g., `@retry(max_attempts=3)`), use a three-level nesting: outer function → decorator → wrapper, all with `@wraps`.
-
----
-
-## Comprehensions
-
-- Use for simple transforms and filters. Max one level of nesting.
-- If the logic needs nested loops, complex conditions, or side effects — use a regular loop.
-
-```python
-names = [user.name for user in users if user.active]   # list
-lookup = {user.id: user for user in users}              # dict
-unique_roles = {user.role for user in users}             # set
-inverted = {v: k for k, v in mapping.items()}            # invert
-```
-
----
-
-## Concurrency
-
-| Need                         | Tool                               |
-| ---------------------------- | ---------------------------------- |
-| I/O-bound (HTTP, DB, files)  | `asyncio` or `ThreadPoolExecutor`  |
-| CPU-bound (compute, parsing) | `ProcessPoolExecutor`              |
-| Simple parallel tasks        | `concurrent.futures` (easiest API) |
-| Full async app               | `asyncio` (see Async section)      |
-
-- Use `asyncio.to_thread` to bridge blocking code into async contexts.
-- Never mix `asyncio` and `threading` without `to_thread`.
-- Set explicit `max_workers` — don't rely on defaults.
-- Always handle exceptions from futures.
-
----
-
-## Abstract Base Classes Vs Protocol
-
-### When to Use Which
-
-| Need                                        | Use        |
-| ------------------------------------------- | ---------- |
-| Enforce method implementation in subclasses | `ABC`      |
-| Structural typing (duck typing with types)  | `Protocol` |
-| Third-party classes you can't modify        | `Protocol` |
-| Internal class hierarchies                  | `ABC`      |
-
-### ABC Pattern
-
-```python
-from abc import ABC, abstractmethod
-
-
-class Repository(ABC):
-    @abstractmethod
-    def get(self, id: str) -> dict: ...
-
-    @abstractmethod
-    def save(self, id: str, data: dict) -> None: ...
-
-
-class PostgresRepo(Repository):
-    def get(self, id: str) -> dict:
-        return self.db.fetch(id)
-
-    def save(self, id: str, data: dict) -> None:
-        self.db.upsert(id, data)
-```
-
-### Protocol Pattern (Preferred for Loose Coupling)
-
-```python
-from typing import Protocol, runtime_checkable
-
-
-@runtime_checkable
-class Renderable(Protocol):
-    def render(self) -> str: ...
-
-
-# Any class with a render() method satisfies this — no inheritance needed
-class HtmlPage:
-    def render(self) -> str:
-        return "<html>...</html>"
-
-
-def output(item: Renderable) -> None:
-    print(item.render())  # HtmlPage works here without inheriting Renderable
-```
-
----
-
-## Security
-
-### Secrets and Credentials
-
-```python
-import secrets
-from os import environ
-
-# Generate secure tokens
-token = secrets.token_urlsafe(32)
-api_key = secrets.token_hex(16)
-
-# Read secrets from environment — never hardcode
-db_password = environ["DB_PASSWORD"]
-```
-
-### Hashing
-
-```python
-import hashlib
-
-# For integrity checks (not passwords)
-digest = hashlib.sha256(data).hexdigest()
-
-# For passwords — use a proper KDF
-from hashlib import scrypt
-
-hashed = scrypt(password.encode(), salt=salt, n=16384, r=8, p=1)
-```
-
-### Input Sanitization
-
-- Validate all external input at system boundaries.
-- Use Pydantic models for structured validation (see `pydantic/SKILL.md`).
-- Never use `eval()`, `exec()`, or `__import__()` with user input.
-- Use parameterized queries — never format SQL strings.
-
-```python
-# DO NOT DO THIS
-query = f"SELECT * FROM users WHERE id = '{user_id}'"
-
-# DO THIS
-cursor.execute("SELECT * FROM users WHERE id = %s", (user_id,))
-```
-
-### File System Safety
-
-```python
-from pathlib import Path
-
-# Prevent path traversal
-def safe_path(base: Path, user_input: str) -> Path:
-    resolved = (base / user_input).resolve()
-    if not resolved.is_relative_to(base.resolve()):
-        raise ValueError("Path traversal detected")
-    return resolved
-```
-
----
-
-## Performance and Caching
-
-- **Profile before optimizing** — `uv run python -m cProfile -s cumtime app/main.py`
-- `@cache` — unbounded, for pure functions with hashable args.
-- `@lru_cache(maxsize=N)` — bounded, for functions with many unique inputs.
-- `__slots__` / `@dataclass(slots=True)` — memory efficiency for data-heavy classes.
-- Prefer generators over lists for large sequences.
-- Use `str.join()` over `+` concatenation in loops.
-
----
-
-## Docstrings
-
-Use Google style. Only document non-obvious behavior — don't restate what the signature already says.
-
-```python
-def retry_request(
-    url: str,
-    max_attempts: int = 3,
-    backoff: float = 1.0,
-) -> httpx.Response:
-    """Send a GET request with exponential backoff retry.
-
-    Retries on 5xx responses and connection errors.
-    Does not retry on 4xx client errors.
-
-    Args:
-        url: Target URL.
-        max_attempts: Maximum number of attempts before raising.
-        backoff: Initial delay between retries in seconds, doubled each attempt.
-
-    Returns:
-        The successful HTTP response.
-
-    Raises:
-        httpx.HTTPStatusError: If all attempts fail with a server error.
-        httpx.ConnectError: If the server is unreachable after all attempts.
-    """
-```
-
-### Rules
-
-- Type all parameters in the signature, not in the docstring.
-- Document `Raises` only for exceptions callers should handle.
-- Skip docstrings on trivial/obvious methods (`__init__` with simple assignment, one-liner helpers).
-- Modules and classes get a one-line docstring if the name isn't self-explanatory.
-
----
-
-## Architecture Boundaries
-
-### Layer Model
-
-```text
-Edges    → app/views/ (HTML) + app/api/ (JSON)
-Core     → app/services/ + app/models/
-Infra    → app/db.py, app/config.py, adapters/
-```
-
-### Rules
-
-- IO at edges only — services and domain must be pure.
-- Business logic lives in `services/` and `domain/`.
-- Keep adapters isolated — wrap external APIs behind interfaces.
-- Dependencies point inward: edges → core → infra (never reverse).
-
-### Canonical Layout
-
-```text
-src/myapp/
-├── main.py          # Entry point
-├── api/             # JSON endpoints
-├── views/           # HTML pages
-├── services/        # Business logic
-├── domain/          # Models, types, enums
-├── adapters/        # External service wrappers
-├── middlewares/     # Request/response processing
-├── models/          # Pydantic models (if separate from domain)
-├── templates/       # Jinja templates (if using server-side rendering)
-├── core/            # Core utilities, exceptions, context managers
-└── settings.py      # Configuration
-tests/
-├── conftest.py
-├── unit/
-├── integration/
-└── e2e/
-```
-
-### Guidelines
-
-- Keep layers thin — a route handler should call a service, not contain logic.
-- Domain models should have no framework imports.
-- Use dependency injection to wire adapters into services.
-- Config comes from environment, not hardcoded values.
-
----
-
-## Guardrails
-
-- Prefer `uv` over direct `pip` workflows.
-- Keep local checks aligned with CI.
-- Fail fast on lint/type errors before running full test suites.
-- Never commit code that fails `ruff check`.
-- Type check public APIs before merging.
-- Review coverage gaps -- don't inflate with low-value assertions.
-
-## Related
-
-- `skills/pydantic/SKILL.md` -- data validation and settings management
-- `skills/fastapi/SKILL.md` -- web API framework patterns
-- `skills/typer/SKILL.md` -- CLI development with type hints
-- `skills/testing/SKILL.md` -- pytest mechanics and test strategy
-- `skills/uv/SKILL.md` -- package management and virtual environments
+## Core Defaults
+
+Keep these as the default stance before loading deeper refs:
+
+- use `uv`, `uv run`, and `uv add`; avoid direct `pip` workflows -- see
+  `references/uv.md`
+- format with `ruff`, keep naming boring and descriptive, and prefer
+  `pathlib`, f-strings, and absolute imports -- see
+  `references/style.md`
+- type public APIs, use `Protocol` at boundaries, and keep `Any` contained --
+  see `references/types.md`
+- externalize config and secrets with typed settings loaded explicitly at
+  startup -- see `references/config.md`
+- validate external input at system boundaries and convert raw strings or
+  payloads into typed domain values early -- see
+  `references/errors.md`
+- keep IO at the edges, avoid leaking ORM or transport types, and prefer
+  composition and focused modules over clever abstractions -- see
+  `references/design.md` and `references/structure.md`
+- default to sync code unless there is real concurrent I/O pressure; when async
+  is needed, keep the call path async end-to-end -- see `references/async.md`
+- centralize retries, timeouts, and resource cleanup instead of scattering them
+  through business code -- see `references/resilience.md`,
+  `references/resources.md`, and `references/anti-patterns.md`
+- make background work idempotent and explicit about job state, retries, and
+  ownership boundaries -- see `references/jobs.md`
+- keep observability structured and separate from core business logic -- see
+  `references/observability.md`
+- test behavior, isolate boundaries, and prefer clear unit and integration
+  coverage over framework-heavy tests -- see `references/tests.md`
+- use `references/perf.md` only after measuring a real bottleneck; do
+  not optimize by guesswork
+
+## Build-Fix Workflow
+
+Fix failures in this order:
+
+1. formatting
+2. lint
+3. markdown
+4. typing
+5. tests
+
+After each fix, re-run the failing check.
+Stop and report if the fix requires architectural change.
+
+Primary refs: `references/style.md`, `references/types.md`,
+`references/tests.md`, and `references/uv.md`.
+
+## Common Build Fixes
+
+| Tool        | Error Pattern             | Fix                                  |
+| ----------- | ------------------------- | ------------------------------------ |
+| ruff format | file would be reformatted | `uv run ruff format <file>`          |
+| ruff check  | import unused             | remove the import                    |
+| ruff check  | missing type annotation   | add annotation                       |
+| ty          | incompatible type         | fix type or add cast                 |
+| ty          | module not found          | add dependency or fix import path    |
+| pytest      | assertion error           | fix logic or update expected value   |
+| pytest      | import error              | fix module path or add `__init__.py` |
+| pytest      | fixture not found         | add `conftest.py`                    |
+
+## Common Debug Patterns
+
+| Symptom                 | Check                                         |
+| ----------------------- | --------------------------------------------- |
+| `TypeError`             | wrong type passed; check function signature   |
+| `AttributeError`        | missing attribute; check object type          |
+| `ImportError`           | missing dependency or circular import         |
+| `KeyError`              | missing dict key; check input data shape      |
+| `TimeoutError`          | slow IO or infinite loop                      |
+| `ValidationError`       | Pydantic model mismatch; check payload        |
+| flaky test              | shared state, timing, or ordering issue       |
+| works locally, fails CI | env difference: deps, Python version, or OS   |
+
+## Debugging Workflow
+
+1. reproduce the failure exactly
+2. record environment details
+3. read the traceback from the bottom up
+4. inspect recent changes with `git log --oneline -10` and `git diff`
+5. isolate the failure boundary
+6. if regression is suspected, use `git bisect`
+7. confirm the fix with the failing test or command
+8. remove temporary debug statements and `breakpoint()` calls
+
+Rules:
+
+- do not guess before reproducing
+- fix the root cause, not only the symptom
+- prefer one hypothesis at a time
+- do not add broad `try/except` to silence errors
+- do not change tests to match broken behavior
+- do not mix bug fixes with refactoring
+
+Primary refs: `references/observability.md`, `references/perf.md`,
+`references/async.md`, and `references/anti-patterns.md`.
+
+## FastAPI Conventions
+
+Keep this section short and framework-adjacent. For async, validation, typing,
+and observability details, load `references/async.md`, `references/errors.md`,
+`references/types.md`, and
+`references/observability.md`.
+
+- prefer `Annotated` for `Path`, `Query`, `Header`, and `Depends`
+- create reusable dependency aliases when they simplify repeated signatures
+- do not use ellipsis `...` for required FastAPI or Pydantic fields
+- prefer explicit return types or `response_model` to validate and filter output
+- use router-level `prefix`, `tags`, and shared dependencies on the router itself
+- default to `def` rather than `async def` when internals may block
+- do not run blocking code inside async handlers
+- prefer HTTPX over Requests
+- do not use deprecated `ORJSONResponse` or `UJSONResponse` shortcuts as a performance crutch
+- do not use Pydantic `RootModel` when a normal typed structure is enough
+
+## Review Focus
+
+When reviewing Python changes, prioritize:
+
+- correctness: edge cases, error paths, race conditions
+- security: boundary validation, secrets, injection, auth checks
+- performance: blocking in async paths, N+1 queries, unbounded loops
+- maintainability: SRP, dead code, magic values, noisy comments
+- convention adherence: naming, style, and existing project patterns
+
+Skip trivial style feedback already enforced by tooling.
+
+## Refactoring Rules
+
+- preserve external behavior
+- do not sneak in feature work
+- do not rewrite stable code just because it looks old
+- reduce complexity only where readability or maintenance clearly improve
+- keep one logical change at a time
+
+## Workflow Cues
+
+- if the work is mostly API contract shape, pair this with `design`
+- if the work is mostly architecture and boundaries, pair this with `arch`
+- if the work is test-first or failure-diagnosis focused, pair this with `quality`
