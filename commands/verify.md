@@ -1,159 +1,134 @@
 ---
 name: verify
-description: Adversarial verification of an implementation. Use after implementing a feature or fix to verify it actually works. The verifier tries to BREAK the implementation, not confirm it.
+description: Adversarial verification of an implementation. Use after a feature, fix, refactor, or CI change to prove it works and try to break it.
 ---
 
 # Verify
 
-Adversarial verification of changes. The goal is to **find what's broken**,
-not to confirm what works.
-
-> _"You will feel the urge to skip checks. Recognize that urge and do
-> the opposite."_
+Verify adversarially. The goal is to find what is broken, not to reassure
+yourself that the change looks fine.
 
 ## Mindset
 
-You are a skeptical reviewer. Your job is to:
+- run the code, do not only read it
+- verify independently from the implementer's assumptions
+- skipped checks count as failure
+- report plain failures without softening them
 
-- **Try to break the implementation**, not confirm it works
-- **Run the code**, not just read it — reading is not verification
-- **Verify independently** — the implementer's tests may be wrong
-- **Report faithfully** — if something fails, say so plainly
+## Verification Phases
 
-Reject rationalizations: "looks correct" (run it), "tests pass"
-(tests may be wrong), "small change" (small changes cause outages).
+### Phase 1: Classify the changed surface
 
-## Process
+Read the diff and classify the change:
 
-### 1. Understand the Change
+- backend API
+- frontend or UI
+- database migration
+- bug fix
+- refactor
+- CLI tool
+- configuration
+- dependencies
 
-- Read the diff: `git diff` or `git diff main...HEAD`
-- Identify: what changed, what should have changed, what could break
-- Load relevant skills for the domain (FastAPI, frontend, etc.)
+Load only the relevant skills for that surface:
 
-### 2. Run Existing Checks
+- `skills/python/SKILL.md` for Python code, typing, validation commands, and runtime behavior
+- `skills/design/SKILL.md` for API, UI, and BFF contracts
+- `skills/security/SKILL.md` for auth, trust boundaries, abuse paths, and exposure risk
+- `skills/quality/SKILL.md` when regression thinking or RCA should shape the verification
+- `skills/cicd/SKILL.md` for GitHub Actions workflow verification
+- `skills/docs/SKILL.md` for documentation-only changes
 
-Execute the project's validation suite:
+### Phase 2: Run the baseline validation suite
+
+For Python repos, the default order is:
 
 ```bash
 uv run ruff format --check .
 uv run ruff check .
+uv run rumdl check .
 uv run ty check
 uv run pytest -v
 ```
 
-Every check must PASS. A skipped check is a FAIL.
+If the repo exposes task aliases, prefer them.
 
-### 3. Verify Specific Behaviors
+For other surfaces, run the closest equivalent first:
 
-For each changed behavior, create a structured check:
+- CI changes: workflow or lint entrypoints from `skills/cicd/SKILL.md`
+- docs-only changes: `uv run rumdl check .`
+- mixed changes: baseline suite plus the surface-specific command
+
+If baseline validation fails, record it before moving on.
+
+### Phase 3: Check changed behaviors directly
+
+For each important behavior, record:
 
 ```text
 ## Check: [description]
-**Command:**
+Command: ...
+Expected: ...
+Observed: ...
+Result: PASS | FAIL
 ```
 
-[exact command or test run]
+A check without a command is not a PASS.
 
-```text
-**Expected:** [what should happen]
-**Observed:** [what actually happened]
-**Result:** PASS | FAIL
-```
+### Phase 4: Probe adversarially
 
-A check without a command block is **not a PASS — it's a SKIP**.
+Try to break the change with:
 
-### 4. Adversarial Probes
+- boundary values: empty, null, max, negative, unicode, long input
+- concurrency: simultaneous calls, shared state, locking, transaction boundaries
+- idempotency: repeat the operation, retry the request, double-submit
+- state transitions: invalid orderings, partial state, missing validation
 
-Attempt to break the implementation with targeted probes:
+### Phase 5: Review security and unintended drift
 
-#### Boundary Values
+Check for:
 
-- Empty inputs, null values, zero-length strings
-- Maximum values, negative numbers, overflow
-- Unicode, special characters, very long strings
+- missing or weakened validation at boundaries
+- auth, permission, or trust-boundary regressions
+- unexpected file changes or generated churn in the diff
+- docs or workflow drift if the change touched commands, skills, hooks, or CI
 
-#### Concurrency
+### Phase 6: Confirm failures are real
 
-- What happens with simultaneous requests?
-- Race conditions in shared state?
-- Database transaction isolation?
+Before issuing FAIL, check:
 
-#### Idempotency
+- is the behavior intentional
+- is it handled elsewhere
+- is it actionable and reproducible
 
-- Does repeating the operation produce the same result?
-- What if the user clicks twice?
-- What if the request is retried?
+## Output
 
-#### State Transitions
-
-- What happens with unexpected state combinations?
-- Can an entity reach an invalid state?
-- Are transitions validated?
-
-### 5. Strategy by Change Type
-
-| Change Type        | Verify                                                               |
-| ------------------ | -------------------------------------------------------------------- |
-| Backend API        | Status codes, validation errors, auth, response shapes               |
-| Frontend           | Renders correctly, interactive states, accessibility, responsiveness |
-| Database migration | Applies cleanly, rollback works, data integrity preserved            |
-| Bug fix            | Original bug is fixed, no regression in related code                 |
-| Refactor           | All existing tests pass, behavior unchanged                          |
-| CLI tool           | Help text, error messages, exit codes, edge cases                    |
-| Configuration      | Valid syntax, all environments covered, secrets not exposed          |
-| Dependencies       | Lock file updated, no conflicts, vulnerable versions checked         |
-
-## Output Format
+Use this format:
 
 ```text
 # Verification Report
 
 ## Summary
-[PASS | FAIL] — [one-line summary]
+[PASS | FAIL] -- one-line assessment
 
 ## Checks
-### Check 1: [description]
-**Command:** ...
-**Expected:** ...
-**Observed:** ...
-**Result:** PASS
-
-### Check 2: [description]
-**Command:** ...
-**Expected:** ...
-**Observed:** ...
-**Result:** FAIL — [why]
+### Check: [description]
+Command: ...
+Expected: ...
+Observed: ...
+Result: PASS | FAIL
 
 ## Adversarial Probes
 ### Probe: [description]
-**Command:** ...
-**Result:** [finding]
+Command: ...
+Result: ...
 
 ## Verdict
-[Overall assessment. If any check is FAIL, the verification FAILS.]
 ```
 
 ## Constraints
 
-- **Read-only**: the verifier does NOT fix issues — only reports them
-- **Evidence-based**: every finding must have a command and output
-- **No assumptions**: do not assume something works without running it
-- **Complete**: verify ALL changed behaviors, not just the happy path
-
-## Before Issuing FAIL
-
-Confirm the failure is real:
-
-- Is the behavior intentional? (Check spec or user request)
-- Is it handled elsewhere? (Check related code)
-- Is it actionable? (Can the implementer actually fix it?)
-
-A FAIL must be specific, reproducible, and actionable.
-
-## What NOT to Do
-
-- **Do not make changes** — verification produces a report, not code
-- **Do not run only the happy path** — test error cases too
-- **Do not trust without running** — execute every check
-- **Do not skip checks** to save time — that defeats the purpose
+- verification is read-only; do not fix issues during the pass
+- do not run only the happy path
+- do not mark something PASS because it "looks correct"
+- do not skip validations to save time

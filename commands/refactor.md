@@ -1,169 +1,68 @@
 ---
 name: refactor
-description: Deep audit and refactoring of the project or a specific area. Analyzes code for clean code principles, SOLID, security, readability, maintainability, and consistency. Use when the user asks to refactor, audit, clean up, improve code quality, or review architecture.
+description: Behavior-preserving structural improvement. Use when the user asks to refactor, simplify, or improve maintainability without changing public behavior.
 ---
 
 # Refactor
 
-Perform a thorough audit and refactoring pass on the project (or a specific
-area if the user provides a scope). The goal is to improve readability,
-maintainability, and security without changing external behavior.
+Refactor to improve structure, readability, or maintainability while preserving
+external behavior.
 
 ## Process
 
-### Phase 1: Understand the Project
+### 1. Understand the current structure
 
-Before changing anything, build a mental model:
+Inspect:
 
-1. Read `CLAUDE.md` and any skill files relevant to the stack.
-2. Scan the project structure — understand modules, layers, and boundaries.
-3. Read recent git history (`git log --oneline -20`) to understand momentum.
-4. Identify the architecture in use (layered, hexagonal, MVC, etc.).
+- architecture and layout
+- recent git history and momentum
+- duplication, coupling, and readability problems
+- validations that protect behavior
 
-### Phase 2: Audit
+Load only the relevant skills:
 
-Launch 3 parallel agents focused on different concerns. Use `model: "sonnet"`
-for each — the scope is well-defined. Reserve `model: "opus"` for the main
-orchestrator if the codebase is large or the architecture is complex.
+- `skills/arch/SKILL.md` for structure, layering, and boundaries
+- `skills/python/SKILL.md` for implementation patterns
+- `skills/quality/SKILL.md` for regression guards
+- `skills/security/SKILL.md` if the change touches sensitive code paths
 
-#### Agent 1: Clean Code and Readability
+### 2. Choose a narrow refactor target
 
-- **Naming** — functions, variables, classes, and modules have clear,
-  intention-revealing names. No abbreviations, no single-letter vars outside
-  tight loops.
-- **Function size** — functions longer than 30 lines likely do too much.
-  Extract sub-functions with descriptive names.
-- **Parameter count** — more than 3-4 parameters suggests a missing
-  abstraction (dataclass, config object, builder).
-- **Comments** — delete comments that restate the code. Keep only WHY
-  comments (hidden constraints, workarounds, non-obvious invariants).
-- **Dead code** — remove unused imports, functions, variables, and
-  unreachable branches.
-- **Magic values** — replace literals with named constants or enums.
+Focus on one maintainability problem at a time, for example:
 
-#### Agent 2: Architecture and SOLID
+- duplicated logic
+- unclear module boundaries
+- high coupling
+- poor naming in recently changed code
+- deeply nested or hard-to-scan flow
+- responsibilities mixed in one class or function
 
-Apply whichever principles fit the project's paradigm:
+### 3. Refactor in small steps
 
-- **Single Responsibility** — each module, class, and function has one
-  reason to change.
-- **Open/Closed** — extend behavior through composition or polymorphism,
-  not by editing existing code paths.
-- **Liskov Substitution** — subtypes must be substitutable for their base
-  types without breaking callers.
-- **Interface Segregation** — no client should depend on methods it does
-  not use. Prefer small, focused protocols/interfaces.
-- **Dependency Inversion** — high-level modules depend on abstractions,
-  not concrete implementations. IO at edges only.
+- make one logical change at a time
+- validate after each meaningful step
+- preserve public behavior unless explicitly asked otherwise
+- keep style churn out of the diff
 
-Also check:
+### 4. Report clearly
 
-- **Layer violations** — does a domain/service module import from the
-  HTTP layer? Does a template import from the database layer?
-- **Circular imports** — detect and break cycles.
-- **God objects** — classes or modules that accumulate unrelated
-  responsibilities.
-- **Coupling** — modules that know too much about each other's internals.
-- **DRY** — near-duplicate code that should be unified. But avoid
-  premature abstraction — three instances is the threshold.
+Summarize:
 
-#### Agent 3: Security and Robustness
-
-- **Input validation** — all external input (HTTP params, file uploads,
-  environment variables, CLI args) is validated at the boundary.
-- **SQL injection** — parameterized queries only, never f-string SQL.
-- **XSS** — output escaping in templates. JX's `autoescape=True` covers
-  Jinja, but check `| safe` and `Markup()` usage.
-- **Path traversal** — user-supplied paths are resolved and confined.
-- **Secret management** — no hardcoded secrets, tokens, or API keys.
-  Check `.env` files are gitignored.
-- **Dependency vulnerabilities** — flag known-vulnerable packages.
-- **Error handling** — sensitive information not leaked in error messages
-  or stack traces. Catch specific exceptions, not bare `except:`.
-- **Authentication/authorization** — verify checks exist on protected
-  routes and are not bypassable.
-- **CSRF/CORS** — verify configuration if the project serves a web API.
-
-### Phase 3: Prioritize
-
-After the audit completes, consolidate findings and rank by impact:
-
-1. **Security** issues — fix immediately.
-2. **Correctness** bugs — fix immediately.
-3. **Maintainability** wins with low risk — refactor.
-4. **Readability** improvements — refactor.
-5. **Nice-to-have** cleanups — refactor if trivial, otherwise note for later.
-
-Skip findings that are false positives or not worth the churn. Do not argue
-with findings — skip or fix.
-
-### Phase 4: Refactor
-
-Apply changes incrementally:
-
-- One logical change at a time. Do not mix a rename with a structural refactor.
-- After each change, run the project's validation suite (lint, type check,
-  tests) before moving to the next change.
-- If tests fail, fix the regression before continuing.
-- Preserve all existing public APIs unless explicitly asked to break them.
-
-### Phase 5: Report
-
-Briefly summarize:
-
-- What was found (grouped by category).
-- What was fixed.
-- What was intentionally skipped and why.
-- Any recommendations that require user input or are out of scope.
+- what was improved
+- what was intentionally left alone
+- what was validated
+- any remaining risks or follow-up ideas
 
 ## Constraints
 
-- Preserve external behavior -- flag needed changes for user decision.
-- No new dependencies without user approval.
-- No rewrites from scratch -- improve incrementally.
-- No generated files (lock files, migrations) unless broken.
-
-## Simplify Pass (Post-Refactor)
-
-After the main refactor, optionally run a 3-agent simplify pass to catch
-remaining issues. Use `model: "haiku"` for these — they scan for patterns
-and don't require deep reasoning.
-
-### Agent 1: Code Reuse
-
-- Duplicate logic that should be unified
-- Existing utilities or helpers that are not being used
-- Standard library features that replace custom implementations
-
-### Agent 2: Code Quality
-
-- Naming improvements for recently changed code
-- Structural issues (nesting depth, parameter count)
-- Alignment with project conventions and standards
-
-### Agent 3: Efficiency
-
-- N+1 patterns in recently changed code
-- Unnecessary allocations or copies
-- Missing lazy evaluation (generators vs lists)
-- Redundant operations that can be eliminated
-
-## Stack-Specific Guidance
-
-Load the relevant project skills before auditing:
-
-- **Python**: `python/SKILL.md` — naming, typing, async, pathlib, logging.
-- **FastAPI**: `fastapi/SKILL.md` — dependency injection, Annotated style.
-- **JX**: `jx/SKILL.md` — component conventions, attrs, assets.
-- **Frontend**: `frontend/SKILL.md` — Tailwind, Solid, accessibility.
-- **Architecture**: `architecture/SKILL.md` — SOLID, DDD, Clean Architecture.
-
-Follow whichever conventions the project already uses. When conventions
-conflict, prefer the project's established pattern over theoretical ideals.
-Consistency within the codebase beats "correctness" in isolation.
+- preserve external behavior
+- do not sneak in feature work
+- do not rewrite stable code just because it looks old
+- do not mix broad renames with structural changes unless required
+- if you uncover a correctness or security bug that requires behavioral change,
+  stop and surface it separately instead of folding it into the refactor
 
 ## Related
 
-- `commands/review.md` — code review with specialized agents.
-- `commands/verify.md` — adversarial verification after changes.
-- `skills/architecture/SKILL.md` — architecture patterns and principles.
+- `commands/review.md`
+- `commands/verify.md`

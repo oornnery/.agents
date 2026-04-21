@@ -1,20 +1,28 @@
 ---
 name: commit
-description: Analyze staged and unstaged changes, group them into small logical commits with precise conventional commit messages. Use when the user asks to commit, save progress, or create commits from current changes. Never use `git add .`, never amend unless asked.
+description: Prepare a clean, reviewable commit from the current working tree. Use when the user wants to save progress with focused commits and precise conventional commit messages.
 ---
 
 # Commit
 
-Create small, focused commits from the current working tree changes. Each
-commit should represent one logical unit of change.
+Create small, coherent commits from the current working tree. Keep staging
+explicit and safe.
 
-Safety rules are in `rules/git.md` — they apply automatically.
+## Safety rules
+
+- never use `git add .` or `git add -A`
+- never amend unless explicitly asked
+- never push unless explicitly asked
+- never skip hooks with `--no-verify`
+- never include secrets or credential-like files
+
+For broader git workflow guidance, use `skills/git/SKILL.md`.
 
 ## Process
 
-### 1. Assess the Working Tree
+### 1. Assess the working tree
 
-Run these in parallel:
+Check:
 
 ```bash
 git status
@@ -23,224 +31,70 @@ git diff --stat --cached
 git log --oneline -5
 ```
 
-### 2. Group Changes into Logical Units
+### 2. Group changes into logical units
 
-- One commit per feature, fix, refactor, or doc change.
-- Separate unrelated file changes into distinct commits.
-- Use `git add -p` to stage hunks selectively when needed.
+- one commit per coherent feature, fix, refactor, docs change, or test change
+- separate unrelated edits
+- if needed, stage hunks with `git add -p`
 
-### 3. Stage and Commit
+### 3. Stage by name
 
-Stage files by name (see `rules/git.md` for safety rules).
-Warn if sensitive files (`.env`, credentials) are in the diff.
+Stage files explicitly. Warn if sensitive files appear in the diff:
 
-Use Conventional Commits: `type(scope): concise imperative description`
+- `.env`
+- `*.pem`
+- `credentials.*`
 
-**Types:** `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`,
-`style`, `ci`, `build`.
+### 4. Write the commit message
 
-- Subject line max 72 characters, imperative mood.
-- Body only when the WHY is not obvious from the subject.
-- Reference issues when applicable: `Closes #123`.
-
-### 5. Create the Commit
-
-Use the system-configured git identity. **Never** append
-`Co-Authored-By: Claude` or any AI signature. The commit must use the
-author already configured in `git config user.name` and
-`git config user.email` — do not override them.
-
-```bash
-git commit -m "$(cat <<'EOF'
-type(scope): description
-
-Optional body.
-EOF
-)"
-```
-
-### 6. Verify
-
-After each commit, run `git status` to confirm success and check
-remaining uncommitted changes. Repeat from step 2 until the working tree
-is clean or only intentionally untracked files remain.
-
-## Examples
-
-Good commit messages:
+Use Conventional Commits:
 
 ```text
-fix(auth): handle expired tokens in refresh flow
-docs(jx): align skill with upstream JX 0.10 API
-refactor(api): extract validation into shared middleware
-feat(dashboard): add date range filter to analytics
-test(models): cover edge cases in user serialization
-chore: update dependencies to latest compatible versions
+type(scope): concise imperative description
 ```
 
-Bad commit messages:
+Common types:
 
-```text
-update files                    <- too vague
-fix bug                         <- which bug?
-WIP                             <- not a meaningful unit
-changes                         <- says nothing
-refactor everything             <- too broad for one commit
-```
+- `feat`
+- `fix`
+- `refactor`
+- `docs`
+- `test`
+- `chore`
+- `perf`
+- `ci`
+- `build`
 
-## Beyond the Commit
+Rules:
 
-After committing, the next steps depend on what you shipped.
+- subject under 72 characters
+- imperative mood
+- add a body only when the WHY is not obvious
+- use the configured git identity
+- do not add AI signatures or co-author lines unless explicitly requested
 
-### Push and Create PR
+### 5. Commit and verify
+
+After each commit:
 
 ```bash
-# Push branch to remote
-git push -u origin feat/my-feature
-
-# Create PR targeting dev (or main for hotfixes)
-gh pr create --base dev --title "feat(scope): description" --body "$(cat <<'EOF'
-## Summary
-- What this PR does and why
-
-## Test Plan
-- [ ] Unit tests pass
-- [ ] Manual testing done
-EOF
-)"
-
-# Create draft PR for early feedback
-gh pr create --draft --title "WIP: feat(scope): description"
+git status
 ```
 
-PR checklist:
+Confirm what remains uncommitted before creating another commit.
 
-- Title follows Conventional Commits format
-- Description explains WHY, not just WHAT
-- No secrets or credentials in diff
-- Tests pass, lint clean
-- No unrelated changes
+## Output
 
-### Tagging
+Report:
 
-Use annotated tags for releases. Lightweight tags for temporary markers.
+- logical commit groups proposed or created
+- final commit message(s)
+- anything intentionally left unstaged
+- any blocked or risky files that were skipped
 
-```bash
-# Annotated tag (for releases)
-git tag -a v1.2.0 -m "feat: add user search and dashboard filters"
-git push origin v1.2.0
+## Constraints
 
-# Tag from a specific commit
-git tag -a v1.2.1 -m "fix: token refresh race condition" abc1234
-git push origin v1.2.1
-
-# List tags
-git tag -l "v1.*"
-
-# Delete a tag (local + remote)
-git tag -d v1.2.0-rc.1
-git push origin --delete v1.2.0-rc.1
-```
-
-Tag naming:
-
-- Release: `v1.2.0` (semver)
-- Pre-release: `v1.3.0-rc.1`, `v1.3.0-beta.1`
-- Never tag unverified code — run validation first
-
-### GitHub Release
-
-Create a release after tagging. This often triggers CI pipelines for
-publishing and container builds.
-
-```bash
-# Auto-generate release notes from commits since last tag
-gh release create v1.2.0 --generate-notes
-
-# Release with custom notes
-gh release create v1.2.0 --title "v1.2.0" --notes "$(cat <<'EOF'
-## Highlights
-- User search with full-text support
-- Dashboard date range filters
-
-## Bug Fixes
-- Fixed token refresh race condition (#42)
-
-## Breaking Changes
-- Removed deprecated `/api/v1/search` endpoint
-EOF
-)"
-
-# Pre-release
-gh release create v1.3.0-rc.1 --prerelease --generate-notes
-
-# Upload build artifacts to release
-gh release upload v1.2.0 dist/*.whl dist/*.tar.gz
-
-# View and list releases
-gh release view v1.2.0
-gh release list
-```
-
-### Package Publishing
-
-```bash
-# Build Python package
-uv build
-
-# Publish to PyPI (triggered by tag in CI, or manual)
-uv publish --token $PYPI_TOKEN
-
-# Publish to test PyPI first
-uv publish --index-url https://test.pypi.org/legacy/ --token $TEST_PYPI_TOKEN
-```
-
-### Container Build and Push
-
-```bash
-# Build container
-docker build -t myapp:latest .
-
-# Tag for GitHub Container Registry
-docker tag myapp:latest ghcr.io/user/myapp:v1.2.0
-
-# Login to GHCR
-echo $GITHUB_TOKEN | docker login ghcr.io -u USERNAME --password-stdin
-
-# Push
-docker push ghcr.io/user/myapp:v1.2.0
-```
-
-In CI (GitHub Actions), container builds are usually triggered by tags.
-See `skills/cicd/SKILL.md` for full workflow definitions.
-
-### Full Release Workflow
-
-```bash
-# 1. Validate on dev
-git checkout dev && git pull
-uv run ruff format --check . && uv run ruff check . && uv run pytest -v
-
-# 2. Create release PR: dev → main
-gh pr create --base main --head dev --title "chore: release v1.2.0"
-
-# 3. After PR is merged, tag main
-git checkout main && git pull
-git tag -a v1.2.0 -m "release: v1.2.0"
-git push origin v1.2.0
-
-# 4. Create GitHub release (triggers CI publish + container)
-gh release create v1.2.0 --generate-notes
-
-# 5. Back-merge main into dev
-git checkout dev
-git merge main
-git push origin dev
-```
-
-## Related
-
-- `rules/git.md` — safety rules (always-on).
-- `skills/git/SKILL.md` — branching, PRs, rebase, worktrees.
-- `skills/cicd/SKILL.md` — GitHub Actions, container builds, publishing.
-- `skills/graphite/SKILL.md` — stacked PRs for large features.
+- do not mix unrelated edits in one commit
+- do not hide failing hooks
+- do not override git author config
+- do not assume a clean tree without checking

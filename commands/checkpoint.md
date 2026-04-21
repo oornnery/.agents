@@ -1,57 +1,83 @@
 ---
 name: checkpoint
-description: Create, verify, or list named checkpoints during implementation. Use to mark known-good states and verify no regressions.
+description: Record or compare a known-good state during implementation. Use before risky work, after a stable milestone, or when comparing the current tree to a previous validated point.
 ---
 
 # Checkpoint
 
-Mark and verify known-good states during implementation.
+Capture and compare known-good states during implementation.
 
 ## Operations
 
 ### Create
 
-Save a named checkpoint at the current state:
+Record a named checkpoint after running the relevant validation suite.
+
+Suggested local format:
 
 ```bash
-# 1. Run full validation suite
-uv run ruff format --check .
-uv run ruff check .
-uv run rumdl check .
-uv run ty check
-uv run pytest -v
-
-# 2. Record state
 mkdir -p .checkpoints
-echo "{\"name\": \"<name>\", \"sha\": \"$(git rev-parse --short HEAD)\", \"branch\": \"$(git branch --show-current)\", \"date\": \"$(date -Iseconds)\", \"status\": \"green\"}" >> .checkpoints/log.jsonl
 ```
 
-A checkpoint is only valid if all checks pass. If any check fails,
-fix it first or record `"status": "yellow"` with a note.
+Store checkpoints in `.checkpoints/log.jsonl`, one JSON object per line.
 
-### Verify
+Example:
 
-Compare current state against a named checkpoint:
+```bash
+jq -n \
+  --arg name "<name>" \
+  --arg sha "$(git rev-parse --short HEAD)" \
+  --arg branch "$(git branch --show-current)" \
+  --arg date "$(date -Iseconds)" \
+  --arg status "green" \
+  --arg note "" \
+  '{name: $name, sha: $sha, branch: $branch, date: $date, status: $status, note: $note}' \
+  >> .checkpoints/log.jsonl
+```
 
-1. Run the validation suite.
-2. Check `git diff <checkpoint-sha>..HEAD --stat` for changes since checkpoint.
-3. Report: what changed, what still passes, any regressions.
+Record:
+
+- checkpoint name
+- current short SHA
+- current branch
+- timestamp
+- validation status: `green` or `yellow`
+- optional note explaining why it is not green
+
+A green checkpoint requires passing validation for the changed surface.
+
+### Verify against a checkpoint
+
+Compare the current state to a previous checkpoint:
+
+1. pick the checkpoint SHA from `.checkpoints/log.jsonl`
+2. rerun the relevant validation suite
+3. inspect `git diff <checkpoint-sha>..HEAD --stat`
+4. summarize what changed and whether validation still holds
 
 ### List
 
+Show the recorded checkpoints and their status:
+
 ```bash
-cat .checkpoints/log.jsonl | jq -r '[.name, .sha, .date, .status] | @tsv'
+jq -r '[.name, .sha, .branch, .status, .date] | @tsv' .checkpoints/log.jsonl
 ```
 
-## When to Use
+## When to use
 
-- Before starting a risky refactor (create checkpoint)
-- After completing a phase (create checkpoint)
-- When something breaks (verify against last green checkpoint)
-- Before merging (verify against initial checkpoint)
+- before a risky refactor
+- after finishing a milestone
+- before comparing regressions
+- before handing off to review or verification
 
 ## Constraints
 
-- Checkpoints are local state (`.checkpoints/` is gitignored).
-- A checkpoint only means "validation passed" -- not "feature complete".
-- If verification shows regressions, do not proceed until fixed.
+- a checkpoint means "known validated state", not "feature complete"
+- if validation is not green, mark it yellow and explain why
+- do not treat stale checkpoints as proof the current tree is healthy
+- do not create a checkpoint without recording what was actually validated
+
+## Related
+
+- `skills/git/SKILL.md`
+- `commands/verify.md`
