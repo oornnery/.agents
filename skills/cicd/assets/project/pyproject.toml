@@ -1,0 +1,114 @@
+[project]
+name = "myapp"
+version = "0.0.1"
+description = ""
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.0",
+    "ruff>=0.11",
+    "rumdl>=0.1.72",
+    "taskipy>=1.14",
+    "ty>=0.0.26",
+]
+
+test = [
+    "pytest>=8.0",
+    "pytest-cov>=6.0",
+    "pytest-asyncio>=0.25",
+    "pytest-xdist>=3.0",
+    "pytest-mock>=3.0",
+]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+src = ["src", "tests"]
+show-fixes = true
+force-exclude = true
+fix = true
+extend-exclude = ["build", "dist", ".venv"]
+
+[tool.ruff.lint]
+preview = false
+explicit-preview-rules = true
+select = [
+    "E",
+    "F",
+    "I",
+    "UP",
+    "B",
+    "SIM",
+    "RUF",
+    "N",
+    "C4",
+    "PT",
+    "TCH",
+    "TID",
+    "PTH",
+    "PERF",
+    "LOG",
+    "G",
+    "S",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = [
+    "S101",
+]
+"**/__init__.py" = [
+    "F401",
+]
+
+[tool.ruff.format]
+quote-style = "single"
+indent-style = "space"
+docstring-code-format = true
+
+[tool.ty.rules]
+all = "error"
+
+[tool.ty.src]
+exclude = ["build", "dist", ".venv", "tests/fixtures/**", "examples/"]
+
+[[tool.ty.overrides]]
+include = ["tests/**", "**/test_*.py"]
+
+[tool.ty.overrides.rules]
+all = "warn"
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+addopts = ["-v", "--strict-markers", "--tb=short"]
+markers = [
+    "slow: long-running tests",
+    "integration: integration-level tests",
+    "e2e: end-to-end flow tests",
+]
+
+[tool.coverage.run]
+source = ["src"]
+branch = true
+omit = ["*/tests/*", "*/__init__.py"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false
+
+[tool.taskipy.tasks]
+fmt = "ruff format ."
+lint = "ruff check . --fix && ty check src"
+test = "pytest -v"
+mdlint = "rumdl check ."
+mdfmt = "rumdl fmt ."
+check = "task fmt && task lint && task mdlint && task test"

@@ -7,6 +7,32 @@ description: Building tool-using LLM agents in Python -- runtime context, prompt
 
 A field guide for building **LLM agents** — systems that reason over context, call tools, persist state, and act inside a bounded runtime.
 
+## Boundary
+
+Use this skill for agent runtime architecture: context collection, prompt
+shape, tool contracts, parsing, permissioning, context reduction, memory, and
+delegation.
+
+- pair with `python` for repo-specific Python implementation conventions and toolchain
+- pair with `arch` when the agent runtime must fit a broader system architecture or SDD
+- pair with `security` when tool risk, approval gates, trust boundaries, or threat modeling matter
+- pair with `quality` when adding eval loops, regression checks, or RCA after agent failures
+- pair with `docs` when the deliverable is a design doc or operational guide rather than the runtime itself
+
+This skill should own the harness and control loop. It should not become a
+grab-bag for every general Python, architecture, or security rule.
+
+## Assets
+
+Use these when a repo-shaped example is more useful than another excerpt.
+
+- `assets/project/pyproject.toml` -- a small Python agent project setup
+- `assets/project/main.py` -- the app entrypoint for a simple agent runtime
+- `assets/project/agent.py` -- agent construction and result typing
+- `assets/project/tools.py` -- tool registration and implementations
+- `assets/project/session.py` -- session memory and transcript shaping
+- `assets/project/tests/test_agent.py` -- a small test surface for the runtime
+
 ## The mental model
 
 An agent is a **runtime harness** around an LLM that does the practical work of:
@@ -80,7 +106,8 @@ For a **coding agent specifically**, it includes:
 - resolved repo root (`git rev-parse --show-toplevel`)
 - current branch and default branch
 - `git status` (short form) and recent commits
-- contents of anchor files: `AGENTS.md`, `README.md`, `pyproject.toml`, `package.json`
+- contents of anchor files: `templates/project/variants/AGENTS.base.md`,
+  project `AGENTS.*.md` variants, `README.md`, `pyproject.toml`, `package.json`
 
 **Generic implementation.** Use `dataclass(frozen=True, slots=True)` for the immutable snapshot, `pathlib.Path` for filesystem work, and a `render` method that returns the prompt-ready text.
 
@@ -118,7 +145,12 @@ import subprocess
 from dataclasses import dataclass, field
 from pathlib import Path
 
-ANCHOR_FILES = ("AGENTS.md", "README.md", "pyproject.toml", "package.json")
+ANCHOR_FILES = (
+    "templates/project/variants/AGENTS.base.md",
+    "README.md",
+    "pyproject.toml",
+    "package.json",
+)
 DOC_SNIPPET_LIMIT = 1200
 
 

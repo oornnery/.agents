@@ -1,0 +1,26 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "./hooks/session-context.sh"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash(git:*)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "./hooks/git-safety-gate.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
