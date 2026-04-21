@@ -1,0 +1,70 @@
+{
+  "version": 1,
+  "skills": {
+    "building-pydantic-ai-agents": {
+      "source": "pydantic/skills",
+      "sourceType": "github",
+      "computedHash": "f30a3037bbb153cccc88d996ea8e74865cbdd788c416139d2b080ae78732354a"
+    },
+    "cicd-expert": {
+      "source": "martinholovsky/claude-skills-generator",
+      "sourceType": "github",
+      "computedHash": "0bdbb10c296b5f70e4fe588f4be30bd77f300b06873557af09498fffcd294360"
+    },
+    "fastapi": {
+      "source": "fastapi/fastapi",
+      "sourceType": "github",
+      "computedHash": "ee23d5285caf055cf164ff45dd34888d381143564666baacab8aa786f22e413a"
+    },
+    "htmx-expert": {
+      "source": "lullabot/htmx-expert",
+      "sourceType": "github",
+      "computedHash": "b0210e33665eef4e97eb3d906829d9108e7d013a97b51fbc0883b5a93d396b75"
+    },
+    "httpx": {
+      "source": "slanycukr/riot-api-project",
+      "sourceType": "github",
+      "computedHash": "8d87f1d11205761d99e94e13446ebe902d1fc66cf8798af6716c6c2a667980c4"
+    },
+    "jx-components": {
+      "source": "jpsca/jx",
+      "sourceType": "github",
+      "computedHash": "79319e8cfe320f9591244458da4b81c4133fa00a4f5986b97519f03b34771017"
+    },
+    "polars": {
+      "source": "davila7/claude-code-templates",
+      "sourceType": "github",
+      "computedHash": "b703c1b4711369853ee437f32202e6d42c9b8d752c3e0b25bf033a34b9c437e7"
+    },
+    "solid": {
+      "source": "ramziddin/solid-skills",
+      "sourceType": "github",
+      "computedHash": "60de610a3c143f79f69552b7da60298bb46c9e8d80ab16c4c111b025823345d1"
+    },
+    "solidjs-patterns": {
+      "source": "different-ai/openwork",
+      "sourceType": "github",
+      "computedHash": "36b8b60c8d67ee2c94edaeca24d2c182369c8bec1cce3289db428d1f029d3949"
+    },
+    "sqlmodel-expert": {
+      "source": "bilalmk/todo_correct",
+      "sourceType": "github",
+      "computedHash": "1c1522cc9d347eb8dc6aeff240da1f2ba613f0a73e376c5a0922d770e5ce7ebf"
+    },
+    "tailwind-design-system": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "computedHash": "988d80e52c67c3692d43cc963b6a048a239895e88b272b061de55370d0f8efc3"
+    },
+    "textual-builder": {
+      "source": "ypares/agent-skills",
+      "sourceType": "github",
+      "computedHash": "8c9a99e033b86a35c780957dc52030f37e4d4143a9ef8620f1d0e0da4eb2852d"
+    },
+    "textual-testing": {
+      "source": "dawiddutoit/custom-claude",
+      "sourceType": "github",
+      "computedHash": "3e42968e67ba8cc4d85d4e3f93c546b3de057280cce117177cc56639fdb313ed"
+    }
+  }
+}

@@ -1,4 +1,5 @@
 {
+  "description": "Permissions profile for Python plus frontend work such as npm, bun, vite, and related GitHub flows.",
   "permissions": {
     "allow": [
       "Bash(uv:*)",
@@ -16,8 +17,6 @@
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(git branch:*)",
-      "Bash(git checkout:*)",
-      "Bash(git stash:*)",
       "Bash(git show:*)",
       "Bash(gh:*)",
       "Bash(ls:*)",

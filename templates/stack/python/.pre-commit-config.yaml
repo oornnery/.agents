@@ -17,3 +17,16 @@ repos:
       - id: check-added-large-files
       - id: check-merge-conflict
       - id: detect-private-key
+
+  - repo: local
+    hooks:
+      - id: ty-check
+        name: ty check
+        entry: uv run ty check src
+        language: system
+        pass_filenames: false
+      - id: rumdl-check
+        name: rumdl check
+        entry: uv run rumdl check .
+        language: system
+        pass_filenames: false

@@ -1,4 +1,5 @@
 {
+  "description": "Enable local lifecycle hooks using the project's ./hooks scripts.",
   "hooks": {
     "PreToolUse": [
       {
@@ -6,11 +7,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/rtk-rewrite.sh"
+            "command": "./hooks/rtk-rewrite.sh"
           },
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/git-safety-gate.sh"
+            "command": "./hooks/git-safety-gate.sh"
           }
         ]
       }
@@ -21,11 +22,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/py-autofix.sh"
-          },
-          {
-            "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/md-autofix.sh"
+            "command": "./hooks/autofix.sh"
           }
         ]
       }
@@ -35,7 +32,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/pre-compact.sh"
+            "command": "./hooks/compact-state.sh"
           }
         ]
       }
@@ -46,7 +43,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/post-compact-reminder.sh"
+            "command": "./hooks/compact-reminder.sh"
           }
         ]
       },
@@ -54,7 +51,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/session-start.sh"
+            "command": "./hooks/session-context.sh"
           }
         ]
       }
@@ -64,11 +61,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/stop-quality-gate.sh"
-          },
-          {
-            "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/evaluate-session.sh"
+            "command": "./hooks/stop-reminders.sh"
           }
         ]
       }
@@ -78,7 +71,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/desktop-notify.sh"
+            "command": "./hooks/desktop-notify.sh"
           }
         ]
       }

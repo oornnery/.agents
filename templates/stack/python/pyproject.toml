@@ -1,0 +1,125 @@
+[project]
+name = "myapp"
+version = "0.0.1"
+description = ""
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+# Development tooling used by the default validation flow.
+dev = [
+    "pre-commit>=4.0",
+    "ruff>=0.11",
+    "rumdl>=0.1.72",
+    "taskipy>=1.14",
+    "ty>=0.0.26",
+]
+
+# Test dependencies stay separate so non-test environments can stay lean.
+test = [
+    "pytest>=8.0",
+    "pytest-cov>=6.0",
+    "pytest-asyncio>=0.25",
+    "pytest-xdist>=3.0",
+    "pytest-mock>=3.0",
+]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+src = ["src", "tests"]  # make first-party import resolution explicit
+show-fixes = true       # print which fixes Ruff applied
+force-exclude = true    # respect excludes even when paths are passed explicitly
+fix = true
+extend-exclude = ["build", "dist", ".venv"]
+
+[tool.ruff.lint]
+preview = false                # stay on stable rules and fixes
+explicit-preview-rules = true  # safer if preview is enabled later
+select = [
+    "E",   # pycodestyle errors: basic style and syntax issues
+    "F",   # pyflakes: unused imports, undefined names, and common logic mistakes
+    "I",   # isort: import ordering and grouping
+    "UP",  # pyupgrade: rewrite code to modern Python syntax
+    "B",   # bugbear: likely bugs and risky patterns
+    "SIM", # simplify: unnecessary branches and overcomplicated constructs
+    "RUF", # Ruff-specific rules and cleanups
+    "N",   # pep8-naming: naming convention checks
+    "C4",  # comprehensions: better list/set/dict comprehension patterns
+    "PT",  # pytest-style: pytest best practices and consistency
+    "TCH", # type-checking: move typing-only imports out of runtime when possible
+    "TID", # tidy-imports: stricter import hygiene
+    "PTH", # pathlib: prefer pathlib over os.path patterns
+    "PERF",# perflint: small Python performance improvements
+    "LOG", # logging: logging API misuse and consistency checks
+    "G",   # logging-format: logging message formatting issues
+    "S",   # bandit-style security checks
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = [
+    "S101", # allow assert in tests
+]
+"**/__init__.py" = [
+    "F401", # allow re-export imports in package __init__.py files
+]
+
+[tool.ruff.format]
+quote-style = "single"       # explicit; aligns with the default project style
+indent-style = "space"       # explicit, even though this is already the default
+docstring-code-format = true # format Python examples inside docstrings
+
+[tool.ty.rules]
+all = "error"
+
+[tool.ty.src]
+exclude = ["build", "dist", ".venv", "tests/fixtures/**", "examples/"]
+
+[[tool.ty.overrides]]
+include = ["tests/**", "**/test_*.py"]
+
+[tool.ty.overrides.rules]
+all = "warn"
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+addopts = ["-v", "--strict-markers", "--tb=short"]
+markers = [
+    "slow: long-running tests",
+    "integration: integration-level tests",
+    "e2e: end-to-end flow tests",
+]
+
+[tool.coverage.run]
+source = ["src"]
+branch = true
+omit = ["*/tests/*", "*/__init__.py"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false
+
+[tool.taskipy.tasks]
+# Fast local formatting pass.
+fmt = "ruff format ."
+
+# Lint and type-check the source tree explicitly.
+lint = "ruff check . --fix && ty check src"
+
+# Keep the default test task simple and visible.
+test = "pytest -v"
+
+# Markdown quality gates.
+mdlint = "rumdl check ."
+mdfmt = "rumdl fmt ."
+
+# Full local validation flow.
+check = "task fmt && task lint && task mdlint && task test"

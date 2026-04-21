@@ -1,4 +1,5 @@
 {
+  "description": "Permissions profile for Python-focused work with uv, git, gh, and related tooling.",
   "permissions": {
     "allow": [
       "Bash(uv:*)",
@@ -10,8 +11,6 @@
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(git branch:*)",
-      "Bash(git checkout:*)",
-      "Bash(git stash:*)",
       "Bash(git show:*)",
       "Bash(gh:*)",
       "Bash(ls:*)",

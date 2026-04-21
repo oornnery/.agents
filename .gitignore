@@ -2,5 +2,8 @@
 .mcp.json
 .claude/
 settings.json
-exemplos/
 .checkpoints/
+.codex
+.vibe/
+.agents/
+*__pycache__/

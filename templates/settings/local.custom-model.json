@@ -1,0 +1,7 @@
+{
+  "description": "Use a custom Claude model mapping for local testing or organization-specific deployments.",
+  "model": "claude-3-5-sonnet-20241022",
+  "env": {
+    "ANTHROPIC_SMALL_FAST_MODEL": "claude-3-5-haiku-20241022"
+  }
+}

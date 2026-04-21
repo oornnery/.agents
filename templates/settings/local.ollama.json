@@ -1,0 +1,9 @@
+{
+  "description": "Use Ollama through its Anthropic-compatible API with a local model as the default.",
+  "model": "qwen3-coder",
+  "env": {
+    "ANTHROPIC_BASE_URL": "http://localhost:11434",
+    "ANTHROPIC_AUTH_TOKEN": "ollama",
+    "ANTHROPIC_SMALL_FAST_MODEL": "qwen3-coder"
+  }
+}
