@@ -1,7 +1,6 @@
-
 # Python Observability
 
-Instrument Python applications with structured logs, metrics, and traces. When something breaks in production, you need to answer "what, where, and why" without deploying new code.
+Instrument Python apps with structured logs, metrics, traces. Answer "what, where, why" in production without deploying new code.
 
 ## When to Use This Skill
 
@@ -18,15 +17,15 @@ Instrument Python applications with structured logs, metrics, and traces. When s
 
 ### 1. Structured Logging
 
-Emit logs as JSON with consistent fields for production environments. Machine-readable logs enable powerful queries and alerts. For local development, consider human-readable formats.
+Emit logs as JSON with consistent fields. Machine-readable logs enable queries and alerts. Human-readable formats OK for local dev.
 
 ### 2. The Four Golden Signals
 
-Track latency, traffic, errors, and saturation for every service boundary.
+Track latency, traffic, errors, saturation for every service boundary.
 
 ### 3. Correlation IDs
 
-Thread a unique ID through all logs and spans for a single request, enabling end-to-end tracing.
+Thread unique ID through all logs and spans for a single request. Enables end-to-end tracing.
 
 ### 4. Bounded Cardinality
 
@@ -34,11 +33,11 @@ Keep metric label values bounded. Unbounded labels (like user IDs) explode stora
 
 ### 5. One Primary Observability Path
 
-Choose a primary stack for a service and extend it consistently.
+Choose one primary stack per service, extend consistently.
 
-- if the project already uses `structlog`, Prometheus, and OpenTelemetry, extend that path
-- if the project already uses Logfire, prefer its native instrumentation and logging bridge
-- avoid layering multiple overlapping wrappers around the same framework or client
+- Project uses `structlog`, Prometheus, OpenTelemetry -- extend that path
+- Project uses Logfire -- prefer native instrumentation and logging bridge
+- Avoid layering multiple overlapping wrappers around same framework/client
 
 ## Quick Start
 
@@ -134,7 +133,7 @@ def process_request(request: Request) -> Response:
 
 ### Pattern 3: Semantic Log Levels
 
-Use log levels consistently across the application.
+Use log levels consistently.
 
 | Level     | Purpose                       | Examples                          |
 | --------- | ----------------------------- | --------------------------------- |
@@ -167,11 +166,11 @@ logger.error(
 )
 ```
 
-Never log expected behavior at `ERROR`. A user entering a wrong password is `INFO`, not `ERROR`.
+Never log expected behavior at `ERROR`. Wrong password is `INFO`, not `ERROR`.
 
 ### Pattern 4: Correlation ID Propagation
 
-Generate a unique ID at ingress and thread it through all operations.
+Generate unique ID at ingress, thread through all operations.
 
 ```python
 from contextvars import ContextVar
@@ -255,7 +254,7 @@ DB_POOL_USAGE = Gauge(
 )
 ```
 
-Instrument your endpoints:
+Instrument endpoints:
 
 ```python
 import time
@@ -291,7 +290,7 @@ def track_request(func):
 
 ### Pattern 6: Bounded Cardinality
 
-Avoid labels with unbounded values to prevent metric explosion.
+Avoid labels with unbounded values -- prevents metric explosion.
 
 ```python
 # BAD: User ID has potentially millions of values
@@ -313,7 +312,7 @@ REQUEST_COUNT.labels(
 
 ### Pattern 7: Timed Operations with Context Manager
 
-Create a reusable timing context manager for operations.
+Reusable timing context manager for operations.
 
 ```python
 from contextlib import contextmanager
@@ -394,7 +393,7 @@ async def process_order(order_id: str) -> Order:
 
 ### Pattern 9: Logfire Logging and Spans
 
-If the project uses Logfire, prefer its native logging, spans, and instrumentation instead of building a parallel stack.
+If project uses Logfire, prefer native logging, spans, and instrumentation over building parallel stack.
 
 #### Log Levels
 
@@ -410,7 +409,7 @@ logfire.fatal("Fatal error {error}", error=err)
 
 #### Nested Spans
 
-Use spans to expose the structure of an operation, not just that it happened.
+Use spans to expose operation structure, not just that it happened.
 
 ```python
 with logfire.span("HTTP request {method} {url}", method="POST", url=url):
@@ -423,7 +422,7 @@ with logfire.span("HTTP request {method} {url}", method="POST", url=url):
 
 #### Standard Library Logging Integration
 
-For existing projects using the standard `logging` module, route log records through Logfire instead of rewriting every call site.
+For existing projects using `logging`, route records through Logfire instead of rewriting every call site.
 
 ```python
 from logging import basicConfig
@@ -492,7 +491,7 @@ Configure Logfire with `send_to_logfire=False` in test fixtures to prevent produ
 
 ### Pattern 10: Python Integration Reference
 
-If the service uses Logfire, these integrations are the most relevant entrypoints.
+If service uses Logfire, these integrations are the most relevant entrypoints.
 
 #### Web Frameworks
 
@@ -557,14 +556,14 @@ def post_fork(server, worker):
 
 ## Best Practices Summary
 
-1. **Use structured logging** - JSON logs with consistent fields
-2. **Propagate correlation IDs** - Thread through all requests and logs
-3. **Track the four golden signals** - Latency, traffic, errors, saturation
-4. **Bound label cardinality** - Never use unbounded values as metric labels
-5. **Log at appropriate levels** - Don't cry wolf with ERROR
-6. **Include context** - User ID, request ID, operation name in logs
-7. **Use context managers** - Consistent timing and error handling
-8. **Separate concerns** - Observability code shouldn't pollute business logic
-9. **Test your observability** - Verify logs and metrics in integration tests
-10. **Set up alerts** - Metrics are useless without alerting
-11. **Prefer one instrumentation path** - Extend the existing stack instead of doubling telemetry
+1. **Use structured logging** -- JSON logs with consistent fields
+2. **Propagate correlation IDs** -- Thread through all requests and logs
+3. **Track the four golden signals** -- Latency, traffic, errors, saturation
+4. **Bound label cardinality** -- Never use unbounded values as metric labels
+5. **Log at appropriate levels** -- Don't cry wolf with `ERROR`
+6. **Include context** -- User ID, request ID, operation name in logs
+7. **Use context managers** -- Consistent timing and error handling
+8. **Separate concerns** -- Observability code shouldn't pollute business logic
+9. **Test your observability** -- Verify logs and metrics in integration tests
+10. **Set up alerts** -- Metrics are useless without alerting
+11. **Prefer one instrumentation path** -- Extend existing stack, don't double telemetry

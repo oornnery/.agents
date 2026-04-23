@@ -1,12 +1,11 @@
 ---
 name: extract-pattern
-description: Formalize a reusable pattern from recent work. Use when a non-obvious, repeated, proven technique should become a focused local pattern or skill.
+description: Formalize reusable pattern from recent work. Use when non-obvious, repeated, proven technique should become focused local pattern or skill.
 ---
 
 # Extract Pattern
 
-Extract a reusable pattern only when it is proven, non-obvious, and likely to
-help again.
+Extract reusable pattern only when proven, non-obvious, likely to help again.
 
 ## Keep only patterns that are
 
@@ -27,9 +26,9 @@ Skip:
 Look for:
 
 - repeated decisions
-- a technique that solved a real problem cleanly
-- a guardrail that prevented recurrence
-- a structure worth teaching again
+- technique that solved real problem cleanly
+- guardrail that prevented recurrence
+- structure worth teaching again
 
 ### 2. Decide the right home
 
@@ -37,13 +36,13 @@ Choose one:
 
 - existing skill ref
 - new focused skill
-- command or agent doc if it is really procedural
+- command or agent doc if really procedural
 
-Do not duplicate the same idea in multiple places.
+No duplicate ideas across multiple places.
 
 ### 3. Write it small
 
-Target roughly 30-80 lines and keep one pattern per document.
+Target ~30-80 lines, one pattern per doc.
 
 Use this shape:
 
@@ -61,14 +60,13 @@ Add examples only when they materially improve clarity.
 
 ### 4. Confirm before canonizing
 
-Do not turn a pattern into repo guidance until the user has validated that it
-is worth keeping.
+No pattern → repo guidance until user validates worth keeping.
 
 ## Constraints
 
-- keep it focused
-- prefer the smallest natural home
-- avoid creating "learned" clutter that no one will use
+- focused
+- prefer smallest natural home
+- avoid "learned" clutter no one uses
 
 ## Related
 

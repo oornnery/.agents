@@ -1,14 +1,13 @@
-
 # Python Performance Optimization
 
-Comprehensive guide to profiling, analyzing, and optimizing Python code for better performance, including CPU profiling, memory optimization, and implementation best practices.
+Profiling, analyzing, optimizing Python performance — CPU, memory, implementation best practices.
 
 ## When to Use This Skill
 
-- Identifying performance bottlenecks in Python applications
-- Reducing application latency and response times
+- Identifying performance bottlenecks
+- Reducing latency and response times
 - Optimizing CPU-intensive operations
-- Reducing memory consumption and memory leaks
+- Reducing memory consumption and leaks
 - Improving database query performance
 - Optimizing I/O operations
 - Speeding up data processing pipelines
@@ -19,17 +18,17 @@ Comprehensive guide to profiling, analyzing, and optimizing Python code for bett
 
 ### 1. Profiling Types
 
-- **CPU Profiling**: Identify time-consuming functions
-- **Memory Profiling**: Track memory allocation and leaks
-- **Line Profiling**: Profile at line-by-line granularity
+- **CPU Profiling**: Find time-consuming functions
+- **Memory Profiling**: Track allocation and leaks
+- **Line Profiling**: Line-by-line granularity
 - **Call Graph**: Visualize function call relationships
 
 ### 2. Performance Metrics
 
-- **Execution Time**: How long operations take
-- **Memory Usage**: Peak and average memory consumption
+- **Execution Time**: Operation duration
+- **Memory Usage**: Peak and average consumption
 - **CPU Utilization**: Processor usage patterns
-- **I/O Wait**: Time spent on I/O operations
+- **I/O Wait**: Time spent on I/O
 
 ### 3. Optimization Strategies
 
@@ -406,27 +405,27 @@ print(f"Inline: {inline_time:.4f}s")
 print(f"Function calls: {function_time:.4f}s")
 ```
 
-Advanced patterns are included below in the "Advanced Reference" section.
+Advanced patterns in "Advanced Reference" section below.
 
 ## Best Practices
 
-1. **Profile before optimizing** - Measure to find real bottlenecks
-2. **Focus on hot paths** - Optimize code that runs most frequently
-3. **Use appropriate data structures** - Dict for lookups, set for membership
-4. **Avoid premature optimization** - Clarity first, then optimize
-5. **Use built-in functions** - They're implemented in C
-6. **Cache expensive computations** - Use lru_cache
-7. **Batch I/O operations** - Reduce system calls
+1. **Profile before optimizing** — Measure to find real bottlenecks
+2. **Focus on hot paths** — Optimize most frequently run code
+3. **Use appropriate data structures** — Dict for lookups, set for membership
+4. **Avoid premature optimization** — Clarity first, then optimize
+5. **Use built-in functions** — Implemented in C
+6. **Cache expensive computations** — Use `lru_cache`
+7. **Batch I/O operations** — Reduce system calls
 8. **Use generators** for large datasets
 9. **Consider NumPy** for numerical operations
-10. **Profile production code** - Use py-spy for live systems
+10. **Profile production code** — Use py-spy for live systems
 
 ## Common Pitfalls
 
 - Optimizing without profiling
 - Using global variables unnecessarily
 - Not using appropriate data structures
-- Creating unnecessary copies of data
+- Creating unnecessary data copies
 - Not using connection pooling for databases
 - Ignoring algorithmic complexity
 - Over-optimizing rare code paths
@@ -434,7 +433,7 @@ Advanced patterns are included below in the "Advanced Reference" section.
 
 ## Python Performance Optimization — Advanced Reference
 
-Advanced optimization techniques including NumPy vectorization, caching, memory management, parallelization, async I/O, database optimization, and benchmarking tools.
+NumPy vectorization, caching, memory management, parallelization, async I/O, database optimization, benchmarking tools.
 
 ## Advanced Optimization
 

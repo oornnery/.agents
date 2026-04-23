@@ -2,8 +2,7 @@
 
 ## Select and With Columns
 
-Use `select()` for shape-changing output and `with_columns()` when preserving
-existing columns.
+`select()` changes shape. `with_columns()` keeps existing columns.
 
 ```python
 df.select('name', 'age')
@@ -25,7 +24,7 @@ df.filter(
 )
 ```
 
-Prefer multiple filter arguments for simple `AND` conditions.
+Multiple filter arguments for simple `AND` conditions.
 
 ## Group By and Aggregation
 
@@ -36,11 +35,9 @@ df.group_by('department').agg(
 )
 ```
 
-Use:
-
 - `pl.len()` for row counts
 - explicit aliases for outputs
-- grouped aggregations instead of Python post-processing
+- grouped aggregations over Python post-processing
 
 ## Conditional Logic
 
@@ -54,8 +51,7 @@ df.with_columns(
 )
 ```
 
-Keep conditions readable. Pull repeated sub-expressions into variables if
-needed.
+Keep conditions readable. Pull repeated sub-expressions into variables.
 
 ## Joins
 
@@ -64,16 +60,9 @@ left.join(right, on='id', how='left')
 left.join(other, left_on='user_id', right_on='id', how='inner')
 ```
 
-Common join types:
+Common join types: `inner`, `left`, `full`, `semi`, `anti`, `cross`
 
-- `inner`
-- `left`
-- `full`
-- `semi`
-- `anti`
-- `cross`
-
-Be explicit about suffixes if overlapping columns exist.
+Explicit suffixes when columns overlap.
 
 ## Concatenation
 
@@ -83,16 +72,13 @@ pl.concat([df1, df2], how='horizontal')
 pl.concat([df1, df2], how='diagonal')
 ```
 
-Use:
-
-- `vertical` for same-schema row stacking
-- `horizontal` for column stacking with equal row counts
-- `diagonal` when schemas differ
+- `vertical` -- same-schema row stacking
+- `horizontal` -- column stacking, equal row counts
+- `diagonal` -- schemas differ
 
 ## Pivot and Unpivot
 
-Use pivot when distinct values should become columns.
-Use unpivot when wide data should become long.
+Pivot: distinct values become columns. Unpivot: wide data becomes long.
 
 ```python
 df.pivot(values='amount', index='customer', on='month')
@@ -108,10 +94,10 @@ df.with_columns(
 )
 ```
 
-Use these instead of join-back patterns when you need per-row group context.
+Use instead of join-back patterns for per-row group context.
 
 ## Guardrails
 
-- do not chain many opaque transforms without aliases or intermediate naming
-- do not use Python loops for work that belongs in expressions
-- do not let joins and pivots silently reshape the schema without review
+- do not chain opaque transforms without aliases or intermediate naming
+- do not use Python loops for expression-level work
+- do not let joins/pivots silently reshape schema without review

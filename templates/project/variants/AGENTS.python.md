@@ -4,8 +4,8 @@
 
 <!--
 Python project overlay.
-Use for Python applications, services, packages, or internal tools that need
-project-specific stack, commands, layout, and validation entrypoints.
+Use for Python apps, services, packages, internal tools needing
+project-specific stack, commands, layout, validation entrypoints.
 -->
 
 ## Project Description
@@ -42,16 +42,15 @@ uv run ty check src
 uv run pytest -v
 ```
 
-If the project exposes task aliases, prefer them when they map cleanly to the
-real commands.
+Prefer task aliases when they map cleanly to real commands.
 
 ## Python Onboarding Focus
 
-- treat `pyproject.toml` as the primary source of truth
-- identify the real app entrypoint, package root, and test layout before editing
-- inspect how config is loaded and where environment-specific behavior lives
-- confirm whether the project is app-first, library-first, CLI-first, or mixed
-- inspect recent commits to understand current momentum and local conventions
+- `pyproject.toml` = source of truth
+- identify app entrypoint, package root, test layout before editing
+- inspect config loading, env-specific behavior location
+- confirm project type: app-first, library-first, CLI-first, or mixed
+- inspect recent commits for momentum and local conventions
 
 ## Toolchain Verification
 
@@ -82,43 +81,35 @@ tests/
 
 ## Python-Specific Defaults
 
-- keep IO at the edges and core logic easy to test
-- prefer explicit types on public functions and boundaries
-- validate external input at boundaries, not in internal helpers
-- use `pathlib`, `logging`, and parameterized queries
-- prefer sync code by default; use async only when the full path benefits from it
-- keep modules focused and package boundaries obvious
+- IO at edges, core logic testable
+- explicit types on public fns and boundaries
+- validate external input at boundaries, not internal helpers
+- use `pathlib`, `logging`, parameterized queries
+- sync by default; async only when full path benefits
+- focused modules, obvious package boundaries
 
 ## Preferred Libraries
 
-- use `Pydantic` for validated external data, typed settings, and explicit
-  contracts
-- use `HTTPX` for sync and async HTTP work instead of older HTTP clients
-- use `Parsel` when the project needs HTML or XML extraction
-- use `Polars` when the project needs dataframe-style analytics or tabular data
-  processing
-- use `SQLModel` when the project benefits from typed SQLAlchemy-based models
-  and schema-like ergonomics for persistence
+- `Pydantic` for validated external data, typed settings, explicit contracts
+- `HTTPX` for sync/async HTTP instead of older clients
+- `Parsel` for HTML/XML extraction
+- `Polars` for dataframe-style analytics or tabular data processing
+- `SQLModel` for typed SQLAlchemy-based models and schema-like persistence ergonomics
 
 ## Toolchain and Package Rules
 
-- use `uv` as the single package and environment workflow
-- add runtime dependencies with `uv add` and development dependencies with
-  `uv add --dev`
-- use `uv run` for project commands and `uvx` for one-off tools outside the
-  project environment
-- keep `pyproject.toml` and `uv.lock` as the source of truth for installs
-- prefer task aliases only when they stay readable and map cleanly to the real
-  commands
-- keep packaging metadata, entrypoints, and dependency groups explicit when the
-  project ships a library or CLI
+- `uv` as single package/environment workflow
+- `uv add` for runtime deps, `uv add --dev` for dev deps
+- `uv run` for project commands, `uvx` for one-off tools outside project
+- `pyproject.toml` and `uv.lock` = source of truth for installs
+- task aliases only when readable and map cleanly to real commands
+- packaging metadata, entrypoints, dep groups explicit when shipping library or CLI
 
 ## UV Inline Scripts
 
-For true single-file scripts, prefer inline metadata over a full package layout
-when the script is small and standalone.
+For single-file scripts, prefer inline metadata over full package layout when script is small and standalone.
 
-Use this pattern:
+Pattern:
 
 ```python
 # /// script
@@ -136,104 +127,91 @@ Optional shebang:
 #!/usr/bin/env -S uv run
 ```
 
-Promote the script to a real project once it grows multiple modules, multiple
-commands, or shared reusable logic.
+Promote to real project once it grows multiple modules, commands, or shared logic.
 
 ## Structure and Boundary Rules
 
-- keep package boundaries obvious and module responsibilities focused
-- keep public imports deliberate; use `__all__` when a module exposes a public
-  surface
-- keep routes, CLI entrypoints, jobs, and adapters thin
-- move reusable logic into `core/` or `services/`
-- keep schemas, settings, and persisted models separate when their shapes differ
-- do not leak ORM, transport, or framework types into reusable logic unless the
-  project is intentionally framework-bound
-- prefer absolute imports when they improve clarity
+- obvious package boundaries, focused module responsibilities
+- deliberate public imports; use `__all__` for public surface
+- routes, CLI entrypoints, jobs, adapters stay thin
+- reusable logic in `core/` or `services/`
+- schemas, settings, persisted models separate when shapes differ
+- no ORM, transport, or framework types in reusable logic unless intentionally framework-bound
+- absolute imports when they improve clarity
 
 ## Pythonic Defaults
 
-- prefer small, well-named functions over class-heavy designs
-- use dataclasses or Pydantic models when structure matters; use plain classes only when behavior justifies them
-- prefer explicit return types at boundaries
-- use `Enum` for fixed sets instead of free-form strings
-- keep imports clean and absolute when practical
-- use context managers for files, connections, and temporary resources
-- raise specific exceptions that are useful to callers
+- small well-named fns over class-heavy designs
+- dataclasses or Pydantic models when structure matters; plain classes only when behavior justifies
+- explicit return types at boundaries
+- `Enum` for fixed sets, not free-form strings
+- clean absolute imports when practical
+- context managers for files, connections, temp resources
+- raise specific exceptions useful to callers
 
 ## Typing and Data Modeling Rules
 
-- type public functions, boundary contracts, and important internal helpers
-- use `Protocol` for structural boundaries and lightweight interfaces
-- use `TypedDict` when dict keys are known and still need mapping semantics
-- use dataclasses for plain internal data and Pydantic models for validated
-  external shapes
-- contain `Any`, unchecked casts, and untyped third-party surfaces at the edge
-- prefer narrowing, helper types, and explicit conversion over informal
-  assumptions
-- use `Annotated` or semantic wrappers when raw primitives become ambiguous
+- type public fns, boundary contracts, important internal helpers
+- `Protocol` for structural boundaries and lightweight interfaces
+- `TypedDict` when dict keys known and need mapping semantics
+- dataclasses for plain internal data, Pydantic for validated external shapes
+- contain `Any`, unchecked casts, untyped third-party surfaces at edge
+- prefer narrowing, helper types, explicit conversion over informal assumptions
+- `Annotated` or semantic wrappers when raw primitives become ambiguous
 
 ## Data, Config, and Runtime Rules
 
-- keep settings and secrets outside the codebase
-- make config loading explicit and typed
-- keep schema models separate from persistence models when the shapes differ
-- treat file system, subprocess, database, and network calls as edge concerns
-- default to sync code unless async clearly improves the end-to-end path
+- settings and secrets outside codebase
+- config loading explicit and typed
+- schema models separate from persistence models when shapes differ
+- filesystem, subprocess, database, network = edge concerns
+- sync by default; async only when end-to-end path clearly benefits
 
 ## Validation, Error, and Design Rules
 
-- validate external input at boundaries only, then pass typed values inward
-- keep validation, parsing, and normalization close to the edge
-- raise exceptions that match the real failure and help the caller react
-- make partial failure behavior explicit in batch, retry, or streaming flows
-- prefer composition over inheritance-heavy designs
-- introduce abstractions only when duplication is real and repeating
-- avoid god modules, hidden global state, flag-argument APIs, and convenience
-  wrappers that hide side effects
-- keep retry, timeout, and backoff policy centralized instead of scattering it
-  through business logic
+- validate external input at boundaries only, pass typed values inward
+- validation, parsing, normalization close to edge
+- raise exceptions matching real failure, helping caller react
+- partial failure behavior explicit in batch, retry, streaming flows
+- composition over inheritance-heavy designs
+- abstractions only when duplication is real and repeating
+- avoid god modules, hidden global state, flag-arg APIs, convenience wrappers hiding side effects
+- retry, timeout, backoff policy centralized, not scattered through business logic
 
 ## Async, Job, and Resource Rules
 
-- default to sync code; switch to async only when the full path benefits from it
-- if async is needed, keep the call path async end-to-end
-- keep background jobs idempotent and explicit about ownership, retries, and
-  lifecycle
-- use context managers for files, connections, and temporary resources
-- make cleanup, cancellation, and timeout behavior visible
-- treat streaming responses and long-lived resources as explicit lifetime
-  problems, not incidental details
+- sync by default; async only when full path benefits
+- if async needed, keep call path async end-to-end
+- background jobs idempotent, explicit on ownership, retries, lifecycle
+- context managers for files, connections, temp resources
+- cleanup, cancellation, timeout behavior visible
+- streaming responses and long-lived resources = explicit lifetime problems
 
 ## Logging and Error Handling
 
-- use `logging` for application logs and structured context
-- avoid `print` except for intentional CLI output
-- log enough to debug failures without leaking secrets or full payloads
-- fail loudly and specifically instead of hiding broken states
+- `logging` for app logs and structured context
+- `print` only for intentional CLI output
+- log enough to debug failures, no secret or payload leaks
+- fail loudly and specifically, never hide broken states
 
 ## Observability, Performance, and Testing Rules
 
-- keep logging structured and consistent across services, jobs, and handlers
-- add metrics or traces when the project needs operational visibility, but keep
-  the instrumentation at the edges
-- profile and measure before optimizing; do not optimize by guesswork
-- treat database round-trips, repeated parsing, large object copies, and
-  unbounded loops as first suspects
-- test behavior, edge cases, error paths, and historical regressions
-- keep many focused unit tests, a smaller set of integration tests, and only a
-  few end-to-end tests
-- mock external boundaries, not the logic under test
+- structured consistent logging across services, jobs, handlers
+- metrics/traces when project needs operational visibility; instrumentation at edges
+- profile and measure before optimizing; no guesswork optimization
+- DB round-trips, repeated parsing, large object copies, unbounded loops = first suspects
+- test behavior, edge cases, error paths, historical regressions
+- many focused unit tests, smaller integration set, few e2e tests
+- mock external boundaries, not logic under test
 
 ## Python Review Focus
 
-- look for hidden IO inside reusable logic
-- look for weak or missing boundary validation
-- look for ORM, transport, or framework types leaking into shared code
-- look for uncontained `Any`, unchecked casts, or type-eroding helpers
-- look for retries, timeouts, cleanup, and partial failure behavior hidden in
-  business code
-- look for tests that overfit implementation details instead of behavior
+- hidden IO inside reusable logic
+- weak or missing boundary validation
+- ORM, transport, framework types leaking into shared code
+- uncontained `Any`, unchecked casts, type-eroding helpers
+- retries, timeouts, cleanup, partial failure hidden in business code
+- tests overfitting implementation details instead of behavior
 
 ## Common Build Fixes
 
@@ -263,30 +241,29 @@ commands, or shared reusable logic.
 
 ## When the Project Includes FastAPI
 
-- use `Annotated` for request parameters and dependencies
-- keep routes thin and move orchestration into `services/` or `core/`
-- use explicit return types or `response_model` for public handlers
-- prefer `def` instead of `async def` when the internals block
-- do not run blocking file, database, or network work inside async handlers
-- keep auth, validation, uploads, callbacks, and error shapes explicit at the
-  edge
+- `Annotated` for request parameters and dependencies
+- routes thin, orchestration in `services/` or `core/`
+- explicit return types or `response_model` for public handlers
+- `def` instead of `async def` when internals block
+- no blocking file, database, or network work inside async handlers
+- auth, validation, uploads, callbacks, error shapes explicit at edge
 
 ## Python Checklist
 
 ### Project Setup
 
-- [ ] `pyproject.toml` is the source of truth
-- [ ] dependencies and dev dependencies are explicit
-- [ ] validation entrypoints are clear
+- [ ] `pyproject.toml` is source of truth
+- [ ] dependencies and dev dependencies explicit
+- [ ] validation entrypoints clear
 - [ ] config and secrets stay out of source code
 
 ### Code Structure
 
-- [ ] core logic stays reusable and testable
+- [ ] core logic reusable and testable
 - [ ] services orchestrate workflows without hiding side effects
-- [ ] models and schemas are explicit
-- [ ] database and external IO stay at the edges
-- [ ] package boundaries and public imports stay intentional
+- [ ] models and schemas explicit
+- [ ] database and external IO at edges
+- [ ] package boundaries and public imports intentional
 
 ### Quality Gates
 
@@ -298,20 +275,20 @@ commands, or shared reusable logic.
 
 ### Correctness and Safety
 
-- [ ] boundary validation is explicit
-- [ ] file paths and external input are validated
-- [ ] parameterized queries are used
-- [ ] retries, timeouts, and cleanup behavior are explicit
-- [ ] logging is structured and useful
-- [ ] errors are specific and actionable
+- [ ] boundary validation explicit
+- [ ] file paths and external input validated
+- [ ] parameterized queries used
+- [ ] retries, timeouts, cleanup behavior explicit
+- [ ] logging structured and useful
+- [ ] errors specific and actionable
 
 ### Testing
 
 - [ ] unit tests cover core logic
 - [ ] integration tests cover database and external systems
 - [ ] regression tests protect historical failures
-- [ ] fixtures stay focused and maintainable
-- [ ] performance-sensitive paths are measured before optimization
+- [ ] fixtures focused and maintainable
+- [ ] performance-sensitive paths measured before optimization
 
 ## Testing Focus
 

@@ -2,7 +2,7 @@
 
 ## Mental Shift
 
-Polars is not pandas with different method names.
+Polars != pandas with different method names.
 
 Key shifts:
 

@@ -2,7 +2,7 @@
 
 ## Full Page vs Fragment
 
-For important routes, let the server support both:
+Important routes support both:
 
 - full page for direct navigation
 - fragment for `HX-Request`
@@ -18,12 +18,12 @@ def is_htmx(request: Request) -> bool:
 This keeps:
 
 - refresh and deep links working
-- server rendering as the source of truth
+- server rendering as source of truth
 - partial UI flows easy to reason about
 
 ## Template Organization
 
-A simple pattern:
+Simple pattern:
 
 ```text
 templates/
@@ -36,18 +36,18 @@ templates/
       _errors.jinja
 ```
 
-Use full-page templates for navigation and smaller partials for swaps.
+Use full-page templates for navigation, smaller partials for swaps.
 
 ## Form Validation
 
-For invalid input:
+Invalid input:
 
-- return the form fragment again
+- return form fragment again
 - preserve entered values
 - show field or form errors
-- use `422` when the request shape is valid but the content is not
+- use `422` when request shape valid but content invalid
 
-This makes validation:
+Makes validation:
 
 - inspectable in tests
 - easier to reason about in logs
@@ -66,7 +66,7 @@ Useful HX headers:
 - `HX-Retarget`
 - `HX-Reswap`
 
-Use them sparingly and intentionally. Prefer template-driven flows first.
+Use sparingly and intentionally. Prefer template-driven flows first.
 
 ## OOB Update Pattern
 
@@ -89,7 +89,7 @@ Bad fit:
 
 ## Inline Field Validation
 
-Use field-level validation when it genuinely helps the form flow.
+Use field-level validation when it genuinely helps form flow.
 
 ```html
 <input
@@ -101,36 +101,33 @@ Use field-level validation when it genuinely helps the form flow.
 <span class="validation"></span>
 ```
 
-Keep the server response small and specific.
+Keep server response small and specific.
 
 ## Error Handling
 
-Use status codes that match the failure:
+Use status codes matching failure:
 
-- `200` for successful fragment refresh
-- `201` for created resources when the distinction matters
-- `204` for actions with no swap body
-- `401` and `403` for auth boundaries
-- `404` for missing resources
-- `409` for state conflicts
-- `422` for semantic validation failures
+- `200` successful fragment refresh
+- `201` created resources when distinction matters
+- `204` actions with no swap body
+- `401` and `403` auth boundaries
+- `404` missing resources
+- `409` state conflicts
+- `422` semantic validation failures
 
-Keep error fragments readable. Do not leak stack traces or sensitive details
-into HTML responses.
+Keep error fragments readable. Do not leak stack traces or sensitive details into HTML responses.
 
 ## Security Rules
 
 - escape template output by default
 - include CSRF tokens for state-changing requests
-- validate permissions on fragment endpoints the same way you would for full
-  routes
+- validate permissions on fragment endpoints same as full routes
 - do not trust hidden fields as authorization signals
-- do not assume htmx requests are safer than any other request
+- do not assume htmx requests safer than any other request
 
 ## Review Focus
 
-- check whether full-page and fragment behaviors stay consistent
-- check whether partials map to stable UI boundaries
-- check whether headers and OOB updates are intentional, not incidental
-- check whether validation and auth responses remain understandable when
-  requested asynchronously
+- check full-page and fragment behaviors stay consistent
+- check partials map to stable UI boundaries
+- check headers and OOB updates intentional, not incidental
+- check validation and auth responses remain understandable when requested asynchronously

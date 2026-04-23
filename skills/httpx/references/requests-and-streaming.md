@@ -39,8 +39,7 @@ with open("report.csv", "rb") as handle:
     )
 ```
 
-Use the right request shape for the upstream contract. Do not manually build
-multipart bodies or query strings when HTTPX already supports them.
+Use right request shape for upstream contract. Do not manually build multipart bodies or query strings -- HTTPX already supports them.
 
 ## Pagination Pattern
 
@@ -63,9 +62,9 @@ async def list_all(client: httpx.AsyncClient) -> list[dict]:
 
 Guardrails:
 
-- cap page count when the upstream can misbehave
-- prefer cursors when the service exposes them
-- keep pagination policy in the adapter, not sprinkled across callers
+- cap page count when upstream can misbehave
+- prefer cursors when service exposes them
+- keep pagination policy in adapter, not sprinkled across callers
 
 ## Streaming Downloads
 
@@ -105,8 +104,7 @@ def iter_chunks() -> bytes:
 response = client.post("/upload", content=iter_chunks())
 ```
 
-Keep upload generators focused on bytes production. Do not mix domain logic and
-transport iteration.
+Keep upload generators focused on bytes production. Do not mix domain logic and transport iteration.
 
 ## NDJSON or Line Streams
 
@@ -121,7 +119,7 @@ async with client.stream("GET", "/events") as response:
 
 ## Response Parsing
 
-Keep response parsing explicit and close to the adapter boundary.
+Keep response parsing explicit, close to adapter boundary.
 
 ```python
 from pydantic import BaseModel
@@ -139,9 +137,7 @@ def parse_user(response: httpx.Response) -> User:
 
 ## Guardrails
 
-- do not call `.json()` repeatedly on the same response when one parse will do
-- do not load a huge payload into memory if iteration is enough
-- do not return raw `httpx.Response` objects from higher-level service adapters
-  unless callers genuinely need transport access
-- do not parse untrusted content types blindly; check contract assumptions when
-  needed
+- do not call `.json()` repeatedly on same response -- one parse enough
+- do not load huge payload into memory if iteration suffices
+- do not return raw `httpx.Response` from higher-level service adapters unless callers genuinely need transport access
+- do not parse untrusted content types blindly; check contract assumptions when needed

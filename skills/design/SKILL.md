@@ -5,8 +5,7 @@ description: Design guidance for APIs, user interfaces, and BFF boundaries. Load
 
 # Design
 
-Use this skill when the main question is how the system should present itself to
-clients or users.
+Use skill when main question = how system presents to clients/users.
 
 ## When to Load Each Reference
 
@@ -19,15 +18,15 @@ clients or users.
 
 ## Workflow
 
-1. decide whether the problem is API-facing, UI-facing, or both
-2. define the contract before implementation details
-3. keep naming, states, and failure behavior explicit
-4. add a BFF only if the frontend really needs aggregation or reshaping
+1. decide whether problem is API-facing, UI-facing, or both
+2. define contract before implementation details
+3. keep naming, states, failure behavior explicit
+4. add BFF only if frontend needs aggregation/reshaping
 5. prefer stable patterns over clever shortcuts
-6. keep the surface consistent across related endpoints or components
+6. keep surface consistent across related endpoints/components
 
 ## Shared Rules
 
-- design the happy path and failure path together
-- keep APIs and components predictable before making them flexible
-- add complexity only when the real use case demands it
+- design happy path + failure path together
+- keep APIs/components predictable before flexible
+- add complexity only when real use case demands

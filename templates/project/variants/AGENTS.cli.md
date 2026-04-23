@@ -2,15 +2,11 @@
 
 @.agents/templates/project/variants/AGENTS.base.md
 
-<!--
-CLI application overlay.
-Use for terminal tools, interactive prompts, or automation-oriented command
-line apps where UX, exit behavior, and output discipline need stronger rules.
--->
+<!-- CLI app overlay. Terminal tools, interactive prompts, automation CLIs needing stronger UX/exit/output rules. -->
 
 ## Project Description
 
-<!-- Brief description of who uses the CLI and what workflows it supports -->
+<!-- Who uses CLI, what workflows supported -->
 
 ## Stack
 
@@ -39,65 +35,62 @@ uv run pytest -v
 
 ## CLI UX Rules
 
-- `--help` output must be accurate and easy to scan
-- use exit code `0` for success and non-zero for failure
-- write machine-readable output to stdout and human-readable errors to stderr
-- keep interactive prompts optional when automation use is expected
-- avoid noisy output by default; make verbose output explicit
-- keep colors and rich formatting helpful, not required for correctness
+- `--help` output accurate, scannable
+- exit `0` success, non-zero failure
+- machine-readable -> stdout, human-readable errors -> stderr
+- interactive prompts optional when automation expected
+- quiet by default; verbose opt-in
+- colors/rich formatting helpful, not required for correctness
 
 ## CLI Technology Defaults
 
-- use `argparse` plus `rich-argparse` for simple command-line tools with a small
-  number of commands and flags
-- use `Typer` plus `Rich` when the CLI grows multiple subcommands, richer
-  output, or more structured operator workflows
-- use `Textual` when the project is a real TUI, not just a CLI with colored
-  output
-- keep parsing, workflow execution, and terminal rendering as separate concerns
-- do not introduce a TUI when a normal CLI is enough
+- `argparse` + `rich-argparse` for simple tools with few commands/flags
+- `Typer` + `Rich` for multiple subcommands, richer output, structured workflows
+- `Textual` for real TUI, not just colored CLI
+- parsing, workflow execution, terminal rendering = separate concerns
+- no TUI when CLI sufficient
 
 ## Command Design Rules
 
-- keep subcommands explicit and predictable
-- prefer flags over hidden positional magic
-- make destructive operations obvious before they run
-- separate parsing, workflow orchestration, and output formatting
+- subcommands explicit, predictable
+- flags > hidden positional magic
+- destructive ops obvious before running
+- separate parsing, orchestration, output formatting
 
 ## Output and Automation Rules
 
-- keep machine-readable output stable when promised
-- avoid mixing logs with command output meant for piping
-- make interactive prompts skippable in CI or script contexts
-- keep terminal formatting optional rather than required for correctness
+- machine-readable output stable when promised
+- no mixing logs with pipeable output
+- interactive prompts skippable in CI/scripts
+- terminal formatting optional, not required for correctness
 
 ## CLI Checklist
 
 ### User Experience
 
-- [ ] `--help` is accurate and readable
-- [ ] success goes to stdout and errors go to stderr
-- [ ] exit codes are consistent
-- [ ] verbose or debug output is opt-in
+- [ ] `--help` accurate, readable
+- [ ] success -> stdout, errors -> stderr
+- [ ] exit codes consistent
+- [ ] verbose/debug opt-in
 
 ### Automation
 
-- [ ] interactive prompts can be bypassed when scripting
-- [ ] machine-readable output stays stable if promised
-- [ ] errors are actionable and not overly noisy
+- [ ] interactive prompts bypassable when scripting
+- [ ] machine-readable output stable if promised
+- [ ] errors actionable, not noisy
 
 ### Safety
 
-- [ ] secrets are never printed
-- [ ] dangerous operations require explicit user intent
-- [ ] path handling and file writes are validated
+- [ ] secrets never printed
+- [ ] dangerous ops require explicit intent
+- [ ] path handling, file writes validated
 
 ### Verification
 
-- [ ] help text is tested
-- [ ] stdout and stderr behavior is tested
-- [ ] exit codes are tested
-- [ ] interactive and non-interactive flows are tested
+- [ ] help text tested
+- [ ] stdout/stderr behavior tested
+- [ ] exit codes tested
+- [ ] interactive + non-interactive flows tested
 
 ## Layout
 

@@ -7,21 +7,17 @@ description: Security review, threat modeling, and secure-by-default guidance.
 
 # Security
 
-General application security guidance. Keep this skill framework- and
-language-agnostic. Prefer principles and review patterns that apply across
-APIs, backends, frontends, workers, CLIs, and external integrations.
+Application security guidance. Framework- and language-agnostic. Principles and review patterns across APIs, backends, frontends, workers, CLIs, and external integrations.
 
 ## Boundary
 
-Use this skill for security reasoning, review order, threat modeling, and risk
-prioritization.
+Security reasoning, review order, threat modeling, and risk prioritization.
 
-- pair with `python` when implementing secure behavior in Python code
-- pair with `design` when the risk lives in API shape, BFF boundaries, or UI trust
-- pair with `quality` when a failure needs RCA or a regression guard after a fix
+- pair with `python` for secure Python code
+- pair with `design` for risk in API shape, BFF boundaries, or UI trust
+- pair with `quality` for RCA or regression guards after a fix
 
-Do not turn this skill into framework-specific secure coding notes. Keep the
-focus on universal security principles and review method.
+Not for framework-specific secure coding notes.
 
 ## Assets
 

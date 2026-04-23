@@ -1,8 +1,10 @@
+Can't access script path. Compressing directly per rules:
+
 # Jinja2 Templates
 
 ## Inheritance
 
-Use `extends` and blocks for full-page layouts:
+Use `extends` + blocks for full-page layouts:
 
 ```jinja
 {% extends 'base.jinja' %}
@@ -14,7 +16,7 @@ Use `extends` and blocks for full-page layouts:
 {% endblock %}
 ```
 
-This keeps shared shell markup in one place.
+Shared shell markup stays in one place.
 
 ## Includes
 
@@ -33,7 +35,7 @@ Good fits:
 
 ## Imports and Macros
 
-Use imports and macros for reusable markup helpers:
+Use imports + macros for reusable markup helpers:
 
 ```jinja
 {% from 'macros/forms.jinja' import field_error %}
@@ -42,13 +44,13 @@ Use imports and macros for reusable markup helpers:
 
 Use macros when:
 
-- the markup is small and repeated
-- it needs a stable call contract
-- it helps avoid repeating label, hint, or error markup
+- markup small + repeated
+- needs stable call contract
+- avoids repeating label, hint, or error markup
 
 ## Call Blocks
 
-Use `call` when a macro should wrap caller content:
+Use `call` when macro wraps caller content:
 
 ```jinja
 {% call panel('Settings') %}
@@ -58,7 +60,7 @@ Use `call` when a macro should wrap caller content:
 
 ## Page vs Partial
 
-Keep a clear difference:
+Keep clear separation:
 
 - page templates own full-page content
 - partials own swap targets, components, or sections
@@ -66,7 +68,7 @@ Keep a clear difference:
 
 ## File Organization
 
-A simple pattern:
+Simple pattern:
 
 ```text
 templates/
@@ -84,5 +86,4 @@ templates/
 
 - do not chain too many include layers for simple markup
 - do not make macros responsible for opaque global state
-- do not treat partials like controllers; context should arrive ready enough to
-  render
+- do not treat partials like controllers; context arrives ready enough to render

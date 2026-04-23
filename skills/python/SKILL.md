@@ -5,15 +5,9 @@ description: Python guidance for project onboarding, uv, typing, testing, async,
 
 # Python
 
-Use this skill when the work is primarily Python code, Python tooling, or a
-Python project workflow.
-
 ## Reference Map
 
-Use the core guidance in this file for default project workflow. Load only the
-focused reference that matches the task. Imported skills that previously had
-their own nested references now have that deeper material folded into the
-parent ref, so each file below is self-contained.
+Core guidance here for default workflow. Load only the ref that matches the task. Each ref is self-contained.
 
 ### Project and Toolchain
 
@@ -60,8 +54,7 @@ parent ref, so each file below is self-contained.
 
 ## Assets
 
-Use these when a small but real project shape is more useful than another code
-block.
+Small real project shapes:
 
 - `assets/project/pyproject.toml` -- repo-aligned Python toolchain config
 - `assets/project/src/myapp/main.py` -- a small application entrypoint
@@ -69,18 +62,14 @@ block.
 - `assets/project/tests/test_main.py` -- a matching test module
 - `assets/project/scripts/report.py` -- a standalone `uv` script example
 
-## What Stays Here
+## Policy
 
 Keep this file lean and policy-level.
 
-- Keep here: onboarding, stack defaults, validation order, core Python
-  defaults, debugging workflow, build-fix order, review cues, and FastAPI
-  defaults
-- Move to refs: tool-specific setup, long examples, advanced variants,
-  framework-specific patterns, and subject-specific deep dives
-- Prefer loading one focused ref over growing this file with repeated examples
-- If guidance belongs to a single theme, keep it in that theme's ref instead of
-  duplicating it here
+- Here: onboarding, stack defaults, validation order, core defaults, debug workflow, build-fix order, review cues, FastAPI defaults.
+- Refs: tool-specific setup, long examples, advanced variants, framework-specific patterns.
+- Load one focused ref over growing this file.
+- Guidance for one theme goes in that theme's ref.
 
 ## Project Onboarding
 
@@ -94,13 +83,10 @@ For this stack, `pyproject.toml` usually means a `uv`-managed Python project.
 
 Before editing:
 
-1. verify the toolchain
+1. verify toolchain
 2. identify validation entrypoints
-3. inspect project layout, config loading, and test layout
-4. check recent momentum with `git log --oneline -10`
-
-If dependencies are missing, install them with the native package manager for
-the stack.
+3. inspect layout, config, test setup
+4. check momentum: `git log --oneline -10`
 
 Check validation entrypoints in this order:
 
@@ -114,13 +100,7 @@ Primary refs: `references/uv.md`, `references/structure.md`,
 
 ## Map the Project
 
-Understand before changing:
-
-- repo layout and main packages
-- architecture style already in use
-- how configuration is loaded
-- where tests live and how they are grouped
-- current development momentum from recent commits
+Before changing: repo layout, architecture style, config loading, test location, recent commits.
 
 ## Default Stack
 
@@ -237,16 +217,16 @@ Primary refs: `references/style.md`, `references/types.md`,
 
 ## Common Debug Patterns
 
-| Symptom                 | Check                                         |
-| ----------------------- | --------------------------------------------- |
-| `TypeError`             | wrong type passed; check function signature   |
-| `AttributeError`        | missing attribute; check object type          |
-| `ImportError`           | missing dependency or circular import         |
-| `KeyError`              | missing dict key; check input data shape      |
-| `TimeoutError`          | slow IO or infinite loop                      |
-| `ValidationError`       | Pydantic model mismatch; check payload        |
-| flaky test              | shared state, timing, or ordering issue       |
-| works locally, fails CI | env difference: deps, Python version, or OS   |
+| Symptom                 | Check                                       |
+| ----------------------- | ------------------------------------------- |
+| `TypeError`             | wrong type passed; check function signature |
+| `AttributeError`        | missing attribute; check object type        |
+| `ImportError`           | missing dependency or circular import       |
+| `KeyError`              | missing dict key; check input data shape    |
+| `TimeoutError`          | slow IO or infinite loop                    |
+| `ValidationError`       | Pydantic model mismatch; check payload      |
+| flaky test              | shared state, timing, or ordering issue     |
+| works locally, fails CI | env difference: deps, Python version, or OS |
 
 ## Debugging Workflow
 

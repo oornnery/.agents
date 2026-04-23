@@ -12,16 +12,16 @@ Use this skill when improving project documentation, not only writing prose.
 Use this skill for document structure, readability, docs workflows, ADRs,
 changelogs, and Markdown quality.
 
-- pair with `python` when the doc work is mainly docstrings or Python usage docs
-- pair with `arch` when the document is an ADR or SDD about boundaries and rollout
+- pair with `python` when doc work is mainly docstrings or Python usage docs
+- pair with `arch` when document is an ADR or SDD about boundaries and rollout
 - pair with `design` when documenting API contracts or UI decisions
 
-This skill should shape the documentation artifact itself, not replace the
-domain-specific guidance of the other skills.
+This skill shapes the documentation artifact itself, not replaces domain-specific
+guidance of the other skills.
 
 ## Core Workflow
 
-1. keep the document easy to scan
+1. keep document easy to scan
 2. prefer explicit headings over long uninterrupted text
 3. keep examples copyable and runnable-looking
 4. run `rumdl` after editing Markdown-heavy content
@@ -44,8 +44,8 @@ domain-specific guidance of the other skills.
 ## License
 ```
 
-Quick Start must be copy-paste ready. Usage examples should be runnable or
-close enough to paste with minimal edits.
+Quick Start must be copy-paste ready. Usage examples runnable or close enough
+to paste with minimal edits.
 
 ## ADRs
 
@@ -63,9 +63,9 @@ Use ADRs for meaningful technical decisions.
 ## Consequences
 ```
 
-- create them for major architecture, storage, integration, or versioning choices
+- create for major architecture, storage, integration, or versioning choices
 - number sequentially
-- deprecate or supersede old ADRs instead of deleting them
+- deprecate or supersede old ADRs instead of deleting
 
 ## Changelogs
 
@@ -78,8 +78,7 @@ Follow [Keep a Changelog](https://keepachangelog.com/):
 - Fixed
 - Security
 
-Write entries as work happens; do not reconstruct the whole release from memory
-later.
+Write entries as work happens; do not reconstruct whole release from memory later.
 
 ## Markdown Structure
 
@@ -95,20 +94,20 @@ later.
 - prefer short paragraphs over dense walls of text
 - use bullets for enumerations, commands, and checklists
 - keep bullet phrasing parallel when possible
-- avoid deep nesting unless hierarchy is essential
+- avoid deep nesting unless hierarchy essential
 
 ### Code Blocks
 
 - always fence multi-line code
-- add an info string such as `bash`, `python`, `toml`, or `json`
+- add info string such as `bash`, `python`, `toml`, or `json`
 - keep examples minimal but realistic
 - prefer one command per line in shell examples
 
 ### Links and Tables
 
 - use descriptive link text
-- use tables only when the matrix is genuinely compact
-- prefer sections or bullets when explanations are longer than a phrase
+- use tables only when matrix genuinely compact
+- prefer sections or bullets when explanations longer than a phrase
 
 ### Readability
 
@@ -184,4 +183,4 @@ style = "aligned"
 - keep top-level docs focused; move detail to focused docs when needed
 - document decisions, not just usage
 - examples beat abstract explanation
-- if the doc is hard to scan, it will not get used
+- if doc is hard to scan, it will not get used

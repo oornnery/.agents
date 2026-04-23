@@ -7,9 +7,9 @@ description: GitHub Actions CI guidance for validation gates, workflow permissio
 
 Use this skill for GitHub Actions CI only.
 
-This local skill focuses on pull request and push validation, required checks,
-workflow safety, caching, matrices, artifacts, and workflow verification. It is
-not the place for GitLab CI, Jenkins, ArgoCD, or broader deployment topology.
+Local skill: PR/push validation, required checks,
+workflow safety, caching, matrices, artifacts, workflow verification.
+Not for GitLab CI, Jenkins, ArgoCD, or deployment topology.
 
 ## Boundary
 
@@ -24,45 +24,43 @@ Use this skill for:
 
 Pair with:
 
-- `python` when the CI is mainly `uv`, `ruff`, `ty`, `rumdl`, and `pytest`
-- `quality` when deciding what test depth or verification gates should block merges
+- `python` when CI is mainly `uv`, `ruff`, `ty`, `rumdl`, and `pytest`
+- `quality` when deciding test depth or verification gates that block merges
 - `security` when hardening secrets, provenance, or supply-chain controls
 
-Out of scope here:
+Out of scope:
 
 - GitLab CI and Jenkins
 - runtime deployment architecture
 - Kubernetes rollout strategy
-- release and deployment workflows that are not part of CI
+- release/deployment workflows not part of CI
 
 ## Assets
 
-- `assets/project/.github/workflows/ci.yml` -- a repo-shaped GitHub Actions CI
-  workflow aligned with the local Python toolchain
-- `assets/project/pyproject.toml` -- the matching project config used by the CI
-  workflow
-- `assets/project/src/myapp/main.py` -- a tiny Python entrypoint that gives the
-  CI something real to lint and test
-- `assets/project/tests/test_main.py` -- a matching test module for the example
-  project
+- `assets/project/.github/workflows/ci.yml` -- repo-shaped GitHub Actions CI
+  workflow aligned with local Python toolchain
+- `assets/project/pyproject.toml` -- matching project config used by CI workflow
+- `assets/project/src/myapp/main.py` -- tiny Python entrypoint giving CI
+  something real to lint and test
+- `assets/project/tests/test_main.py` -- matching test module for example project
 
 ## Core Principles
 
 - fail fast: run cheap, high-signal checks early
 - least privilege: declare explicit workflow permissions
-- reproducible builds: use lockfiles, pinned tools, and deterministic install commands
+- reproducible builds: lockfiles, pinned tools, deterministic install commands
 - parallel by default: independent checks should not wait on each other
-- short feedback loops: optimize for PR feedback first
-- auditable automation: make triggers, artifacts, and required checks easy to understand
+- short feedback loops: optimize PR feedback first
+- auditable automation: make triggers, artifacts, required checks easy to understand
 
 ## GitHub CI Workflow
 
-1. choose the trigger surface: `pull_request`, `push`, or both
+1. choose trigger surface: `pull_request`, `push`, or both
 2. set explicit `permissions`
-3. run lint, type, markdown, and test gates before build jobs
-4. keep independent jobs parallel and aggregate only when needed
-5. upload only the artifacts needed for later jobs or debugging
-6. verify the workflow itself with CI-specific tooling
+3. run lint, type, markdown, test gates before build jobs
+4. keep independent jobs parallel; aggregate only when needed
+5. upload only artifacts needed for later jobs or debugging
+6. verify workflow itself with CI-specific tooling
 
 ## Trigger Strategy
 
@@ -79,8 +77,8 @@ Rules:
 
 - use `pull_request` for merge-gating checks
 - use `push` for protected branches that must stay green
-- add `workflow_dispatch` only for manual CI workflows that need operator input
-- avoid running expensive jobs on every branch unless they are truly required
+- add `workflow_dispatch` only for manual CI workflows needing operator input
+- avoid running expensive jobs on every branch unless truly required
 
 For noisy repos, add concurrency control:
 
@@ -92,19 +90,18 @@ concurrency:
 
 ## Permissions
 
-Always declare explicit permissions at the workflow level and only widen them
-per job when required.
+Always declare explicit permissions at workflow level; widen per job only when required.
 
 ```yaml
 permissions:
   contents: read
 ```
 
-Examples of job-scoped widening:
+Job-scoped widening examples:
 
 - `security-events: write` for SARIF upload jobs
 - `id-token: write` for OIDC-backed verification or cloud-authenticated jobs
-- `pull-requests: write` only when the workflow must comment on PRs
+- `pull-requests: write` only when workflow must comment on PRs
 
 Avoid:
 
@@ -114,7 +111,7 @@ Avoid:
 
 ## Default Python CI
 
-This matches the repo's current Python stack and the local CI template.
+Matches repo's current Python stack and local CI template.
 
 ```yaml
 name: CI
@@ -142,8 +139,7 @@ jobs:
       - run: uv run pytest -v
 ```
 
-Use `templates/ci/github/ci.yml` as the repo-aligned starting point when scaffolding a
-new workflow.
+Use `templates/ci/github/ci.yml` as repo-aligned starting point when scaffolding new workflow.
 
 ## Validation Gates
 
@@ -159,7 +155,7 @@ Rules:
 
 - keep build or artifact-producing jobs downstream of validation gates
 - do not hide required failures behind `continue-on-error`
-- use required status checks in branch protection for the real blocking jobs
+- use required status checks in branch protection for real blocking jobs
 - if one stage is flaky, fix the flake; do not downgrade the gate casually
 
 ## Parallelization and Job Shape
@@ -182,18 +178,18 @@ jobs:
 Use one combined `validate` job when:
 
 - setup cost dominates
-- the repo is small
+- repo is small
 - simpler branch protection matters more than per-check isolation
 
 Split jobs when:
 
 - checks are slow enough to benefit from parallelism
 - failures should be easier to localize
-- different runners, permissions, or artifacts are needed
+- different runners, permissions, or artifacts needed
 
 ## Matrix Builds
 
-Use a matrix only when compatibility is part of the contract.
+Use matrix only when compatibility is part of the contract.
 
 ```yaml
 jobs:
@@ -216,7 +212,7 @@ Rules:
 
 - keep matrix axes small and meaningful
 - use `fail-fast: false` only when collecting full compatibility data is valuable
-- do not add OS or Python-version matrices that the project does not actually support
+- do not add OS or Python-version matrices the project does not actually support
 
 ## Path Filters
 
@@ -255,9 +251,9 @@ Good candidates:
 Rules:
 
 - key caches from lockfiles or precise inputs
-- prefer setup actions with built-in cache support when the repo already uses them
-- avoid caching the entire virtual environment unless it is proven stable
-- treat stale caches as a correctness risk, not only a performance detail
+- prefer setup actions with built-in cache support when repo already uses them
+- avoid caching entire virtual environment unless proven stable
+- treat stale caches as correctness risk, not only performance detail
 
 ## Artifacts and Outputs
 
@@ -272,9 +268,9 @@ Good artifacts:
 
 Rules:
 
-- never upload the entire workspace
+- never upload entire workspace
 - keep retention short by default
-- use artifacts to pass validated outputs forward, not as a backup of everything
+- use artifacts to pass validated outputs forward, not as backup of everything
 - prefer job outputs for small metadata and artifacts for actual files
 
 ## Secrets and Trust Boundaries
@@ -283,7 +279,7 @@ Rules:
 - avoid exposing secrets to `pull_request` jobs from forks
 - prefer OIDC over long-lived static credentials when privileged jobs need identity
 - keep privileged jobs off unreviewed branches
-- pin third-party actions deliberately and review them like dependencies
+- pin third-party actions deliberately; review them like dependencies
 
 Examples:
 
@@ -293,7 +289,7 @@ Examples:
 
 ## Workflow Verification
 
-Validate the workflow itself before relying on it.
+Validate workflow itself before relying on it.
 
 ```bash
 actionlint
@@ -302,11 +298,11 @@ gh workflow run ci.yml
 gh run list --workflow ci.yml
 ```
 
-Use this verification loop:
+Verification loop:
 
 1. lint workflow syntax with `actionlint`
-2. dry-run locally with `act` when the workflow is compatible
-3. run the workflow in GitHub when repo context matters
+2. dry-run locally with `act` when workflow is compatible
+3. run workflow in GitHub when repo context matters
 4. inspect required permissions, artifact flow, and status checks
 
 ## Anti-Patterns
@@ -316,9 +312,9 @@ Use this verification loop:
 - serializing independent lint, type, and test jobs
 - `continue-on-error` on required gates
 - no job timeouts
-- uploading the whole workspace as an artifact
+- uploading whole workspace as artifact
 - caching unstable directories without lockfile-based keys
-- one giant workflow mixing unprivileged validation with privileged jobs at the same trust level
+- one giant workflow mixing unprivileged validation with privileged jobs at same trust level
 
 ## CI Checklist
 
@@ -331,4 +327,4 @@ Use this verification loop:
 - path filters where they save real time
 - artifacts limited to useful outputs
 - workflow validated with `actionlint`
-- branch protection wired to the real required checks
+- branch protection wired to real required checks

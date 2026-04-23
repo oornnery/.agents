@@ -1,11 +1,8 @@
 # UI
 
-Use this reference when the main problem is not only styling, but keeping the
-interface coherent, scalable, and easy to evolve.
+Use when main problem is not just styling but keeping interface coherent, scalable, and evolvable.
 
-The rules are framework-agnostic, but the examples and implementation cues here
-assume a Python-friendly stack with server-rendered UI, Jx components, and
-Tailwind-style tokens where examples help.
+Rules are framework-agnostic. Examples/implementation cues assume Python-friendly stack with server-rendered UI, Jx components, and Tailwind-style tokens.
 
 ## When to Use
 
@@ -17,7 +14,7 @@ Tailwind-style tokens where examples help.
 
 ## UI Boundary
 
-Use this reference for:
+In scope:
 
 - visual language and token systems
 - component architecture and component contracts
@@ -25,7 +22,7 @@ Use this reference for:
 - layout, responsiveness, and motion
 - design-to-code handoff and system consistency
 
-Out of scope here:
+Out of scope:
 
 - API route and payload design
 - BFF aggregation logic
@@ -33,7 +30,7 @@ Out of scope here:
 
 ## Design System Layers
 
-Keep the system layered so change flows predictably.
+Keep system layered so change flows predictably.
 
 ```text
 brand decisions
@@ -142,7 +139,7 @@ Each reusable component should answer:
 - which states it must support
 - what the smallest stable API is
 
-Ask these questions before adding props:
+Ask before adding props:
 
 - is this a real reusable variant or a one-off page customization?
 - should this be a slot instead of another prop?
@@ -167,7 +164,7 @@ Avoid:
 
 ## Required States
 
-Every reusable component should design and document the states that matter.
+Every reusable component should design and document states that matter.
 
 Minimum interactive state set:
 
@@ -212,7 +209,7 @@ Native-first guidance:
 
 ## Forms
 
-Forms reveal design debt quickly, so keep them systematic.
+Forms reveal design debt quickly. Keep them systematic.
 
 Each field should define:
 
@@ -312,7 +309,7 @@ Good handoff outputs:
 
 ## Python Implementation Cues
 
-When the UI is implemented in a Python-oriented stack:
+When UI is implemented in a Python-oriented stack:
 
 - keep templates or components close to semantic HTML
 - prefer reusable fragments over page-specific one-offs pretending to be primitives

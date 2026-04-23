@@ -5,8 +5,7 @@ description: Prepare a clean, reviewable commit from the current working tree. U
 
 # Commit
 
-Create small, coherent commits from the current working tree. Keep staging
-explicit and safe.
+Create small, coherent commits from current working tree. Keep staging explicit, safe.
 
 ## Safety rules
 
@@ -16,7 +15,7 @@ explicit and safe.
 - never skip hooks with `--no-verify`
 - never include secrets or credential-like files
 
-For broader git workflow guidance, use `skills/git/SKILL.md`.
+Broader git workflow: `skills/git/SKILL.md`.
 
 ## Process
 
@@ -33,13 +32,13 @@ git log --oneline -5
 
 ### 2. Group changes into logical units
 
-- one commit per coherent feature, fix, refactor, docs change, or test change
+- one commit per coherent feature, fix, refactor, docs, or test change
 - separate unrelated edits
 - if needed, stage hunks with `git add -p`
 
 ### 3. Stage by name
 
-Stage files explicitly. Warn if sensitive files appear in the diff:
+Stage files explicitly. Warn if sensitive files appear in diff:
 
 - `.env`
 - `*.pem`
@@ -69,8 +68,8 @@ Rules:
 
 - subject under 72 characters
 - imperative mood
-- add a body only when the WHY is not obvious
-- use the configured git identity
+- add body only when WHY not obvious
+- use configured git identity
 - do not add AI signatures or co-author lines unless explicitly requested
 
 ### 5. Commit and verify
@@ -90,11 +89,11 @@ Report:
 - logical commit groups proposed or created
 - final commit message(s)
 - anything intentionally left unstaged
-- any blocked or risky files that were skipped
+- any blocked or risky files skipped
 
 ## Constraints
 
 - do not mix unrelated edits in one commit
 - do not hide failing hooks
 - do not override git author config
-- do not assume a clean tree without checking
+- do not assume clean tree without checking

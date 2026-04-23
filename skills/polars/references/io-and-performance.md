@@ -2,7 +2,7 @@
 
 ## Read vs Scan
 
-Use `read_*` for eager loading and `scan_*` for lazy pipelines.
+Use `read_*` eager, `scan_*` lazy.
 
 ```python
 df = pl.read_csv('data.csv')
@@ -11,9 +11,9 @@ lf = pl.scan_parquet('data.parquet')
 
 Prefer `scan_*` when:
 
-- files are large
-- you will filter or select immediately
-- the pipeline has multiple steps
+- files large
+- filter/select immediate
+- multi-step pipeline
 
 ## CSV
 
@@ -29,13 +29,13 @@ pl.read_csv(
 
 Be explicit with schema overrides when:
 
-- type inference is flaky
-- correctness matters more than convenience
-- you want smaller or better types
+- type inference flaky
+- correctness > convenience
+- want smaller/better types
 
 ## Parquet
 
-Prefer Parquet when you control the format:
+Prefer Parquet when you control format:
 
 - smaller files
 - faster reads
@@ -49,7 +49,7 @@ lf = pl.scan_parquet('output.parquet')
 
 ## NDJSON and Other Formats
 
-Use NDJSON when streaming line-oriented JSON is a better fit than arrays.
+Use NDJSON when streaming line-oriented JSON beats arrays.
 
 ```python
 df = pl.read_ndjson('events.ndjson')
@@ -57,18 +57,18 @@ df = pl.read_ndjson('events.ndjson')
 
 ## Database Reads
 
-Keep database ingestion narrow:
+Keep DB ingestion narrow:
 
 - select only required columns
-- filter early in SQL when that is the real boundary
-- avoid using Polars as a substitute for poor upstream query shape
+- filter early in SQL -- real boundary
+- don't use Polars to mask poor upstream queries
 
 ## Performance Rules
 
 - filter early
 - project early
 - avoid Python UDFs unless unavoidable
-- avoid repeated collects in the middle of a lazy pipeline
+- avoid repeated collects mid-lazy pipeline
 - rechunk after large concatenations when later work benefits
 
 ## Anti-Patterns
@@ -76,7 +76,7 @@ Keep database ingestion narrow:
 Bad:
 
 - eager read -> huge transform -> final filter
-- `map_elements()` for simple math or string operations
+- `map_elements()` for simple math/string ops
 - untyped CSV ingestion in critical paths
 - joining wide tables before pruning columns
 
@@ -89,6 +89,6 @@ Better:
 Measure before optimizing:
 
 - inspect query plans
-- compare lazy and eager behavior
-- verify schema and null changes in tests
+- compare lazy vs eager behavior
+- verify schema/null changes in tests
 - benchmark real workloads, not toy slices

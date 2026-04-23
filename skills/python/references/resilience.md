@@ -1,7 +1,6 @@
-
 # Python Resilience Patterns
 
-Build fault-tolerant Python applications that gracefully handle transient failures, network issues, and service outages. Resilience patterns keep systems running when dependencies are unreliable.
+Build fault-tolerant Python apps handling transient failures, network issues, service outages. Resilience patterns keep systems running when dependencies unreliable.
 
 ## When to Use This Skill
 
@@ -47,7 +46,7 @@ def call_external_service(request: dict) -> dict:
 
 ### Pattern 1: Basic Retry with Tenacity
 
-Use the `tenacity` library for production-grade retry logic. For simpler cases, consider built-in retry functionality or a lightweight custom implementation.
+Use `tenacity` for production-grade retry logic. Simpler cases: built-in retry or lightweight custom implementation.
 
 ```python
 from tenacity import (
@@ -76,7 +75,7 @@ def fetch_data(url: str) -> dict:
 
 Whitelist specific transient exceptions. Never retry:
 
-- `ValueError`, `TypeError` - These are bugs, not transient issues
+- `ValueError`, `TypeError` - Bugs, not transient issues
 - `AuthenticationError` - Invalid credentials won't become valid
 - HTTP 4xx errors (except 429) - Client errors are permanent
 
@@ -104,7 +103,7 @@ def resilient_api_call(endpoint: str) -> dict:
 
 ### Pattern 3: HTTP Status Code Retries
 
-Retry specific HTTP status codes that indicate transient issues.
+Retry specific HTTP status codes indicating transient issues.
 
 ```python
 from tenacity import retry, retry_if_result, stop_after_attempt
@@ -360,7 +359,7 @@ async def get_recommendations(user_id: str) -> list[str]:
 
 ## Best Practices Summary
 
-1. **Retry only transient errors** - Don't retry bugs or authentication failures
+1. **Retry only transient errors** - Don't retry bugs or auth failures
 2. **Use exponential backoff** - Give services time to recover
 3. **Add jitter** - Prevent thundering herd from synchronized retries
 4. **Cap total duration** - `stop_after_attempt(5) | stop_after_delay(60)`

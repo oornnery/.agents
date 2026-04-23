@@ -1,9 +1,8 @@
 # TDD
 
-Use TDD when you want tests to drive the design instead of validating it after
-the fact.
+Use TDD when tests should drive design, not validate after.
 
-> Write the test first. Let it fail. Make it pass. Clean up.
+> Write test first. Fail. Pass. Clean up.
 
 ## The Cycle
 
@@ -11,29 +10,28 @@ the fact.
 RED -> GREEN -> REFACTOR -> repeat
 ```
 
-1. **Red** -- write a failing test that describes one behavior
-2. **Green** -- write the minimum code to make that test pass
-3. **Refactor** -- improve structure without changing behavior
+1. **Red** -- write failing test for one behavior
+2. **Green** -- write minimum code to pass
+3. **Refactor** -- improve structure, keep behavior
 
-Each cycle should take minutes, not hours. If it takes longer, the step is too
-big.
+Each cycle: minutes, not hours. Longer = step too big.
 
 ## Core Rules
 
-- write the test before the implementation
-- keep one red test at a time
-- write the smallest code that makes it pass
-- refactor only while tests stay green
-- if a test is hard to write, the design probably wants simplification
+- write test before implementation
+- one red test at a time
+- smallest code that passes
+- refactor only on green
+- hard test = design wants simplification
 
 ## Session Workflow
 
-1. define the interface or next behavior
+1. define interface or next behavior
 2. write one failing test
-3. confirm it fails for the right reason
-4. implement the smallest pass
+3. confirm fails for right reason
+4. implement smallest pass
 5. refactor on green
-6. run a broader relevant suite
+6. run broader relevant suite
 
 ## Commands
 
@@ -55,7 +53,7 @@ def test_expired_token_returns_401(client):
     assert response.status_code == 401
 ```
 
-Keep each section short. If Arrange grows too large, extract a fixture.
+Keep each section short. Arrange growing too large = extract fixture.
 
 ## BDD
 
@@ -69,7 +67,7 @@ def test_given_empty_cart_when_checkout_then_raises_error(cart_service):
         cart_service.checkout(cart.id)
 ```
 
-Simpler cases can use behavior-first names:
+Simpler cases: behavior-first names:
 
 ```python
 def test_create_user_returns_201(): ...
@@ -77,7 +75,7 @@ def test_create_user_returns_201(): ...
 
 ## Acceptance Criteria Mapping
 
-Map formal acceptance criteria directly to tests when useful:
+Map formal acceptance criteria directly to tests:
 
 ```python
 def test_ac01_search_users_by_name(client, sample_users): ...
@@ -87,7 +85,7 @@ def test_ac03_invalid_search_input_returns_422(client): ...
 
 ## API TDD
 
-Test the contract before writing the endpoint:
+Test contract before writing endpoint:
 
 ```python
 def test_create_user(client):
@@ -108,22 +106,22 @@ Recommended order:
 ## What to Test
 
 - business logic and domain rules
-- edge cases such as empty input, `None`, boundaries, and max values
+- edge cases: empty input, `None`, boundaries, max values
 - error paths and invalid states
-- API and contract behavior at system boundaries
+- API/contract behavior at system boundaries
 - integration points where data shape or side effects matter
 
 ## Anti-Patterns
 
-- testing implementation instead of behavior
-- writing tests after code
-- steps that are too large
+- testing implementation not behavior
+- tests after code
+- steps too large
 - over-mocking
 - multiple failing tests at once
-- treating coverage as a replacement for thinking
+- coverage as replacement for thinking
 
 ## When Not to Use TDD
 
-- prototyping spikes before the design stabilizes
+- prototyping spikes before design stabilizes
 - generated code
 - trivial wiring already covered elsewhere

@@ -8,28 +8,25 @@ description: Create or refactor local skills with clear triggers and low
 
 # Skill Builder
 
-Use this skill when creating or refactoring a local skill. Optimize for clear
-triggering, progressive disclosure, and minimal duplication with existing
-skills, commands, agents, and repo guidance.
+Use when creating or refactoring local skills. Optimize for clear triggering, progressive disclosure, minimal duplication.
 
 ## Boundary
 
-This skill covers:
+Covers:
 
-- creating a new local skill under `skills/`
-- restructuring a large skill into `references/`
-- tightening metadata, taxonomy, and trigger descriptions
+- creating new local skill under `skills/`
+- restructuring large skill into `references/`
+- tightening metadata, taxonomy, trigger descriptions
 - removing redundancy between `SKILL.md` and detailed references
 
 ## Principles
 
-- prefer extending an existing skill or ref before creating a new skill
+- prefer extending existing skill or ref over creating new skill
 - keep `SKILL.md` lean and procedural
-- move detailed examples, variants, and deep reference material into
-  `references/`
+- move detailed examples, variants, deep reference material into `references/`
 - write descriptions around trigger conditions, not vague topics
-- avoid duplicating repo-wide rules that already belong elsewhere
-- keep one skill responsible for one clear domain or workflow
+- avoid duplicating repo-wide rules already covered elsewhere
+- one skill = one clear domain or workflow
 
 ## Workflow
 
@@ -37,17 +34,17 @@ This skill covers:
 
 Prefer this order:
 
-1. existing ref inside an existing skill
-2. existing skill with a clearer `SKILL.md`
-3. new skill only when the gap is real and recurring
+1. existing ref inside existing skill
+2. existing skill with clearer `SKILL.md`
+3. new skill only when gap is real and recurring
 
 ### 2. Write strong metadata
 
 Frontmatter should make triggering obvious:
 
-- what the skill is for
+- what skill is for
 - when it should be used
-- what kinds of requests should activate it
+- what requests activate it
 
 ### 3. Keep `SKILL.md` to the essentials
 
@@ -68,7 +65,7 @@ Move to `references/`:
 
 ### 4. Avoid duplication
 
-Do not repeat the same content across:
+Do not repeat same content across:
 
 - `SKILL.md` and `references/`
 - sibling skills
@@ -78,10 +75,10 @@ Do not repeat the same content across:
 
 Check:
 
-- the name is short and understandable
-- the description is specific enough to trigger correctly
-- refs are linked clearly from `SKILL.md`
-- the skill matches the current repo taxonomy
+- name is short and understandable
+- description is specific enough to trigger correctly
+- refs linked clearly from `SKILL.md`
+- skill matches current repo taxonomy
 
 Run:
 
@@ -94,5 +91,4 @@ uv run rumdl check skills/*/SKILL.md skills/*/references/*.md
 - do not create README or changelog files inside a skill
 - do not make `SKILL.md` a dumping ground for all related knowledge
 - do not create nested reference chains when one level is enough
-- do not split a skill into refs unless the split improves selection and
-  context use
+- do not split skill into refs unless split improves selection and context use

@@ -5,12 +5,11 @@ description: Git safety, staging, commit workflow, branching, pull requests, reb
 
 # Git
 
-Use this skill when the main problem is a git workflow problem rather than a
-code problem.
+Use when main problem is git workflow, not code.
 
 ## Boundary
 
-Use this skill for:
+Use for:
 
 - safe staging and commit flow
 - branch and PR workflow
@@ -23,7 +22,7 @@ Pair with:
 
 - `skills/cicd/SKILL.md` for GitHub Actions CI and release automation
 - `skills/quality/SKILL.md` when bisecting or isolating regressions
-- `skills/docs/SKILL.md` when the deliverable is release notes or changelog content
+- `skills/docs/SKILL.md` when deliverable is release notes or changelog content
 
 ## Core safety rules
 
@@ -36,14 +35,13 @@ Pair with:
 
 ## Common workflow
 
-1. inspect the working tree
+1. inspect working tree
 2. group changes into logical units
 3. stage explicitly by file or hunk
-4. commit with a precise conventional message
+4. commit with precise conventional message
 5. verify what remains uncommitted
 
-Use `commands/commit.md` when the task is specifically about preparing
-commits from the current tree.
+Use `commands/commit.md` when task is specifically about preparing commits from current tree.
 
 ## Branching and PR workflow
 
@@ -51,12 +49,12 @@ Prefer short-lived feature branches and reviewable PRs.
 
 PR checklist:
 
-- title is a conventional commit style summary
+- title is conventional commit style summary
 - description explains the WHY
-- validation passes for the changed surface
-- no secrets or unrelated changes are included
+- validation passes for changed surface
+- no secrets or unrelated changes included
 
-Draft PRs are appropriate for early feedback on incomplete work.
+Draft PRs appropriate for early feedback on incomplete work.
 
 ## Rebase vs merge
 
@@ -75,12 +73,11 @@ git fetch origin
 git rebase origin/main
 ```
 
-If conflicts appear, resolve them carefully and continue. Force-push only when
-explicitly asked and only with `--force-with-lease`.
+If conflicts appear, resolve carefully and continue. Force-push only when explicitly asked and only with `--force-with-lease`.
 
 ## Bisect
 
-Use `git bisect` when a regression has a known good point:
+Use `git bisect` when regression has known good point:
 
 ```bash
 git bisect start
@@ -88,7 +85,7 @@ git bisect bad
 git bisect good <commit>
 ```
 
-Then test each candidate commit until git identifies the first bad commit.
+Test each candidate commit until git identifies first bad commit.
 
 Automated form:
 
@@ -130,7 +127,7 @@ Use worktrees for:
 - verification without switching branches
 - parallel agent work
 
-Read `references/worktree.md` for the full worktree guide.
+Read `references/worktree.md` for full worktree guide.
 
 ## Useful commands
 
@@ -146,6 +143,6 @@ git worktree list
 
 ## Related
 
-- `commands/commit.md` -- prepare clean commits from the current tree
+- `commands/commit.md` -- prepare clean commits from current tree
 - `commands/debug.md` -- investigate regressions before using `git bisect`
 - `references/worktree.md` -- worktree patterns and caveats

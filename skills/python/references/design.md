@@ -1,7 +1,6 @@
-
 # Python Design Patterns
 
-Write maintainable Python code using fundamental design principles. These patterns help you build systems that are easy to understand, test, and modify.
+Write maintainable Python code using fundamental design principles. Patterns build systems easy to understand, test, modify.
 
 ## When to Use This Skill
 
@@ -16,7 +15,7 @@ Write maintainable Python code using fundamental design principles. These patter
 
 ### 1. KISS (Keep It Simple)
 
-Choose the simplest solution that works. Complexity must be justified by concrete requirements.
+Choose simplest solution that works. Complexity must be justified by concrete requirements.
 
 ### 2. Single Responsibility (SRP)
 
@@ -28,7 +27,7 @@ Build behavior by combining objects, not extending classes.
 
 ### 4. Rule of Three
 
-Wait until you have three instances before abstracting. Duplication is often better than premature abstraction.
+Wait until three instances before abstracting. Duplication is often better than premature abstraction.
 
 ## Quick Start
 
@@ -81,7 +80,7 @@ def get_formatter(name: str) -> Formatter:
     return FORMATTERS[name]()
 ```
 
-The factory pattern adds code without adding value here. Save patterns for when they solve real problems.
+Factory pattern adds code without adding value here. Save patterns for when they solve real problems.
 
 ### Pattern 2: Single Responsibility Principle
 
@@ -131,7 +130,7 @@ class UserHandler:
         return Response(user.to_dict(), status=201)
 ```
 
-Now HTTP changes don't affect business logic, and vice versa.
+HTTP changes don't affect business logic, and vice versa.
 
 ### Pattern 3: Separation of Concerns
 
@@ -247,7 +246,7 @@ service = NotificationService(
 
 ### Pattern 5: Rule of Three
 
-Wait until you have three instances before abstracting.
+Wait until three instances before abstracting.
 
 ```python
 # Two similar functions? Don't abstract yet
@@ -395,33 +394,33 @@ def calculate_discount(user: User, order_history: list[Order]) -> float:
 
 ## Best Practices Summary
 
-1. **Keep it simple** - Choose the simplest solution that works
+1. **Keep it simple** - Choose simplest solution that works
 2. **Single responsibility** - Each unit has one reason to change
 3. **Separate concerns** - Distinct layers with clear purposes
 4. **Compose, don't inherit** - Combine objects for flexibility
 5. **Rule of three** - Wait before abstracting
-6. **Keep functions small** - 20-50 lines (varies by complexity), one purpose
+6. **Keep functions small** - 20-50 lines, one purpose
 7. **Inject dependencies** - Constructor injection for testability
-8. **Delete before abstracting** - Remove dead code, then consider patterns
+8. **Delete before abstracting** - Remove dead code first
 9. **Test each layer** - Isolated tests for each concern
-10. **Explicit over clever** - Readable code beats elegant code
+10. **Explicit over clever** - Readable beats elegant
 
 ## Troubleshooting
 
-**A class is growing and seems to have multiple responsibilities, but splitting it feels wrong.**
-Apply the "reason to change" test: list every change that could require editing this class. If the list has items from different domains (e.g., HTTP parsing AND business rules AND formatting), split it. If all changes stem from the same domain concern, the class may be appropriately sized.
+**Class growing with multiple responsibilities, but splitting feels wrong.**
+List every change that could require editing this class. If items span different domains (HTTP parsing AND business rules AND formatting), split it. If all changes stem from same domain concern, class may be appropriately sized.
 
-**Injecting all dependencies through the constructor is producing constructors with 7+ parameters.**
-This is a sign of too many responsibilities in one class, not a problem with dependency injection. Split the class into smaller units first, then each constructor naturally becomes smaller.
+**Constructor with 7+ parameters from DI.**
+Sign of too many responsibilities, not a DI problem. Split class into smaller units first -- constructors naturally shrink.
 
-**Composition is producing deeply nested wrapper objects that are hard to trace.**
-Keep the composition shallow (2-3 levels). If wrapping is the only mechanism, consider whether a Protocol-based approach or simple function composition would be cleaner than a chain of decorator objects.
+**Composition producing deeply nested wrappers hard to trace.**
+Keep composition shallow (2-3 levels). If wrapping is the only mechanism, consider Protocol-based approach or function composition instead of decorator chain.
 
-**The rule of three says not to abstract yet, but the duplication is causing bugs when one copy is updated but not the other.**
-Duplication that diverges in dangerous ways should be abstracted sooner. The rule of three is a heuristic, not a law. If the copies are already diverging incorrectly, extract immediately and add a test that exercises the shared behavior.
+**Rule of three says don't abstract, but duplication causing bugs when one copy updated but not other.**
+Diverging duplication is dangerous -- abstract sooner. Rule of three is heuristic, not law. If copies already diverging incorrectly, extract immediately and add test for shared behavior.
 
-**A service layer is importing from the API layer, breaking the dependency direction.**
-This is a layering violation. The service layer must not import from handlers. Introduce a shared types/models layer that both can import from, keeping the dependency arrow pointing downward (API → Service → Repository).
+**Service layer importing from API layer, breaking dependency direction.**
+Layering violation. Service must not import from handlers. Introduce shared types/models layer both can import from. Keep dependency arrow pointing downward: API -> Service -> Repository.
 
 ## Related Skills
 

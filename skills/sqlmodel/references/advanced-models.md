@@ -1,15 +1,14 @@
 # Advanced SQLModel Patterns
 
-Use this reference when persistence modeling goes beyond simple CRUD.
+Use when persistence modeling beyond simple CRUD.
 
 ## Model Design Defaults
 
 - type all fields explicitly
-- prefer separate base, table, create, read, and update models
-- use mixins for repeated timestamps, soft delete, or audit fields
+- prefer separate base, table, create, read, update models
+- use mixins for repeated timestamps, soft delete, audit fields
 - use enums for constrained values
-- keep field constraints explicit: lengths, uniqueness, nullable behavior,
-  indexes, and defaults
+- keep field constraints explicit: lengths, uniqueness, nullable behavior, indexes, defaults
 
 ## Basic Model with Validation
 
@@ -78,8 +77,7 @@ class UserUpdate(SQLModel):
     is_active: Optional[bool] = None
 ```
 
-Keep table shape, write shape, and public shape separate when responsibilities
-differ.
+Keep table shape, write shape, public shape separate when responsibilities differ.
 
 ## Mixins
 
@@ -100,8 +98,7 @@ class SoftDeleteMixin(SQLModel):
     is_deleted: bool = Field(default=False)
 ```
 
-Mixins are useful when the fields and semantics are genuinely shared. Do not
-hide project-specific behavior in overly magical mixins.
+Useful when fields and semantics genuinely shared. Do not hide project-specific behavior in overly magical mixins.
 
 ## One-to-Many
 
@@ -124,8 +121,7 @@ class Hero(SQLModel, table=True):
     team: Optional[Team] = Relationship(back_populates="heroes")
 ```
 
-Use `back_populates` for bidirectional relationships and index foreign keys
-when the relationship will be queried frequently.
+Use `back_populates` for bidirectional relationships. Index foreign keys when queried frequently.
 
 ## Many-to-Many
 
@@ -157,8 +153,7 @@ class Team(SQLModel, table=True):
     heroes: List[Hero] = Relationship(back_populates="teams", link_model=HeroTeamLink)
 ```
 
-Use explicit link tables when the relationship has metadata or when you want
-clearer control over indexes and constraints.
+Use explicit link tables when relationship has metadata or you want clearer control over indexes and constraints.
 
 ## Self-Referential Relationships
 
@@ -180,8 +175,7 @@ class User(SQLModel, table=True):
     subordinates: List["User"] = Relationship(back_populates="manager")
 ```
 
-Self-referential relationships deserve careful query testing because they are
-easy to misconfigure and easy to over-fetch.
+Self-referential relationships need careful query testing -- easy to misconfigure and over-fetch.
 
 ## Cascades
 
@@ -207,32 +201,28 @@ class Post(SQLModel, table=True):
     author: User = Relationship(back_populates="posts")
 ```
 
-Be conservative with cascades. They are powerful and easy to misuse.
+Be conservative with cascades. Powerful and easy to misuse.
 
 ## Inheritance and Polymorphism
 
-- treat inheritance as an advanced tool, not a default
+- treat inheritance as advanced tool, not default
 - prefer composition and explicit fields before polymorphic table layouts
-- if you need inheritance, document the discriminator, nullability tradeoffs,
-  and query behavior clearly
+- if using inheritance, document discriminator, nullability tradeoffs, query behavior clearly
 
-Use inheritance only when the persistence model genuinely reflects a stable
-polymorphic concept.
+Use inheritance only when persistence model genuinely reflects a stable polymorphic concept.
 
 ## Composite Keys and Constraints
 
 - use composite keys mainly for explicit link tables and domain-natural keys
-- keep unique constraints and check constraints explicit in migrations and model
-  metadata
-- think about indexes together with constraints; correctness and performance
-  should evolve together
+- keep unique constraints and check constraints explicit in migrations and model metadata
+- think about indexes together with constraints; correctness and performance evolve together
 
 ## Field Types and Indexes
 
 - use enums for constrained categorical values
-- use JSON or custom column types only when the access pattern justifies them
+- use JSON or custom column types only when access pattern justifies them
 - add single, composite, or partial indexes based on real read patterns
-- review index costs for writes and migrations before adding them casually
+- review index costs for writes and migrations before adding casually
 
 ## Checklist
 

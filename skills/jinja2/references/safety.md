@@ -8,7 +8,7 @@ Default to escaped output.
 {{ user_input }}
 ```
 
-This should stay escaped unless the HTML is trusted.
+Keep escaped unless HTML trusted.
 
 ## Safe
 
@@ -18,32 +18,31 @@ Use `safe` only for trusted HTML:
 {{ trusted_html | safe }}
 ```
 
-Never use it on raw user input.
+Never on raw user input.
 
 ## Undefined and Defaults
 
-Use `default` or explicit checks when a value may be missing:
+Use `default` or explicit checks when value may be missing:
 
 ```jinja
 {{ title | default('Untitled') }}
 {% if user is defined %}
 ```
 
-This keeps missing context behavior readable.
+Keeps missing context behavior readable.
 
 ## N+1 and Repeated Calls
 
-If the host exposes functions or queries in templates, avoid calling them inside
-loops in ways that trigger repeated work.
+Avoid calling host functions/queries inside loops -- triggers repeated work.
 
 Bad pattern:
 
-- fetch one related object per row in a large loop
+- fetch one related object per row in large loop
 
 Better:
 
 - precompute data in Python
-- pass a render-ready structure into the template
+- pass render-ready structure into template
 
 ## Heavy Logic
 
@@ -54,11 +53,11 @@ Keep heavy logic out of templates:
 - complex branching trees
 - fallback fetch behavior
 
-Templates should render a prepared view model, not assemble one from scratch.
+Templates render prepared view model, not assemble one from scratch.
 
 ## Review Focus
 
-- check whether escaping is still the default
-- check whether `safe` is justified
-- check whether undefined handling is graceful
-- check whether loops hide extra host calls or expensive work
+- check escaping still default
+- check `safe` justified
+- check undefined handling graceful
+- check loops hide no extra host calls or expensive work

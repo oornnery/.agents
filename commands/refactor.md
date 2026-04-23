@@ -5,8 +5,7 @@ description: Behavior-preserving structural improvement. Use when the user asks 
 
 # Refactor
 
-Refactor to improve structure, readability, or maintainability while preserving
-external behavior.
+Refactor: improve structure, readability, maintainability. Preserve external behavior.
 
 ## Process
 
@@ -14,53 +13,52 @@ external behavior.
 
 Inspect:
 
-- architecture and layout
-- recent git history and momentum
-- duplication, coupling, and readability problems
-- validations that protect behavior
+- architecture, layout
+- recent git history, momentum
+- duplication, coupling, readability problems
+- validations protecting behavior
 
-Load only the relevant skills:
+Load relevant skills:
 
-- `skills/arch/SKILL.md` for structure, layering, and boundaries
-- `skills/python/SKILL.md` for implementation patterns
+- `skills/arch/SKILL.md` for structure, layering, boundaries
+- `skills/python/SKILL.md` for impl patterns
 - `skills/quality/SKILL.md` for regression guards
-- `skills/security/SKILL.md` if the change touches sensitive code paths
+- `skills/security/SKILL.md` if change touches sensitive code paths
 
-### 2. Choose a narrow refactor target
+### 2. Choose narrow refactor target
 
-Focus on one maintainability problem at a time, for example:
+One maintainability problem at a time:
 
 - duplicated logic
 - unclear module boundaries
 - high coupling
 - poor naming in recently changed code
 - deeply nested or hard-to-scan flow
-- responsibilities mixed in one class or function
+- mixed responsibilities in one class/function
 
 ### 3. Refactor in small steps
 
-- make one logical change at a time
+- one logical change at a time
 - validate after each meaningful step
-- preserve public behavior unless explicitly asked otherwise
-- keep style churn out of the diff
+- preserve public behavior unless explicitly asked
+- keep style churn out of diff
 
 ### 4. Report clearly
 
 Summarize:
 
-- what was improved
-- what was intentionally left alone
-- what was validated
-- any remaining risks or follow-up ideas
+- what improved
+- what intentionally left alone
+- what validated
+- remaining risks or follow-up ideas
 
 ## Constraints
 
 - preserve external behavior
-- do not sneak in feature work
-- do not rewrite stable code just because it looks old
-- do not mix broad renames with structural changes unless required
-- if you uncover a correctness or security bug that requires behavioral change,
-  stop and surface it separately instead of folding it into the refactor
+- no sneaked feature work
+- don't rewrite stable code just because old
+- don't mix broad renames with structural changes unless required
+- if correctness or security bug found requiring behavioral change, stop and surface separately -- don't fold into refactor
 
 ## Related
 

@@ -1,13 +1,12 @@
-
 # Python Packaging
 
-Comprehensive guide to creating, structuring, and distributing Python packages using modern packaging tools, pyproject.toml, and publishing to PyPI.
+Guide to creating, structuring, distributing Python packages with modern tools, `pyproject.toml`, publishing to PyPI.
 
 ## When to Use This Skill
 
 - Creating Python libraries for distribution
-- Building command-line tools with entry points
-- Publishing packages to PyPI or private repositories
+- Building CLI tools with entry points
+- Publishing packages to PyPI or private repos
 - Setting up Python project structure
 - Creating installable packages with dependencies
 - Building wheels and source distributions
@@ -20,7 +19,7 @@ Comprehensive guide to creating, structuring, and distributing Python packages u
 ### 1. Package Structure
 
 - **Source layout**: `src/package_name/` (recommended)
-- **Flat layout**: `package_name/` (simpler but less flexible)
+- **Flat layout**: `package_name/` (simpler, less flexible)
 - **Package metadata**: pyproject.toml, setup.py, or setup.cfg
 - **Distribution formats**: wheel (.whl) and source distribution (.tar.gz)
 
@@ -35,7 +34,7 @@ Comprehensive guide to creating, structuring, and distributing Python packages u
 
 - **setuptools**: Traditional, widely used
 - **hatchling**: Modern, opinionated
-- **flit**: Lightweight, for pure Python
+- **flit**: Lightweight, pure Python
 - **poetry**: Dependency management + packaging
 
 ### 4. Distribution
@@ -112,7 +111,7 @@ my-package/
 
 **Advantages:**
 
-- Prevents accidentally importing from source
+- Prevents accidental imports from source
 - Cleaner test imports
 - Better isolation
 
@@ -503,11 +502,11 @@ jobs:
         run: twine upload dist/*
 ```
 
-Advanced patterns are included below in the "Advanced Reference" section.
+Advanced patterns in "Advanced Reference" below.
 
 ## Python Packaging — Advanced Reference
 
-Advanced packaging patterns including data files, namespace packages, C extensions, version management, testing installation, documentation templates, and distribution workflows.
+Advanced patterns: data files, namespace packages, C extensions, version management, testing installation, documentation templates, distribution workflows.
 
 ## Pattern 11: Including Data Files
 
@@ -542,7 +541,7 @@ data = files("my_package").joinpath("data/file.txt").read_text()
 
 ## Pattern 12: Namespace Packages
 
-**For large projects split across multiple repositories:**
+**Split large projects across multiple repos:**
 
 ```text
 # Package 1: company-core
@@ -558,7 +557,7 @@ company/
     └── routes.py
 ```
 
-**Do NOT include **init**.py in the namespace directory (company/):**
+**No `__init__.py` in namespace dir (`company/`):**
 
 ```toml
 # company-core/pyproject.toml
@@ -849,16 +848,16 @@ recursive-exclude * *.py[co]
 
 ## Checklist for Publishing
 
-- [ ] Code is tested (pytest passing)
-- [ ] Documentation is complete (README, docstrings)
+- [ ] Code tested (pytest passing)
+- [ ] Docs complete (README, docstrings)
 - [ ] Version number updated
 - [ ] CHANGELOG.md updated
 - [ ] License file included
-- [ ] pyproject.toml is complete
+- [ ] `pyproject.toml` complete
 - [ ] Package builds without errors
 - [ ] Installation tested in clean environment
 - [ ] CLI tools work (if applicable)
-- [ ] PyPI metadata is correct (classifiers, keywords)
-- [ ] GitHub repository linked
+- [ ] PyPI metadata correct (classifiers, keywords)
+- [ ] GitHub repo linked
 - [ ] Tested on TestPyPI first
 - [ ] Git tag created for release

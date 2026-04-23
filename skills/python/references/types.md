@@ -1,7 +1,6 @@
-
 # Python Type Safety
 
-Leverage Python's type system to catch errors at static analysis time. Type annotations serve as enforced documentation that tooling validates automatically.
+Leverage Python type system to catch errors at static analysis time. Type annotations = enforced documentation validated by tooling.
 
 ## When to Use This Skill
 
@@ -16,11 +15,11 @@ Leverage Python's type system to catch errors at static analysis time. Type anno
 
 ### 1. Type Annotations
 
-Declare expected types for function parameters, return values, and variables.
+Declare expected types for function params, return values, variables.
 
 ### 2. Generics
 
-Write reusable code that preserves type information across different types.
+Write reusable code that preserves type info across different types.
 
 ### 3. Protocols
 
@@ -48,7 +47,7 @@ print(user.name)  # Type checker knows user is User here
 
 ### Pattern 1: Annotate All Public Signatures
 
-Every public function, method, and class should have type annotations.
+Every public function, method, class should have type annotations.
 
 ```python
 def get_user(user_id: str) -> User:
@@ -227,7 +226,7 @@ class UserRepository(Repository[User, str]):
 
 ### Pattern 6: TypeVar with Bounds
 
-Restrict generic parameters to specific types.
+Restrict generic params to specific types.
 
 ```python
 from typing import TypeVar
@@ -356,7 +355,7 @@ def register_handler(path: str, handler: Handler[Response]) -> None:
 
 ### Pattern 10: Callable Types
 
-Type function parameters and callbacks.
+Type function params and callbacks.
 
 ```python
 from collections.abc import Callable, Awaitable
@@ -407,7 +406,7 @@ no_implicit_optional = true
 
 Incremental adoption goals:
 
-- All function parameters annotated
+- All function params annotated
 - All return types annotated
 - Class attributes annotated
 - Minimize `Any` usage (acceptable for truly dynamic data)
@@ -425,5 +424,5 @@ For existing codebases, enable strict mode per-module using `# mypy: strict` or 
 6. **Narrow types** - Use guards to help the type checker
 7. **Bound type vars** - Restrict generics to meaningful types
 8. **Create type aliases** - Meaningful names for complex types
-9. **Minimize `Any`** - Use specific types or generics. `Any` is acceptable for truly dynamic data or when interfacing with untyped third-party code
-10. **Document with types** - Types are enforceable documentation
+9. **Minimize `Any`** - Use specific types or generics. `Any` acceptable for truly dynamic data or untyped third-party code
+10. **Document with types** - Types = enforceable documentation

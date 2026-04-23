@@ -1,49 +1,48 @@
-
 # UV Package Manager
 
-Comprehensive guide to using uv, an extremely fast Python package installer and resolver written in Rust, for modern Python project management and dependency workflows.
+Fast Python package installer/resolver written in Rust. Modern dependency management.
 
 ## When to Use This Skill
 
-- Setting up new Python projects quickly
-- Managing Python dependencies faster than pip
-- Creating and managing virtual environments
-- Installing Python interpreters
-- Resolving dependency conflicts efficiently
-- Migrating from pip/pip-tools/poetry
-- Speeding up CI/CD pipelines
-- Managing monorepo Python projects
-- Working with lockfiles for reproducible builds
-- Optimizing Docker builds with Python dependencies
+- New Python project setup
+- Fast dependency management
+- Virtual environment management
+- Python interpreter installation
+- Dependency conflict resolution
+- Migrate from pip/pip-tools/poetry
+- CI/CD pipeline speedup
+- Monorepo Python management
+- Lockfile-based reproducible builds
+- Docker build optimization
 
 ## Core Concepts
 
 ### 1. What is uv?
 
 - **Ultra-fast package installer**: 10-100x faster than pip
-- **Written in Rust**: Leverages Rust's performance
-- **Drop-in pip replacement**: Compatible with pip workflows
-- **Virtual environment manager**: Create and manage venvs
-- **Python installer**: Download and manage Python versions
-- **Resolver**: Advanced dependency resolution
-- **Lockfile support**: Reproducible installations
+- **Rust-based**: leverages Rust performance
+- **pip-compatible**: drop-in replacement
+- **venv manager**: create/manage virtual environments
+- **Python installer**: download/manage Python versions
+- **Resolver**: advanced dependency resolution
+- **Lockfile support**: reproducible installs
 
 ### 2. Key Features
 
-- Blazing fast installation speeds
-- Disk space efficient with global cache
-- Compatible with pip, pip-tools, poetry
+- Fast installation
+- Disk-efficient global cache
+- pip/pip-tools/poetry compatible
 - Comprehensive dependency resolution
-- Cross-platform support (Linux, macOS, Windows)
-- No Python required for installation
-- Built-in virtual environment support
+- Cross-platform (Linux, macOS, Windows)
+- No Python needed to install
+- Built-in venv support
 
 ### 3. UV vs Traditional Tools
 
 - **vs pip**: 10-100x faster, better resolver
-- **vs pip-tools**: Faster, simpler, better UX
-- **vs poetry**: Faster, less opinionated, lighter
-- **vs conda**: Faster, Python-focused
+- **vs pip-tools**: faster, simpler, better UX
+- **vs poetry**: faster, less opinionated, lighter
+- **vs conda**: faster, Python-focused
 
 ## Installation
 
@@ -338,11 +337,11 @@ uv pip freeze > requirements.txt
 uv pip freeze --require-hashes > requirements.txt
 ```
 
-Advanced patterns are included below in the "Advanced Reference" section.
+Advanced patterns below.
 
 ## UV Package Manager — Advanced Reference
 
-Advanced workflows including Docker integration, lockfile management, performance optimization, tool comparison, common workflows, tool integration, troubleshooting, best practices, migration guides, and command reference.
+Advanced workflows: Docker, lockfile management, performance, tool comparison, common workflows, tool integration, troubleshooting, best practices, migration, command reference.
 
 ## Advanced Workflows
 
@@ -707,14 +706,14 @@ uv lock --upgrade
 ### Project Setup
 
 1. **Always use lockfiles** for reproducibility
-2. **Pin Python version** with .python-version
+2. **Pin Python version** with `.python-version`
 3. **Separate dev dependencies** from production
-4. **Use uv run** instead of activating venv
-5. **Commit uv.lock** to version control
-6. **Use --frozen in CI** for consistent builds
+4. **Use `uv run`** instead of activating venv
+5. **Commit `uv.lock`** to version control
+6. **Use `--frozen` in CI** for consistent builds
 7. **Leverage global cache** for speed
 8. **Use workspace** for monorepos
-9. **Export requirements.txt** for compatibility
+9. **Export `requirements.txt`** for compatibility
 10. **Keep uv updated** for latest features
 
 ### Performance Tips

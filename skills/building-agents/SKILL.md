@@ -46,7 +46,7 @@ An agent is a **runtime harness** around an LLM that does the practical work of:
 7. persisting state between turns
 8. optionally delegating bounded work to subagents
 
-The model itself should do exactly one thing: emit either _a tool call_ or _a final answer_. Everything else is the harness. The famous quote applies: **"a lot of apparent model quality is really context quality."**
+Model does one thing: emit a tool call or a final answer. Rest is harness. **"A lot of apparent model quality is really context quality."**
 
 The control flow is the classic **ReAct loop**:
 
@@ -74,12 +74,10 @@ parse response
    ◄─────────────────────────────────────────────────────────────────┘
 ```
 
-Two things make this loop production-grade rather than a toy:
+Production-grade requires:
 
-- **Circuit breakers** — `max_steps` and `max_attempts` so the agent cannot loop forever.
-- **Self-healing parser** — when the model emits malformed output, the runtime returns a `retry` notice the model sees on the next turn, instead of crashing.
-
-Everything below is _how to make each box in that diagram good_.
+- **Circuit breakers** — `max_steps` + `max_attempts`; no infinite loops.
+- **Self-healing parser** — malformed output returns a `retry` notice next turn; no crash.
 
 ---
 
@@ -87,9 +85,7 @@ Everything below is _how to make each box in that diagram good_.
 
 ### 1. Runtime context
 
-**Why it matters.** "Fix the failing tests" is meaningless without knowing which repo, which branch, which test runner. "Schedule a meeting" is meaningless without knowing the user's calendar and time zone. The agent should never start blind.
-
-**What goes in context depends on the domain**, but the shape is always the same: an **immutable snapshot** with a **render method** that produces text for the prompt.
+Agent never starts blind. Shape: immutable snapshot + `render()` for prompt text. Domain-specific fields vary.
 
 For a generic agent, runtime context may include:
 
@@ -109,7 +105,7 @@ For a **coding agent specifically**, it includes:
 - contents of anchor files: `templates/project/variants/AGENTS.base.md`,
   project `AGENTS.*.md` variants, `README.md`, `pyproject.toml`, `package.json`
 
-**Generic implementation.** Use `dataclass(frozen=True, slots=True)` for the immutable snapshot, `pathlib.Path` for filesystem work, and a `render` method that returns the prompt-ready text.
+**Generic implementation.** `dataclass(frozen=True, slots=True)`, `pathlib.Path`, `render()` returning prompt text.
 
 ```python
 from __future__ import annotations
@@ -138,7 +134,7 @@ class RuntimeContext:
         return "\n".join(parts)
 ```
 
-**Coding-agent specialization.** Same shape, more fields:
+**Coding agent.** Same shape, more fields:
 
 ```python
 import subprocess
@@ -218,9 +214,9 @@ class WorkspaceContext:
 
 ### 2. Prompt shape and cache reuse
 
-**Why it matters.** Agent sessions are repetitive. Tool definitions, agent rules, and runtime context barely change between turns. Rebuilding them from scratch every call wastes tokens and breaks **prompt caching** on commercial APIs (Anthropic and OpenAI both reward identical prefixes — typically ~10% of input cost on hits).
+Sessions are repetitive. Stable parts (tools, rules, context) barely change. Rebuilding every turn wastes tokens and misses **prompt cache** hits (~10% savings on cache hits).
 
-**The pattern.** Split the prompt into a _stable prefix_ and a _volatile suffix_:
+Split prompt into _stable prefix_ and _volatile suffix_:
 
 ```text
 ┌─────────────────────────────────┐
@@ -275,7 +271,7 @@ The prefix is computed **once** in the agent's `__post_init__` and stored. Only 
 
 ### 3. Structured tools
 
-**Why it matters.** Letting a model emit arbitrary shell commands is reckless. The harness should expose a **closed set of named tools** with typed inputs, descriptions, and risk flags.
+Arbitrary commands are reckless. Expose a **closed set of named tools** with typed inputs, descriptions, and risk flags.
 
 **Generic tool examples** that show up in many domains:
 
@@ -289,7 +285,7 @@ The prefix is computed **once** in the agent's `__post_init__` and stored. Only 
 | `call_api`                                                      | automation, integration          |
 | `delegate`                                                      | every agent that needs subagents |
 
-**The pythonic shape.** A `Tool` is a frozen dataclass with a callable. The registry is a plain `dict[str, Tool]`. No metaclass, no plugin system, no `BaseTool → AbstractTool → ConcreteTool` hierarchy. **Flat is better than nested.**
+`Tool` is a frozen dataclass + callable. Registry: `dict[str, Tool]`. No metaclass, no plugin system, no hierarchy. **Flat is better than nested.**
 
 ```python
 from collections.abc import Callable
@@ -308,7 +304,7 @@ class Tool:
     run: Callable[[dict[str, Any]], str]
 ```
 
-**Building a tool** is just a function that returns a `Tool`. Closures capture whatever resources the tool needs (workspace, http client, db handle) without globals.
+Each tool is a function returning `Tool`. Closures capture resources (workspace, http client, db handle) — no globals.
 
 ```python
 def make_read_file_tool(workspace: WorkspaceContext) -> Tool:
@@ -355,7 +351,7 @@ tools: dict[str, Tool] = {
 
 ### 4. Validation and permissions
 
-**Why it matters.** The model **suggests** actions. The runtime **decides** whether they are valid and allowed. This separation is the most important distinction in safe agent design.
+Model **suggests**; runtime **decides**. Most important distinction in safe agent design.
 
 **Validation should check:**
 
@@ -369,7 +365,7 @@ tools: dict[str, Tool] = {
 
 **The two non-negotiable safety primitives for any agent that touches a filesystem:**
 
-**Path containment.** Every filesystem operation must verify the resolved path stays inside the workspace. This is the single most common bug in homebrew agents.
+**Path containment.** Most common bug in homebrew agents. Every filesystem op must verify the resolved path stays inside workspace.
 
 ```python
 from pathlib import Path
@@ -385,9 +381,9 @@ def safe_path(root: Path, raw: str) -> Path:
     return candidate
 ```
 
-`Path.relative_to` is the pythonic containment check — cleaner than `os.path.commonpath` string comparisons.
+`Path.relative_to` is the canonical check.
 
-**Approval gating.** Risky tools require explicit consent. Use a `StrEnum`, not a callback hierarchy.
+**Approval gating.** Use a `StrEnum`, not a callback hierarchy.
 
 ```python
 from enum import StrEnum
@@ -408,7 +404,7 @@ def approve(name: str, args: dict[str, Any], policy: ApprovalPolicy) -> bool:
     return answer in {"y", "yes"}
 ```
 
-**The dispatcher.** Wraps validation, approval, execution, and error capture in one place. Errors become _strings the model sees_, not exceptions that crash the loop — the model can self-correct on the next turn.
+**Dispatcher.** Validation + approval + execution + error capture in one place. Errors become strings the model sees — self-correct on next turn, no crash.
 
 ```python
 def run_tool(
@@ -428,13 +424,11 @@ def run_tool(
         return f"error: {name} failed: {exc}"
 ```
 
-This is the discipline that turns a fragile script into something you can leave running.
-
 ---
 
 ### 5. Parsing model output
 
-**Why it matters.** The runtime needs a structured contract with the model. The simplest one is: every response is either _one tool call_ or _one final answer_.
+Contract: every response is _one tool call_ or _one final answer_.
 
 Two viable formats:
 
@@ -451,7 +445,7 @@ print("hello world")
 <final>The latest Python release is 3.13.</final>
 ```
 
-**Implementation.** Compile the regexes at module level, use the walrus operator for the match-and-bind pattern, and return a tagged tuple the loop can branch on.
+Regexes at module level, walrus operator for match-and-bind, tagged tuple for branching:
 
 ```python
 import json
@@ -481,17 +475,15 @@ def parse_response(raw: str) -> ParseResult:
     return "retry", "no <tool> or <final> tag found"
 ```
 
-**The `retry` branch is critical.** Instead of raising, it produces a message the model sees on the next turn so it can fix its own mistake. This single design choice makes agents survive flaky models.
+**`retry` branch:** produces a message the model sees next turn — survives flaky models without crashing.
 
 ---
 
 ### 6. Context reduction (defeating bloat)
 
-**Why it matters.** A naive agent reads three large files, runs three test suites, and suddenly the prompt is 80k tokens. This is the most underrated component — a lot of apparent "agent intelligence" is really good context hygiene.
+Most underrated component. Three large reads + test output = 80k token prompt. Agent intelligence is context hygiene.
 
-Two strategies, both small.
-
-**Clipping.** Cap any single piece of text. Show the head, mark the truncation.
+**Clipping.** Cap any single piece of text; mark truncation.
 
 ```python
 MAX_TOOL_OUTPUT = 4000
@@ -503,7 +495,7 @@ def clip(text: str, limit: int = MAX_TOOL_OUTPUT) -> str:
     return f"{text[:limit]}\n...[truncated {len(text) - limit} chars]"
 ```
 
-**Recency-weighted transcript with deduplication.** Recent events get full fidelity; older ones get aggressively compressed; duplicate file reads from earlier in the session are dropped entirely.
+**Recency-weighted transcript.** Recent events: full fidelity. Older: aggressively compressed. Duplicate reads: dropped.
 
 ```python
 from typing import Any
@@ -538,20 +530,20 @@ def render_history(history: list[dict[str, Any]]) -> str:
     return clip("\n".join(lines), MAX_HISTORY)
 ```
 
-This is the "boring" component. It is also what separates an agent that survives 30 turns from one that derails at turn 8.
+Separates agents that survive 30 turns from ones that derail at turn 8.
 
 ---
 
 ### 7. Sessions and working memory
 
-**Why it matters.** Two layers, two jobs:
+Two layers:
 
-- **Full transcript** — durable, append-only, lives on disk as JSON. Used for resuming sessions and for compacting into the prompt.
-- **Working memory** — small, distilled, mutable. Holds the current task, the last few touched resources, and a handful of notes. Goes into the prompt directly each turn.
+- **Full transcript** — durable, append-only, disk JSON. For resume and prompt compaction.
+- **Working memory** — small, distilled, mutable. Current task + last few resources + notes. Goes into prompt each turn.
 
-A useful analogy: the transcript is your hard drive, the working memory is your RAM.
+Transcript = hard drive. Working memory = RAM.
 
-**Pythonic separation of concerns.** Dataclasses hold the data; a `SessionStore` handles persistence. No ORM, no lock files — `Path.write_text` with JSON is enough until you need more.
+Dataclasses hold data; `SessionStore` handles persistence. No ORM — `Path.write_text` + JSON is enough.
 
 ```python
 import json
@@ -624,15 +616,15 @@ class SessionStore:
         return files[-1].stem if files else None
 ```
 
-`asdict` from `dataclasses` handles JSON serialization for free. Use `pathlib` everywhere instead of `os.path`.
+`asdict` handles JSON free. Use `pathlib`, not `os.path`.
 
 ---
 
 ### 8. Bounded delegation
 
-**Why it matters.** When the main agent is mid-task and needs to answer a side question — _"which file defines this symbol?"_, _"what does this URL say?"_, _"verify this hypothesis"_ — spawning a **subagent** keeps the main transcript clean and parallelizes work. But unbounded subagents become the same problem twice.
+Subagent keeps main transcript clean and parallelizes side queries. Unbounded subagents become the same problem twice.
 
-**The constraints that make it safe:**
+**Constraints:**
 
 - `read_only=True` — subagents cannot mutate state
 - `approval_policy=NEVER` — no human in the loop for the child
@@ -662,13 +654,13 @@ def delegate(parent: "Agent", task: str, max_steps: int = 3) -> str:
     return f"delegate_result:\n{child.ask(task)}"
 ```
 
-The same `Agent` class is used recursively — the bounding is just construction parameters. **No `SubAgent` subclass is needed.** Subagents are useful when they reduce noise in the main loop, not because they are "smarter."
+Same `Agent` class, recursive. **No `SubAgent` subclass.** Subagents reduce noise; not because they're smarter.
 
 ---
 
 ## The full agent loop
 
-Everything above feeds into one method. This is `Agent.ask`, ≈50 lines, the heart of the harness.
+All components above feed into `Agent.ask` (~50 lines):
 
 ```python
 from dataclasses import dataclass, field
@@ -749,7 +741,7 @@ class Agent:
 
 That is the entire agent. Every other piece — `RuntimeContext`, `Tool`, `Session`, `parse_response` — is supporting it.
 
-**The `ModelClient` protocol** is a one-method `Protocol` so you can swap implementations (Ollama, Anthropic, OpenAI, OpenRouter, a fake for tests) without touching the agent:
+`ModelClient` is a one-method `Protocol` — swap implementations (Ollama, Anthropic, OpenAI, OpenRouter, fake) without touching the agent:
 
 ```python
 from typing import Protocol
@@ -759,7 +751,7 @@ class ModelClient(Protocol):
     def complete(self, prompt: str, max_new_tokens: int = 512) -> str: ...
 ```
 
-The canonical test pattern is a `FakeModelClient` that returns canned outputs from a list — that is how `mini-coding-agent` does its tests, and it is the right pattern.
+`FakeModelClient` returns canned outputs from a list — the right test pattern.
 
 ---
 
@@ -767,11 +759,11 @@ The canonical test pattern is a `FakeModelClient` that returns canned outputs fr
 
 ## Specialization recipes
 
-The base agent above is intentionally generic. Here is how to specialize it for the four most common domains.
+Specialization for common domains — thin layer on top of the base agent:
 
 ### Coding agent
 
-**Replace `RuntimeContext` with `WorkspaceContext`** (the git-aware one shown in component 1).
+Use `WorkspaceContext` (git-aware; component 1).
 
 **Tools to implement first:**
 
@@ -787,9 +779,7 @@ tools = {
 }
 ```
 
-**Working memory holds** the current task, the last 8 touched files, and the last 5 tool result notes.
-
-**Reference implementation:** `rasbt/mini-coding-agent` is exactly this — read it.
+Memory: task, last 8 files, 5 tool notes. Reference: `rasbt/mini-coding-agent`.
 
 ### Research agent
 
@@ -808,7 +798,7 @@ tools = {
 }
 ```
 
-**Working memory holds** the question, the current hypothesis, sources cited so far, and open subquestions. Aggressively dedupe URLs in `render_history`.
+Memory: question, hypothesis, sources, open subquestions. Dedupe URLs in `render_history`.
 
 ### Personal assistant
 
@@ -828,7 +818,7 @@ tools = {
 }
 ```
 
-**Working memory holds** the active goal, the last few entities mentioned (people, projects, places), and recent decisions. Persist long-term memory to a separate store outside the session JSON.
+Memory: goal, recent entities, decisions. Long-term memory: separate store outside session JSON.
 
 ### Ops / support agent
 
@@ -847,15 +837,15 @@ tools = {
 }
 ```
 
-**Approval policy is `ASK` by default for everything risky** — operators want a human in the loop on production.
+Approval policy: `ASK` for risky tools in production.
 
-**The same loop, the same parser, the same memory layer.** Specialization is just _which `Tool`s you put in the registry_ and _what fields go in the context_.
+Same loop, parser, memory. Specialization = which tools + which context fields.
 
 ---
 
 ## Suggested project layout
 
-The `mini_coding_agent.py` file is one script of ≈1000 lines on purpose — it is teaching material. For real work, split along the components.
+`mini_coding_agent.py` is ~1000 lines on purpose: teaching material. Split for real work.
 
 **Generic agent runtime:**
 
@@ -907,7 +897,7 @@ src/personal_assistant/
 └── cli.py
 ```
 
-**The runtime is shared. The specializations are 200 lines each.** This is the architecture lesson from `pi-mono` — separate provider, runtime, and domain so you can ship four different products from the same core.
+Runtime shared. Specializations ~200 lines each. (`pi-mono` pattern: separate provider, runtime, domain.)
 
 ---
 
@@ -942,7 +932,7 @@ That is a real agent. Stop here, use it for two weeks, then iterate.
 - Workflow planner / executor split
 - Stateful long-horizon orchestration
 
-These show up in `pi-mono` and `learn-coding-agent` as **later layers**, not prerequisites. Adding them before the core loop is solid is a great way to ship a buggy framework instead of a working agent.
+Later layers in `pi-mono` and `learn-coding-agent`. Core loop first — add these after it's solid.
 
 ---
 

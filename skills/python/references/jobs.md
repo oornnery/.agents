@@ -1,14 +1,13 @@
-
 # Python Background Jobs & Task Queues
 
-Decouple long-running or unreliable work from request/response cycles. Return immediately to the user while background workers handle the heavy lifting asynchronously.
+Decouple long-running/unreliable work from request/response cycles. Return immediately, background workers handle async.
 
 ## When to Use This Skill
 
-- Processing tasks that take longer than a few seconds
-- Sending emails, notifications, or webhooks
-- Generating reports or exporting data
-- Processing uploads or media transformations
+- Tasks taking longer than few seconds
+- Sending emails, notifications, webhooks
+- Generating reports, exporting data
+- Processing uploads, media transformations
 - Integrating with unreliable external services
 - Building event-driven architectures
 
@@ -16,23 +15,23 @@ Decouple long-running or unreliable work from request/response cycles. Return im
 
 ### 1. Task Queue Pattern
 
-API accepts request, enqueues a job, returns immediately with a job ID. Workers process jobs asynchronously.
+API accepts request, enqueues job, returns job ID immediately. Workers process async.
 
 ### 2. Idempotency
 
-Tasks may be retried on failure. Design for safe re-execution.
+Tasks may retry on failure. Design for safe re-execution.
 
 ### 3. Job State Machine
 
-Jobs transition through states: pending → running → succeeded/failed.
+Jobs transition: pending → running → succeeded/failed.
 
 ### 4. At-Least-Once Delivery
 
-Most queues guarantee at-least-once delivery. Your code must handle duplicates.
+Most queues guarantee at-least-once delivery. Code must handle duplicates.
 
 ## Quick Start
 
-This skill uses Celery for examples, a widely adopted task queue. Alternatives like RQ, Dramatiq, and cloud-native solutions (AWS SQS, GCP Tasks) are equally valid choices.
+Uses Celery for examples. Alternatives: RQ, Dramatiq, cloud-native (AWS SQS, GCP Tasks) equally valid.
 
 ```python
 from celery import Celery
@@ -52,7 +51,7 @@ send_email.delay("user@example.com", "Welcome!", "Thanks for signing up")
 
 ### Pattern 1: Return Job ID Immediately
 
-For operations exceeding a few seconds, return a job ID and process asynchronously.
+Operations exceeding few seconds — return job ID, process async.
 
 ```python
 from uuid import uuid4
@@ -105,7 +104,7 @@ async def start_export(request: ExportRequest) -> JobResponse:
 
 ### Pattern 2: Celery Task Configuration
 
-Configure Celery tasks with proper retry and timeout settings.
+Configure Celery tasks with retry and timeout settings.
 
 ```python
 from celery import Celery
@@ -142,7 +141,7 @@ def process_payment(self, payment_id: str) -> dict:
 
 ### Pattern 3: Make Tasks Idempotent
 
-Workers may retry on crash or timeout. Design for safe re-execution.
+Workers may retry on crash/timeout. Design for safe re-execution.
 
 ```python
 @app.task(bind=True)
@@ -223,7 +222,7 @@ class JobRepository:
 
 ### Pattern 5: Dead Letter Queue
 
-Handle permanently failed tasks for manual inspection.
+Permanently failed tasks go to DLQ for manual inspection.
 
 ```python
 @app.task(bind=True, max_retries=3)
@@ -257,7 +256,7 @@ def process_webhook(self, webhook_id: str, payload: dict) -> None:
 
 ### Pattern 6: Status Polling Endpoint
 
-Provide an endpoint for clients to check job status.
+Endpoint for clients to check job status.
 
 ```python
 from fastapi import FastAPI, HTTPException
@@ -318,7 +317,7 @@ workflow.apply_async()
 
 ### Pattern 8: Alternative Task Queues
 
-Choose the right tool for your needs.
+Choose right tool for your needs.
 
 **RQ (Redis Queue)**: Simple, Redis-based
 

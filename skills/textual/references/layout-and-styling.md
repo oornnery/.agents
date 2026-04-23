@@ -3,9 +3,8 @@
 ## Styling Defaults
 
 - keep styles in `.tcss`
-- use ids for unique surfaces and classes for reusable states
-- keep layout readable; avoid deeply nested containers when one clear grid or
-  horizontal/vertical container would do
+- use ids for unique surfaces, classes for reusable states
+- avoid deeply nested containers; prefer grid or horizontal/vertical when clear
 
 ## Common Layout Choices
 
@@ -36,12 +35,11 @@ Screen {
 }
 ```
 
-Use grid when the screen genuinely has regions. Do not force grid for simple
-stacks.
+Use grid when screen has genuine regions. Don't force grid for simple stacks.
 
 ## Sizing and Spacing
 
-Use explicit spacing to make structure predictable:
+Use explicit spacing for predictable structure:
 
 ```css
 .panel {
@@ -51,7 +49,7 @@ Use explicit spacing to make structure predictable:
 }
 ```
 
-Prefer stable container widths and heights for key panels like:
+Prefer stable container widths/heights for key panels:
 
 - sidebars
 - drawers
@@ -68,11 +66,11 @@ Prefer selectors like:
 - `.selected`
 - `.danger`
 
-Avoid selectors that reflect accidental structure rather than meaning.
+Avoid selectors reflecting accidental structure over meaning.
 
 ## Pseudo-classes
 
-Use hover and focus states intentionally:
+Use hover/focus states intentionally:
 
 ```css
 Button:hover {
@@ -84,24 +82,24 @@ Button:focus {
 }
 ```
 
-This matters for usability and for tests that need visible interaction state.
+Matters for usability and tests needing visible interaction state.
 
 ## Dialog and Drawer Layout
 
 For dialogs:
 
-- center the surface
-- keep a clear primary action
-- ensure focus lands somewhere sensible
+- center surface
+- clear primary action
+- sensible focus landing
 
-For drawers or side panels:
+For drawers/side panels:
 
-- keep open and closed states visually distinct
-- make dismissal behavior clear
-- keep the content area stable when possible
+- visually distinct open/closed states
+- clear dismissal behavior
+- stable content area when possible
 
 ## Guardrails
 
-- do not over-style every widget individually when a class can carry the rule
-- do not make important layout behavior depend on hidden inline styles
-- do not let ids and classes drift between code, styles, and tests
+- don't over-style every widget individually; use classes
+- don't hide important layout in inline styles
+- don't let ids/classes drift between code, styles, tests

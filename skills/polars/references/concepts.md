@@ -2,17 +2,15 @@
 
 ## Expressions First
 
-Expressions are the core of Polars.
-
-Use:
+Expressions are Polars core. Use:
 
 ```python
 pl.col('value') * 2
 ```
 
-instead of thinking in row-by-row Python loops.
+not row-by-row Python loops.
 
-Expressions become useful inside contexts like:
+Expressions work inside contexts:
 
 - `select()`
 - `with_columns()`
@@ -28,7 +26,7 @@ df = pl.read_csv('data.csv')
 result = df.filter(pl.col('age') > 25)
 ```
 
-Use eager mode for:
+Use eager for:
 
 - small frames
 - one-off transforms
@@ -42,7 +40,7 @@ result = lf.filter(pl.col('age') > 25).select('name', 'age')
 df = result.collect()
 ```
 
-Use lazy mode for:
+Use lazy for:
 
 - larger data
 - multi-step pipelines
@@ -57,14 +55,12 @@ Benefits:
 
 ## Data Types
 
-Polars is strict about types, which is usually a good thing.
+Polars enforces strict types. Prefer:
 
-Prefer:
-
-- smaller integer types when the range is known
-- `Date` or `Datetime` instead of free-form strings
+- smaller integer types when range known
+- `Date` or `Datetime` over free-form strings
 - `Categorical` for repeated low-cardinality strings
-- explicit casts when the contract changes
+- explicit casts when contract changes
 
 ## Null Handling
 
@@ -76,12 +72,11 @@ df.with_columns(pl.col('value').fill_null(0))
 df.drop_nulls(subset=['important_col'])
 ```
 
-Do not assume Polars will silently coerce or fill missing values the way pandas
-often does.
+Polars will not silently coerce or fill missing values like pandas often does.
 
 ## Expression Composition
 
-Store reusable expressions when they clarify the pipeline:
+Store reusable expressions when they clarify pipeline:
 
 ```python
 price_with_tax = (pl.col('price') * 1.1).alias('price_with_tax')
@@ -89,11 +84,11 @@ price_with_tax = (pl.col('price') * 1.1).alias('price_with_tax')
 df.select('name', price_with_tax)
 ```
 
-This helps keep larger transforms readable.
+Keeps larger transforms readable.
 
 ## Window Functions
 
-Use `over()` when you want group-aware calculations without collapsing rows:
+Use `over()` for group-aware calculations without collapsing rows:
 
 ```python
 df.with_columns(
@@ -106,4 +101,4 @@ df.with_columns(
 
 - do not treat Polars like pandas with different syntax
 - do not hide schema issues under eager ad hoc fixes
-- do not use `Object` dtype unless there is no reasonable alternative
+- do not use `Object` dtype unless no reasonable alternative

@@ -1,14 +1,13 @@
-
 # Python Code Style & Documentation
 
-Consistent code style and clear documentation make codebases maintainable and collaborative. This skill covers modern Python tooling, naming conventions, and documentation standards.
+Consistent style + clear docs = maintainable codebases. Covers modern Python tooling, naming, documentation standards.
 
 ## When to Use This Skill
 
-- Setting up linting and formatting for a new project
+- Setting up linting/formatting for new project
 - Writing or reviewing docstrings
 - Establishing team coding standards
-- Configuring ruff, mypy, or pyright
+- Configuring `ruff`, `mypy`, or `pyright`
 - Reviewing code for style consistency
 - Creating project documentation
 
@@ -20,15 +19,15 @@ Let tools handle formatting debates. Configure once, enforce automatically.
 
 ### 2. Consistent Naming
 
-Follow PEP 8 conventions with meaningful, descriptive names.
+Follow PEP 8 with meaningful, descriptive names.
 
 ### 3. Documentation as Code
 
-Docstrings should be maintained alongside the code they describe.
+Docstrings maintained alongside code they describe.
 
 ### 4. Type Annotations
 
-Modern Python code should include type hints for all public APIs.
+Modern Python = type hints on all public APIs.
 
 ## Quick Start
 
@@ -49,7 +48,7 @@ strict = true
 
 ### Pattern 1: Modern Python Tooling
 
-Use `ruff` as an all-in-one linter and formatter. It replaces flake8, isort, and black with a single fast tool.
+Use `ruff` as all-in-one linter/formatter. Replaces flake8, isort, black with single fast tool.
 
 ```toml
 # pyproject.toml
@@ -111,7 +110,7 @@ typeCheckingMode = "strict"
 
 ### Pattern 3: Naming Conventions
 
-Follow PEP 8 with emphasis on clarity over brevity.
+Follow PEP 8. Clarity over brevity.
 
 **Files and Modules:**
 
@@ -154,7 +153,7 @@ API_BASE_URL = "https://api.example.com"
 
 ### Pattern 4: Import Organization
 
-Group imports in a consistent order: standard library, third-party, local.
+Group imports in consistent order: stdlib, third-party, local.
 
 ```python
 # Standard library
@@ -186,7 +185,7 @@ from ..utils import retry_decorator
 
 ### Pattern 5: Google-Style Docstrings
 
-Write docstrings for all public classes, methods, and functions.
+Write docstrings for all public classes, methods, functions.
 
 **Simple Function:**
 
@@ -260,7 +259,7 @@ class UserService:
 
 ### Pattern 6: Line Length and Formatting
 
-Set line length to 120 characters for modern displays while maintaining readability.
+120 characters for modern displays, maintain readability.
 
 ```python
 # Good: Readable line breaks
@@ -347,13 +346,13 @@ pytest
 
 ## Best Practices Summary
 
-1. **Use ruff** - Single tool for linting and formatting
-2. **Enable strict mypy** - Catch type errors before runtime
-3. **120 character lines** - Modern standard for readability
-4. **Descriptive names** - Clarity over brevity
-5. **Absolute imports** - More maintainable than relative
-6. **Google-style docstrings** - Consistent, readable documentation
-7. **Document public APIs** - Every public function needs a docstring
-8. **Keep docs updated** - Treat documentation as code
-9. **Automate in CI** - Run linters on every commit
-10. **Target Python 3.10+** - For new projects, Python 3.12+ is recommended for modern language features
+1. **Use ruff** -- Single tool for linting and formatting
+2. **Enable strict mypy** -- Catch type errors before runtime
+3. **120 character lines** -- Modern standard for readability
+4. **Descriptive names** -- Clarity over brevity
+5. **Absolute imports** -- More maintainable than relative
+6. **Google-style docstrings** -- Consistent, readable documentation
+7. **Document public APIs** -- Every public function needs a docstring
+8. **Keep docs updated** -- Treat documentation as code
+9. **Automate in CI** -- Run linters on every commit
+10. **Target Python 3.10+** -- For new projects, Python 3.12+ recommended for modern language features

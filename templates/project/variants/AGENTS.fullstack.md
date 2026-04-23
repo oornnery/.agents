@@ -85,47 +85,40 @@ src/myapp/
 
 ## Surface Boundaries
 
-- backend owns core rules, persistence, auth enforcement, template context,
-  and integration correctness
-- Jinja2 owns server-rendered pages and fragments, not business rules
-- htmx owns request triggering and fragment replacement, not application state
-- Alpine owns small local behavior such as toggles, disclosure state, and
-  progressive enhancement, not canonical data or permission decisions
-- do not leak database or ORM shapes directly into page context or browser-
-  facing contracts
-- keep full-page responses, fragments, redirects, and error states explicit
+- backend owns core rules, persistence, auth, template context, integration correctness
+- Jinja2 owns server-rendered pages/fragments, not business rules
+- htmx owns request triggering + fragment replacement, not app state
+- Alpine owns small local behavior (toggles, disclosure, progressive enhancement), not canonical data or permission decisions
+- no leaking DB/ORM shapes into page context or browser contracts
+- keep full-page, fragment, redirect, error states explicit
 
 ## Backend and Frontend Defaults
 
 ### Backend
 
-- keep routes, schemas, and service orchestration explicit
-- keep persistence and integration code out of public contracts
-- make auth, session, and permission behavior visible at the edge
-- prefer `Pydantic` for request, response, and page-context shaping
+- routes, schemas, service orchestration explicit
+- persistence + integration code out of public contracts
+- auth, session, permission behavior visible at edge
+- prefer `Pydantic` for request, response, page-context shaping
 - prefer `HTTPX` for server-side HTTP integrations
-- prefer `SQLModel` when typed SQLAlchemy-style persistence is a good fit
+- prefer `SQLModel` for typed SQLAlchemy-style persistence
 
 ### Frontend
 
-- keep page context, fragment context, and shared template helpers explicit
-- keep loading, empty, error, and success states explicit in rendered HTML
-- prefer htmx-driven HTML responses over JSON plus custom client rendering for
-  normal UI flows
-- keep Alpine behavior local and small; if state must survive navigation or be
-  shared across screens, move it back to the server or an explicit API
-- keep accessibility, focus handling, and progressive enhancement part of the
-  default implementation
+- page context, fragment context, shared template helpers explicit
+- loading, empty, error, success states explicit in rendered HTML
+- prefer htmx-driven HTML responses over JSON + custom client rendering for normal UI flows
+- Alpine behavior local + small; state surviving navigation or shared across screens moves back to server or explicit API
+- accessibility, focus handling, progressive enhancement part of default implementation
 
 ## Shared Contract Rules
 
-- keep page endpoints, fragment endpoints, and JSON endpoints clearly separated
-- when htmx expects a fragment, return HTML intentionally instead of ad hoc
-  strings
-- use htmx headers, redirects, and swap behavior intentionally
-- keep Alpine data shapes aligned with the rendered HTML they enhance
-- avoid template or browser workarounds for backend contract drift
-- document auth, file transfer, CSRF, and cache invalidation behavior clearly
+- page endpoints, fragment endpoints, JSON endpoints clearly separated
+- htmx expects fragment → return intentional HTML, not ad hoc strings
+- use htmx headers, redirects, swap behavior intentionally
+- Alpine data shapes aligned with rendered HTML they enhance
+- no template/browser workarounds for backend contract drift
+- document auth, file transfer, CSRF, cache invalidation behavior clearly
 
 ## Integration Rules
 
@@ -141,31 +134,31 @@ src/myapp/
 
 ### Backend
 
-- [ ] routes, schemas, and response shapes are explicit
-- [ ] auth, session, and permission behavior are enforced server-side
-- [ ] database models do not leak into browser-facing contracts or page context
+- [ ] routes, schemas, response shapes explicit
+- [ ] auth, session, permission enforced server-side
+- [ ] DB models not leaked into browser contracts or page context
 
 ### Templates, htmx, and Alpine
 
-- [ ] templates receive explicit context and render predictable partials
-- [ ] htmx swaps, targets, triggers, and redirects are intentional
-- [ ] forms validate and fail clearly
-- [ ] Alpine behavior stays local and progressive
-- [ ] accessibility and responsive behavior are checked
+- [ ] templates receive explicit context, render predictable partials
+- [ ] htmx swaps, targets, triggers, redirects intentional
+- [ ] forms validate + fail clearly
+- [ ] Alpine behavior local + progressive
+- [ ] accessibility + responsive behavior checked
 
 ### Integration
 
-- [ ] rendered HTML and fragment endpoints match the real backend contract
-- [ ] auth flow is consistent across both layers
-- [ ] CSRF and unsafe methods are handled explicitly
-- [ ] shared examples and docs stay in sync with contract changes
+- [ ] rendered HTML + fragment endpoints match real backend contract
+- [ ] auth flow consistent across layers
+- [ ] CSRF + unsafe methods handled explicitly
+- [ ] shared examples + docs sync with contract changes
 
 ### Verification
 
 - [ ] backend validation passes
-- [ ] page and fragment rendering paths pass
+- [ ] page + fragment rendering paths pass
 - [ ] critical end-to-end flows pass
-- [ ] failure and recovery paths are exercised
+- [ ] failure + recovery paths exercised
 
 ## Testing Focus
 
@@ -195,10 +188,8 @@ src/myapp/
 
 ## Fullstack Guardrails
 
-- do not couple templates or Alpine behavior directly to persistence details
-- do not hide backend contract changes behind template workarounds or browser
-  scripts
-- keep auth, session, CSRF, and permission behavior explicit in both layers
-- keep htmx flows inspectable: request, target, swap, and response shape should
-  all be obvious
-- update docs and examples when shared contracts change
+- no coupling templates/Alpine directly to persistence details
+- no hiding backend contract changes behind template workarounds or browser scripts
+- auth, session, CSRF, permission explicit in both layers
+- htmx flows inspectable: request, target, swap, response shape all obvious
+- update docs + examples when shared contracts change

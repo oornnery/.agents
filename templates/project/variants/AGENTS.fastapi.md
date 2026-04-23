@@ -4,8 +4,7 @@
 
 <!--
 FastAPI service overlay.
-Use for Python HTTP services where request handling, schema design, and runtime
-behavior need project-specific instructions on top of the base variant.
+Python HTTP services — request handling, schema design, runtime behavior on top of base variant.
 -->
 
 ## Project Description
@@ -41,33 +40,32 @@ uv run pytest -v
 
 ## API Conventions
 
-- use `Annotated` for `Path`, `Query`, `Header`, and `Depends`
-- keep routes thin and move orchestration into `services/` or `core/`
-- use explicit return types or `response_model` for public handlers
-- prefer `def` over `async def` when the implementation blocks
-- keep request validation, auth, and permission checks explicit at the edge
-- do not leak ORM or persistence shapes directly through API responses
+- `Annotated` for `Path`, `Query`, `Header`, `Depends`
+- routes thin, orchestration in `services/` or `core/`
+- explicit return types or `response_model` for public handlers
+- prefer `def` over `async def` when blocking
+- request validation, auth, permission checks explicit at edge
+- no ORM/persistence shapes in API responses
 
 ## Preferred Libraries
 
-- use `Pydantic` for request, response, and config models
-- use `HTTPX` for outbound HTTP calls
-- use `SQLModel` when the service uses typed SQLAlchemy-style persistence and
-  benefits from aligned models and metadata
+- `Pydantic` for request, response, config models
+- `HTTPX` for outbound HTTP
+- `SQLModel` for typed SQLAlchemy-style persistence w/ aligned models + metadata
 
 ## Request, Response, and Dependency Rules
 
-- keep request parsing and response shaping explicit
-- centralize shared dependencies only when they improve repeated signatures
-- use response models or explicit return types for public handlers
-- separate transport concerns from reusable logic
+- request parsing + response shaping explicit
+- centralize shared deps only if they improve repeated signatures
+- response models or explicit return types for public handlers
+- separate transport from reusable logic
 
 ## Runtime and Safety Defaults
 
-- prefer `def` when the internals block
-- avoid hidden network or database work in dependencies unless obvious from the code
-- treat uploads, downloads, callbacks, and webhooks as high-risk boundaries
-- keep auth, session, and permission behavior explicit in routes and dependencies
+- prefer `def` when internals block
+- no hidden network/DB work in deps unless obvious
+- uploads, downloads, callbacks, webhooks = high-risk
+- auth, session, permission explicit in routes + deps
 
 ## Layout
 
@@ -86,39 +84,39 @@ src/myapp/
 
 ## Error and Contract Rules
 
-- use consistent status codes and response shapes
-- keep validation errors, auth failures, and business conflicts distinguishable
-- document pagination, filtering, and sorting rules when relevant
-- treat file uploads, webhooks, and external callbacks as high-risk surfaces
+- consistent status codes + response shapes
+- validation errors, auth failures, business conflicts distinguishable
+- document pagination, filtering, sorting when relevant
+- file uploads, webhooks, external callbacks = high-risk
 
 ## FastAPI Checklist
 
 ### API Surface
 
-- [ ] route names and resource paths are explicit
-- [ ] request and response schemas are explicit
-- [ ] status codes are intentional
-- [ ] error shapes are consistent
+- [ ] route names + resource paths explicit
+- [ ] request + response schemas explicit
+- [ ] status codes intentional
+- [ ] error shapes consistent
 
 ### Handler Design
 
-- [ ] routes stay thin
-- [ ] shared dependencies are reusable and visible
-- [ ] blocking work does not run inside async handlers
-- [ ] auth and permission checks happen at the edge
+- [ ] routes thin
+- [ ] shared deps reusable + visible
+- [ ] no blocking work in async handlers
+- [ ] auth + permission checks at edge
 
 ### Data Boundaries
 
-- [ ] ORM or database models do not leak into public responses
-- [ ] pagination and filtering are explicit when needed
-- [ ] uploads, downloads, and callbacks are treated as high-risk inputs
+- [ ] no ORM/DB model leak in public responses
+- [ ] pagination + filtering explicit when needed
+- [ ] uploads, downloads, callbacks = high-risk
 
 ### Verification
 
-- [ ] success and failure paths are tested
-- [ ] auth and permission boundaries are tested
-- [ ] invalid input and edge values are tested
-- [ ] startup, shutdown, and integration behavior are tested
+- [ ] success + failure paths tested
+- [ ] auth + permission boundaries tested
+- [ ] invalid input + edge values tested
+- [ ] startup, shutdown, integration tested
 
 ## Testing Focus
 

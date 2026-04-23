@@ -1,12 +1,10 @@
 # Clean Arch
 
-Use this reference when the main design problem is where code should live and
-which direction dependencies should point.
+Use when design problem is where code lives and which way dependencies point.
 
 ## Core Rule
 
-Dependencies point inward. The core business model does not know about
-frameworks, databases, transports, or runtime entrypoints.
+Dependencies point inward. Core business model unaware of frameworks, databases, transports, runtime entrypoints.
 
 ## Layer Responsibilities
 
@@ -23,7 +21,7 @@ frameworks, databases, transports, or runtime entrypoints.
 - **Onion Architecture** emphasizes concentric layers around the domain
 - **Hexagonal Architecture** emphasizes ports and adapters
 
-These are variations of the same idea. Do not over-optimize the naming.
+Variations of same idea. Do not over-optimize naming.
 
 ## Ports and Adapters
 
@@ -42,19 +40,18 @@ src/myapp/
 └── presentation/
 ```
 
-Use this shape only if it clarifies the codebase. Do not force a large
-directory split on a tiny project.
+Use only if it clarifies codebase. Do not force large directory split on tiny project.
 
 ## Composition Root
 
-Wire implementations to abstractions at the entrypoint:
+Wire implementations to abstractions at entrypoint:
 
 - application startup
 - main module
 - dependency injection container
 - route dependency factory
 
-This should be the only place that knows about all layers at once.
+Only place that knows about all layers at once.
 
 ## Testing by Layer
 
@@ -76,12 +73,12 @@ This should be the only place that knows about all layers at once.
 ## When to Use
 
 - APIs with meaningful business rules and multiple integrations
-- apps that need stable testable cores
-- systems with more than one delivery mechanism, such as HTTP plus jobs or CLI
-- codebases suffering from framework leakage into core logic
+- apps needing stable testable cores
+- systems with multiple delivery mechanisms (HTTP plus jobs or CLI)
+- codebases suffering framework leakage into core logic
 
 ## When Not to Use
 
 - tiny scripts and very small CRUD apps
-- codebases where extra layers would outweigh the value
+- codebases where extra layers outweigh value
 - one-off workflows with almost no domain behavior

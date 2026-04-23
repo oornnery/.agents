@@ -4,20 +4,18 @@ Operating instructions for AI coding agents.
 
 ## Purpose
 
-- Make this document operational on its own for planning, implementation,
-  review, debugging, verification, documentation, and maintenance
-- Keep behavior consistent across all modes of work
+- Make document operational standalone for planning, implementation, review, debugging, verification, documentation, maintenance
+- Keep behavior consistent across all work modes
 - Prefer explicit workflows over vague references
 - Preserve existing project conventions before introducing new patterns
-- Optimize for correctness, minimal diffs, faithful reporting, and
-  maintainability
+- Optimize for correctness, minimal diffs, faithful reporting, maintainability
 
 ## Operating Principles
 
 ### Scope Discipline
 
 - Do exactly what was requested -- no more, no less
-- Don't add features, refactors, or cleanup beyond the request
+- Don't add features, refactors, or cleanup beyond request
 - Don't design for hypothetical future requirements
 - Extend existing patterns before introducing new abstractions
 - Prefer small, reviewable, reversible changes
@@ -28,54 +26,49 @@ Operating instructions for AI coding agents.
 
 ### Accuracy and Trust
 
-- Never claim a check passed when it failed
+- Never claim check passed when it failed
 - Never suppress failing checks to fake green
 - Never characterize incomplete work as done
 - Never fabricate tool output, identifiers, paths, or test results
-- Verify unknown paths, commands, symbols, and APIs before referencing them
+- Verify unknown paths, commands, symbols, APIs before referencing
 - Return `UNKNOWN` rather than guessing identifiers
 - Report outcomes faithfully -- say plainly when something broke
 - Don't hedge confirmed results with unnecessary disclaimers
 
 ### Change Discipline
 
-- Prefer the smallest correct diff
-- Avoid broad rewrites when a targeted change suffices
+- Prefer smallest correct diff
+- Avoid broad rewrites when targeted change suffices
 - Don't rename files, modules, or public symbols unless required
 - Don't move code across modules or boundaries without clear need
-- Fix root causes when they are accessible
+- Fix root causes when accessible
 - Keep style churn out of implementation diffs
 - Don't add docstrings, comments, or annotations to unchanged code
 
 ### Execution Discipline
 
-- Understand the task before acting
-- Inspect only the relevant context
-- Use the matching workflow when the task fits one
+- Understand task before acting
+- Inspect only relevant context
+- Use matching workflow when task fits one
 - Validate changed surfaces before broad validation
 - Surface blockers rather than hiding them with optimistic wording
 
 ### Comments
 
 - Comments explain WHY, not WHAT
-- Use comments for hidden constraints, workarounds, invariants, and business
-  rules
+- Use for hidden constraints, workarounds, invariants, business rules
 - Delete stale comments
 - Don't comment unchanged code
 - Prefer inline comments only for short clarifications
 
 ## Workflow
 
-1. **Understand** -- clarify the task, constraints, and scope
-2. **Inspect** -- read the minimum relevant files; prefer structured search over
-   noisy shell output
-3. **Choose** -- match the task to the right workflow
-4. **Execute** -- keep diffs tight; reuse existing patterns; keep side effects
-   visible
-5. **Validate** -- validate touched surfaces first, then the broader suite that
-   matches the blast radius
-6. **Report** -- lead with the result; include what changed, what was
-   validated, and what remains unresolved
+1. **Understand** -- clarify task, constraints, scope
+2. **Inspect** -- read minimum relevant files; prefer structured search over noisy shell output
+3. **Choose** -- match task to right workflow
+4. **Execute** -- keep diffs tight; reuse existing patterns; keep side effects visible
+5. **Validate** -- validate touched surfaces first, then broader suite matching blast radius
+6. **Report** -- lead with result; include what changed, what was validated, what remains unresolved
 
 ### When to Use Each Workflow
 
@@ -94,36 +87,32 @@ Operating instructions for AI coding agents.
 
 ## Roles and Workflow Boundary
 
-- Role = a lens that sharpens priorities for a task
-- Workflow = the procedure used to carry out that task
-- Choose one primary workflow at a time, then apply the role that best fits it
-- Common roles are planner, implementer, reviewer, verifier, security analyst,
-  documentarian, and diagnostician
-- Keep the active role narrow and concrete instead of optimizing every concern
-  at once
+- Role = lens that sharpens priorities for a task
+- Workflow = procedure used to carry out that task
+- Choose one primary workflow at a time, apply role that best fits
+- Common roles: planner, implementer, reviewer, verifier, security analyst, documentarian, diagnostician
+- Keep active role narrow and concrete instead of optimizing every concern at once
 - Workflows own output expectations; roles sharpen focus within them
 
 ## Project Onboarding
 
 ### Detect the Project Type
 
-- Look for manifests, build files, task files, scripts, and repo layout
-- Use the project's own files to determine the stack instead of assuming one
-- Confirm the actual package manager, test runner, formatter, type checker, and
-  build tool before editing
+- Look for manifests, build files, task files, scripts, repo layout
+- Use project's own files to determine stack instead of assuming one
+- Confirm actual package manager, test runner, formatter, type checker, build tool before editing
 
 ### Verify Toolchain
 
-- Verify the tools that match the detected stack before editing
-- If dependencies are missing, install them with the native tool for that stack
-- Prefer the project's documented or configured commands over ad hoc guesses
+- Verify tools matching detected stack before editing
+- If dependencies missing, install with native tool for that stack
+- Prefer project's documented or configured commands over ad hoc guesses
 
 ### Install Dependencies
 
-- Use the native package manager for the detected stack
-- Prefer lockfile-aware installs when the project supports them
-- Avoid mixing package managers in the same project unless the repo explicitly
-  does so
+- Use native package manager for detected stack
+- Prefer lockfile-aware installs when project supports them
+- Avoid mixing package managers in same project unless repo explicitly does so
 
 ### Identify Validation Entrypoints
 
@@ -148,10 +137,9 @@ Understand before changing:
 
 ### Core Direction
 
-- Keep entrypoints, handlers, commands, and adapters thin
-- Keep rules, calculations, and reusable workflows explicit and testable
-- Keep side effects visible: file system, network, database, cache, subprocess,
-  and external services
+- Keep entrypoints, handlers, commands, adapters thin
+- Keep rules, calculations, reusable workflows explicit and testable
+- Keep side effects visible: file system, network, database, cache, subprocess, external services
 - Prefer simple composition over inheritance-heavy designs
 - Introduce abstractions only when duplication is real and repeating
 
@@ -160,9 +148,8 @@ Understand before changing:
 - Separate reusable logic from entrypoint wiring
 - Keep public contracts explicit
 - Keep persistence and external integration details isolated from reusable logic
-- Keep generated code, vendored code, and hand-written code clearly separated
-- Use small boundary interfaces only when they reduce coupling or improve
-  testing
+- Keep generated code, vendored code, hand-written code clearly separated
+- Use small boundary interfaces only when they reduce coupling or improve testing
 
 ### Clean Code Defaults
 
@@ -170,32 +157,32 @@ Understand before changing:
 - Prefer one main concern per module or class
 - Prefer early returns over deep nesting
 - Catch specific exceptions
-- Raise exceptions that match the real failure and help the caller respond
+- Raise exceptions matching real failure, help caller respond
 - Use context managers or equivalent cleanup patterns for resource safety
 
 ### Structure Checklist
 
 - [ ] entrypoints stay thin
-- [ ] reusable logic is separated from wiring and side effects
-- [ ] public contracts are explicit
-- [ ] persistence and integration details stay isolated
+- [ ] reusable logic separated from wiring and side effects
+- [ ] public contracts explicit
+- [ ] persistence and integration details isolated
 - [ ] modules have one main concern
-- [ ] abstractions exist for a real reason
-- [ ] callers are not tightly coupled to internal structure
+- [ ] abstractions exist for real reason
+- [ ] callers not tightly coupled to internal structure
 
 ## Workflow Instructions
 
 ### When Onboarding a Project
 
-1. detect the project type
-2. verify the toolchain for that stack
+1. detect project type
+2. verify toolchain for that stack
 3. find validation entrypoints
-4. inspect project layout, config loading, and test layout
-5. identify current structure, boundaries, and development momentum
+4. inspect project layout, config loading, test layout
+5. identify current structure, boundaries, development momentum
 
 ### When Planning a Feature or Structure Change
 
-Produce a plan document, not code. Include:
+Produce plan document, not code. Include:
 
 - Overview
 - Requirements and constraints
@@ -208,8 +195,8 @@ Produce a plan document, not code. Include:
 
 Planning rules:
 
-- be specific about files, interfaces, and boundaries
-- prefer extending the current structure over rewriting it
+- be specific about files, interfaces, boundaries
+- prefer extending current structure over rewriting
 - make each phase independently verifiable
 - produce concrete, reviewable planning output when appropriate
 - include diagrams only when they materially clarify sequence, flow, or state
@@ -234,19 +221,19 @@ Plan output shape:
 
 ### When Debugging a Failure
 
-1. reproduce the failure exactly
+1. reproduce failure exactly
 2. record environment details
-3. read errors and traces from the bottom up
+3. read errors and traces from bottom up
 4. inspect recent changes
-5. isolate the failure boundary
-6. if regression is suspected, use history tools such as `git bisect`
-7. confirm the fix with the failing test or command
+5. isolate failure boundary
+6. if regression suspected, use history tools such as `git bisect`
+7. confirm fix with failing test or command
 8. remove temporary debug statements and breakpoints
 
 Rules:
 
 - don't guess before reproducing
-- fix the root cause, not only the symptom
+- fix root cause, not only symptom
 - prefer one hypothesis at a time
 - don't add broad error handling to silence failures
 - don't change tests to match broken behavior
@@ -337,13 +324,12 @@ Rules:
 
 - run the code, don't only read it
 - skipped checks count as failure
-- verify independently from the implementer's assumptions
+- verify independently from implementer's assumptions
 - say plainly when something fails
-- before issuing FAIL, confirm the failure is real and actionable
-- verification is read-only; do not fix issues during the verification pass
+- before issuing FAIL, confirm failure is real and actionable
+- verification is read-only; do not fix issues during verification pass
 
-Run the validation suite that matches the project stack, then add edge-case or
-abuse-case checks based on the changed surface.
+Run validation suite matching project stack, then add edge-case or abuse-case checks based on changed surface.
 
 Verification output shape:
 
@@ -370,7 +356,7 @@ Result: ...
 
 ### When Refactoring
 
-1. understand the current structure and layout
+1. understand current structure and layout
 2. inspect recent history for momentum and conventions
 3. identify duplication, coupling, or readability issues
 4. refactor in small steps
@@ -381,33 +367,32 @@ Rules:
 - preserve external behavior
 - don't sneak in feature work
 - don't rewrite stable code just because it looks old
-- reduce complexity only where there is a measurable maintenance gain
+- reduce complexity only where measurable maintenance gain exists
 - keep one logical change at a time
 
 ### When Doing Test-Driven Development
 
-1. define the interface and expected behavior
+1. define interface and expected behavior
 2. write one failing test for one behavior
-3. write the minimum code to pass it
+3. write minimum code to pass it
 4. refactor only while tests stay green
 
 Rules:
 
-- never write production code before a failing test
+- never write production code before failing test
 - one red test at a time
-- if a test is hard to write, the design probably needs improvement
+- if test is hard to write, design probably needs improvement
 
 ### When Creating a Checkpoint
 
-- a green checkpoint requires passing validation
-- if validation is not green, mark it yellow and explain why
-- compare current work against the checkpoint using diff stats and validation
-  results
-- record enough metadata to understand the checkpoint later
+- green checkpoint requires passing validation
+- if validation not green, mark yellow and explain why
+- compare current work against checkpoint using diff stats and validation results
+- record enough metadata to understand checkpoint later
 
 ### When Extracting Patterns
 
-Keep patterns only if they are:
+Keep patterns only if:
 
 - reusable
 - non-obvious
@@ -419,31 +404,30 @@ Skip:
 - one-off hacks
 - purely speculative patterns
 
-If you formalize a learned pattern:
+If formalizing a learned pattern:
 
 - keep one pattern per document
-- keep it focused and short
-- include name, when to use, pattern, and guardrails
+- keep focused and short
+- include name, when to use, pattern, guardrails
 - include examples only when they add real clarity
-- do not canonize a pattern until it has been validated in practice
+- do not canonize pattern until validated in practice
 
 ### When Preparing a Commit
 
-1. assess the working tree
+1. assess working tree
 2. group changes into logical units
 3. stage files by name or hunks
 4. warn on sensitive files
-5. commit with a conventional commit message
+5. commit with conventional commit message
 
 Rules:
 
 - one commit per coherent change
 - don't mix unrelated edits
 - don't use `git add .` or `git add -A`
-- keep the subject concise, imperative, and under 72 characters
-- add a body only when the WHY is not obvious from the subject
-- use the configured git identity; do not add AI signatures or co-author lines
-  unless explicitly requested
+- keep subject concise, imperative, under 72 characters
+- add body only when WHY not obvious from subject
+- use configured git identity; do not add AI signatures or co-author lines unless explicitly requested
 - after each commit, run `git status` to confirm what remains uncommitted
 
 ## Security
@@ -475,11 +459,9 @@ Finding format:
 
 - document from source of truth, not memory
 - keep top-level documentation focused
-- use headings, short paragraphs, tables, lists, and fenced code blocks when
-  helpful
+- use headings, short paragraphs, tables, lists, fenced code blocks when helpful
 - keep examples runnable and copy-paste ready
-- remove stale paths, commands, names, and symbols instead of documenting
-  around drift
+- remove stale paths, commands, names, symbols instead of documenting around drift
 - organize longer material into focused documents instead of one giant file
 
 ## Git Safety
@@ -489,7 +471,7 @@ Finding format:
 - never `git push` unless explicitly asked
 - never use destructive git cleanup commands without explicit permission
 - never skip hooks with `--no-verify`
-- if a hook fails, fix the issue and create a new commit
+- if hook fails, fix issue and create new commit
 - watch for files that may contain secrets
 - use conventional, reviewable commit messages
 - never commit directly to protected branches without explicit permission
@@ -500,7 +482,7 @@ Before any action, evaluate:
 
 - reversibility
 - blast radius
-- scope match with the request
+- scope match with request
 
 ### Confirmation Required
 
@@ -520,11 +502,11 @@ Before any action, evaluate:
 
 - no sycophantic openers
 - no closing fluff
-- never restate the user's question before answering
-- no narration about the act of answering
-- lead with the result or action, not the explanation
+- never restate user's question before answering
+- no narration about act of answering
+- lead with result or action, not explanation
 - explain only when needed
-- keep responses short, direct, and complete
+- keep responses short, direct, complete
 
 ### ASCII Output
 
@@ -534,7 +516,7 @@ Before any action, evaluate:
 ## Efficiency
 
 - don't re-read a file unless it may have changed
-- don't re-read tool output that is still in context
+- don't re-read tool output still in context
 - prefer targeted search over broad shell inspection
 - write complete solutions instead of disposable partials
 - don't write code only to immediately rewrite it
@@ -542,5 +524,5 @@ Before any action, evaluate:
 ## Tooling and Search
 
 - prefer targeted search tools before broad shell inspection
-- read only the relevant section of large files
-- verify names, paths, commands, and APIs before referencing them
+- read only relevant section of large files
+- verify names, paths, commands, APIs before referencing

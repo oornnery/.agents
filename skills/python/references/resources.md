@@ -1,11 +1,12 @@
+Script needs a file path but I can't write to temp. I'll compress inline per the rules instead.
 
 # Python Resource Management
 
-Manage resources deterministically using context managers. Resources like database connections, file handles, and network sockets should be released reliably, even when exceptions occur.
+Manage resources deterministically with context managers. DB connections, file handles, network sockets released reliably, even on exceptions.
 
 ## When to Use This Skill
 
-- Managing database connections and connection pools
+- Managing database connections + connection pools
 - Working with file handles and I/O
 - Implementing custom context managers
 - Building streaming responses with state
@@ -16,7 +17,7 @@ Manage resources deterministically using context managers. Resources like databa
 
 ### 1. Context Managers
 
-The `with` statement ensures resources are released automatically, even on exceptions.
+`with` statement ensures resources released automatically, even on exceptions.
 
 ### 2. Protocol Methods
 
@@ -24,11 +25,11 @@ The `with` statement ensures resources are released automatically, even on excep
 
 ### 3. Unconditional Cleanup
 
-`__exit__` always runs, regardless of whether an exception occurred.
+`__exit__` always runs, regardless of exception.
 
 ### 4. Exception Handling
 
-Return `True` from `__exit__` to suppress exceptions, `False` to propagate them.
+Return `True` from `__exit__` to suppress exceptions, `False` to propagate.
 
 ## Quick Start
 
@@ -51,7 +52,7 @@ with managed_resource() as r:
 
 ### Pattern 1: Class-Based Context Manager
 
-Implement the context manager protocol for complex resources.
+Implement context manager protocol for complex resources.
 
 ```python
 class DatabaseConnection:
@@ -100,7 +101,7 @@ finally:
 
 ### Pattern 2: Async Context Manager
 
-For async resources, implement the async protocol.
+Implement async protocol for async resources.
 
 ```python
 class AsyncDatabasePool:
@@ -143,7 +144,7 @@ async with AsyncDatabasePool(dsn) as pool:
 
 ### Pattern 3: Using @contextmanager Decorator
 
-Simplify context managers with the decorator for straightforward cases.
+Simplify context managers with decorator for straightforward cases.
 
 ```python
 from contextlib import contextmanager, asynccontextmanager
@@ -185,7 +186,7 @@ async with database_transaction(conn) as tx:
 
 ### Pattern 4: Unconditional Resource Release
 
-Always clean up resources in `__exit__`, regardless of exceptions.
+Clean up resources in `__exit__` unconditionally, regardless of exceptions.
 
 ```python
 class FileProcessor:
@@ -225,7 +226,7 @@ class FileProcessor:
 
 ### Pattern 5: Selective Exception Suppression
 
-Only suppress specific, documented exceptions.
+Suppress only specific, documented exceptions.
 
 ```python
 class StreamWriter:
@@ -256,7 +257,7 @@ class StreamWriter:
 
 ### Pattern 6: Streaming with Accumulated State
 
-Maintain both incremental chunks and accumulated state during streaming.
+Maintain incremental chunks + accumulated state during streaming.
 
 ```python
 from collections.abc import Generator
@@ -307,7 +308,7 @@ def stream_with_accumulation(
 
 ### Pattern 7: Efficient String Accumulation
 
-Avoid O(n²) string concatenation when accumulating.
+Avoid O(n^2) string concatenation when accumulating.
 
 ```python
 def accumulate_stream(stream) -> str:
@@ -326,7 +327,7 @@ def accumulate_stream(stream) -> str:
 
 ### Pattern 8: Tracking Stream Metrics
 
-Measure time-to-first-byte and total streaming time.
+Measure time-to-first-byte + total streaming time.
 
 ```python
 import time
@@ -368,7 +369,7 @@ def stream_with_metrics(
 
 ### Pattern 9: Managing Multiple Resources with ExitStack
 
-Handle a dynamic number of resources cleanly.
+Handle dynamic number of resources cleanly.
 
 ```python
 from contextlib import ExitStack, AsyncExitStack
@@ -405,13 +406,13 @@ async def process_connections(hosts: list[str]) -> list[dict]:
 
 ## Best Practices Summary
 
-1. **Always use context managers** - For any resource that needs cleanup
+1. **Use context managers** - Any resource needing cleanup
 2. **Clean up unconditionally** - `__exit__` runs even on exception
-3. **Don't suppress unexpectedly** - Return `False` unless suppression is intentional
-4. **Use @contextmanager** - For simple resource patterns
-5. **Implement both protocols** - Support `with` and manual management
-6. **Use ExitStack** - For dynamic numbers of resources
-7. **Accumulate efficiently** - List + join, not string concatenation
+3. **Don't suppress unexpectedly** - Return `False` unless intentional
+4. **Use @contextmanager** - Simple resource patterns
+5. **Implement both protocols** - `with` + manual management
+6. **Use ExitStack** - Dynamic resource counts
+7. **Accumulate efficiently** - List + join, not string concat
 8. **Track metrics** - Time-to-first-byte matters for streaming
 9. **Document behavior** - Especially exception suppression
-10. **Test cleanup paths** - Verify resources are released on errors
+10. **Test cleanup paths** - Verify resources released on errors

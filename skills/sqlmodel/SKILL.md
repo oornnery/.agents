@@ -9,51 +9,36 @@ description: SQLModel persistence patterns for Python services and applications.
 
 # SQLModel
 
-Persistence modeling, async sessions, relationships, migrations, and query
-loading patterns with SQLModel and Alembic.
+Persistence modeling, async sessions, relationships, migrations, query loading with SQLModel and Alembic.
 
 ## Boundary
 
-Use this skill for persistence modeling, async sessions, relationships,
-transactions, migrations, and query optimization with SQLModel.
+Use for persistence modeling, async sessions, relationships, transactions, migrations, query optimization with SQLModel.
 
-- pair with `python` for general Python conventions, tooling, and FastAPI usage
-- pair with `arch` when repository boundaries, domain separation, or layering
-  matter
-- pair with `design` when API contract shape and persistence shape must stay
-  decoupled
-- pair with `quality` when query bugs, regressions, or migration failures need
-  tighter guards
-- pair with `security` when persistence changes touch auth data, tenant
-  isolation, secrets, or unsafe raw SQL
+- pair `python` for general Python conventions, tooling, FastAPI usage
+- pair `arch` when repo boundaries, domain separation, layering matter
+- pair `design` when API contract and persistence shape must stay decoupled
+- pair `quality` when query bugs, regressions, migration failures need tighter guards
+- pair `security` when persistence changes touch auth data, tenant isolation, secrets, unsafe raw SQL
 
 ## Reference Map
 
-- `references/advanced-models.md` -- advanced model patterns, relationships,
-  inheritance, mixins, field types, indexes, and constraints
-- `references/migrations.md` -- Alembic setup, schema and data migrations,
-  rollback patterns, production workflow, and troubleshooting
-- `references/queries-optimization.md` -- query patterns, eager loading, N+1
-  prevention, bulk operations, profiling, and performance testing
+- `references/advanced-models.md` -- advanced model patterns, relationships, inheritance, mixins, field types, indexes, constraints
+- `references/migrations.md` -- Alembic setup, schema/data migrations, rollback patterns, production workflow, troubleshooting
+- `references/queries-optimization.md` -- query patterns, eager loading, N+1 prevention, bulk ops, profiling, perf testing
 
 ## Assets and Scripts
 
-- `assets/models.py` -- table, create, read, update, timestamps, enums, and
-  many-to-many patterns
-- `scripts/init.py` -- starter script to initialize a database from imported
-  SQLModel metadata
+- `assets/models.py` -- table, create, read, update, timestamps, enums, many-to-many patterns
+- `scripts/init.py` -- starter script to init DB from imported SQLModel metadata
 - `scripts/migrate.sh` -- migration helper wrapper around Alembic commands
 
 ## What Stays Here
 
-Keep this file focused on defaults, async patterns, and the guardrails that
-matter most in day-to-day project work.
+Defaults, async patterns, guardrails for day-to-day work.
 
-- keep here: multiple-model pattern, async engine and session defaults, FastAPI
-  dependency wiring, relationship loading defaults, migration workflow, and
-  guardrails
-- move to refs: long examples, advanced model variants, detailed migration
-  strategies, query patterns, and deeper troubleshooting
+- here: multiple-model pattern, async engine/session defaults, FastAPI dep wiring, relationship loading defaults, migration workflow, guardrails
+- refs: long examples, advanced model variants, detailed migration strategies, query patterns, deeper troubleshooting
 
 ## Quick Start
 
@@ -64,7 +49,7 @@ uv add asyncpg
 
 Start with:
 
-1. explicit table, create, update, and public models
+1. explicit table, create, update, public models
 2. one async session per request or job boundary
 3. reviewed Alembic migrations
 4. explicit relationship loading
@@ -98,8 +83,7 @@ class UserUpdate(SQLModel):
     email: str | None = None
 ```
 
-Use separate models because table shape, write input, and public response rarely
-have the same responsibilities.
+Separate models because table shape, write input, public response rarely share responsibilities.
 
 ## Async Engine and Session
 
@@ -119,8 +103,7 @@ async_session = async_sessionmaker(
 )
 ```
 
-Use `expire_on_commit=False` for async session workflows so returned objects
-remain usable after commit boundaries.
+`expire_on_commit=False` keeps returned objects usable after commit boundaries in async workflows.
 
 ## FastAPI Dependency
 
@@ -140,7 +123,7 @@ async def get_session() -> AsyncGenerator[AsyncSession, None]:
 SessionDep = Annotated[AsyncSession, Depends(get_session)]
 ```
 
-Use one session per request or job boundary. Keep transaction scope explicit.
+One session per request or job boundary. Keep transaction scope explicit.
 
 ## Relationship Defaults
 
@@ -158,9 +141,7 @@ class Team(SQLModel, table=True):
 statement = select(Team).options(selectinload(Team.members))
 ```
 
-In async code, prefer explicit loading strategy over accidental lazy loading.
-Default to `selectinload` for collections unless query shape clearly favors a
-join.
+In async code, prefer explicit loading over accidental lazy loading. Default `selectinload` for collections unless query shape clearly favors join.
 
 ## Migration Workflow
 
@@ -172,9 +153,7 @@ alembic upgrade head
 
 Set `target_metadata = SQLModel.metadata` in `alembic/env.py`.
 
-Review autogenerated migrations before applying them. Do not trust
-autogenerate blindly for destructive, data-sensitive, or production-facing
-changes.
+Review autogenerated migrations before applying. Do not trust autogenerate blindly for destructive, data-sensitive, or production-facing changes.
 
 ## Production Migration Rules
 
@@ -190,45 +169,41 @@ For production-heavy changes, load `references/migrations.md`.
 ## Query and Performance Rules
 
 - prevent N+1 with explicit eager loading
-- index foreign keys and frequently filtered or ordered columns
-- select only what the use case needs
-- batch operations instead of row-by-row loops when volume matters
+- index foreign keys and frequently filtered/ordered columns
+- select only what use case needs
+- batch ops over row-by-row loops when volume matters
 - profile before optimizing
-- keep raw SQL narrow, justified, and parameterized
+- keep raw SQL narrow, justified, parameterized
 
 For deeper query patterns, load `references/queries-optimization.md`.
 
 ## Advanced Modeling Rules
 
-- use explicit link tables for many-to-many relationships
-- use mixins for reusable timestamps, soft delete, or audit columns
+- explicit link tables for many-to-many
+- mixins for reusable timestamps, soft delete, audit columns
 - keep inheritance and polymorphism rare and deliberate
-- keep indexes, unique constraints, and cascades explicit
-- separate persistence models from API or domain contracts when responsibilities
-  differ
+- keep indexes, unique constraints, cascades explicit
+- separate persistence models from API/domain contracts when responsibilities differ
 
 For advanced patterns, load `references/advanced-models.md`.
 
 ## Guardrails
 
-- use the multiple-model pattern -- never expose table models directly in
-  responses
-- always `expire_on_commit=False` for async sessions unless there is a very
-  specific reason not to
-- use `selectinload` or another explicit eager-loading strategy -- prevent N+1
-- validate at boundaries with create and update models
-- use `async with session.begin()` for multi-step transactions
-- index columns used in `WHERE`, `ORDER BY`, and relationship joins
+- multiple-model pattern -- never expose table models directly in responses
+- always `expire_on_commit=False` for async sessions unless specific reason not to
+- `selectinload` or another explicit eager-loading strategy -- prevent N+1
+- validate at boundaries with create/update models
+- `async with session.begin()` for multi-step transactions
+- index columns in `WHERE`, `ORDER BY`, relationship joins
 - never format SQL strings -- use query builders or parameterized SQL
-- keep domain logic out of ORM models when the project already uses service or
-  repository boundaries
+- keep domain logic out of ORM models when project uses service/repository boundaries
 - treat migrations as reviewed changes, not generated boilerplate
 
 ## Review Focus
 
-- check whether persistence and public contract models are separated
-- check whether async sessions have clear scope and cleanup
-- check for accidental lazy loading or hidden N+1 behavior
-- check whether migrations are safe for real data, not just schema shape
-- check whether indexes and constraints match the read and write patterns
-- check whether raw SQL is parameterized and justified
+- persistence and public contract models separated
+- async sessions have clear scope and cleanup
+- no accidental lazy loading or hidden N+1
+- migrations safe for real data, not just schema shape
+- indexes and constraints match read/write patterns
+- raw SQL parameterized and justified

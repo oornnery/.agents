@@ -5,11 +5,11 @@ description: Structured read-only review of a diff, staged changes, or a pull re
 
 # Review
 
-Perform a structured code review. The output is feedback, not code changes.
+Structured code review. Output feedback, not code.
 
 ## Scope inputs
 
-Review one of these:
+Review one of:
 
 - staged diff: `git diff --cached`
 - working tree: `git diff`
@@ -20,15 +20,15 @@ Review one of these:
 
 ### 1. Understand the change
 
-Read the diff and identify:
+Read diff. Identify:
 
 - what changed
-- what behavior should now exist
-- what could regress nearby
+- expected new behavior
+- nearby regression risk
 
 ### 2. Load only the relevant lenses
 
-Use the matching local skills:
+Use matching local skills:
 
 - `skills/python/SKILL.md` for Python correctness and conventions
 - `skills/design/SKILL.md` for API, UI, or BFF contract changes
@@ -72,7 +72,7 @@ Severity guide:
 | suggestion | nice to have -- readability, consistency        |
 | nitpick    | trivial and usually skip-worthy                 |
 
-Each real finding should include:
+Each finding include:
 
 - file and location
 - evidence
@@ -88,5 +88,4 @@ Each real finding should include:
 
 ## Optional routing
 
-For a dedicated security pass, hand off to `agents/security-engineer.md` when
-that agent exists.
+For dedicated security pass, hand off to `agents/security-engineer.md` when that agent exists.

@@ -4,14 +4,12 @@
 
 <!--
 UV inline script overlay.
-Use for single-file Python scripts that declare dependencies directly inside the
-`.py` file with inline metadata instead of a full project package layout.
+Single-file Python scripts declare dependencies inside `.py` file with inline metadata, no full project layout.
 -->
 
 ## Project Description
 
-<!-- Brief description of what the script does, who runs it, and whether it is
-for one-off automation, local tooling, or a checked-in operational script -->
+<!-- What script does, who runs it, one-off automation / local tooling / checked-in operational script -->
 
 ## Stack
 
@@ -29,7 +27,7 @@ uv run --with pytest pytest -v
 
 ## Script Header Pattern
 
-Use inline metadata at the top of the file:
+Use inline metadata at top of file:
 
 ```python
 # /// script
@@ -41,7 +39,7 @@ Use inline metadata at the top of the file:
 # ///
 ```
 
-Optional shebang when the file should run directly:
+Optional shebang when file should run directly:
 
 ```python
 #!/usr/bin/env -S uv run
@@ -49,34 +47,34 @@ Optional shebang when the file should run directly:
 
 ## Validation Entry Points
 
-- run the script directly with representative arguments
-- verify failure paths as well as happy paths
-- use lightweight focused tests when the script is important or reused often
+- run script with representative arguments
+- verify failure paths and happy paths
+- lightweight focused tests when script important or reused
 
 ## UV Script Rules
 
-- keep dependencies inside the script metadata when the script is truly standalone
-- move to a full `pyproject.toml` project once the script grows into a package, service, or reusable module set
-- keep the script focused; if it grows multiple responsibilities, split logic into helper modules or promote it to a real project
-- keep file, network, and subprocess actions explicit and easy to audit
+- keep dependencies inside script metadata when script truly standalone
+- move to full `pyproject.toml` project once script grows into package, service, or reusable module set
+- keep script focused; multiple responsibilities = split into helpers or promote to real project
+- keep file, network, subprocess actions explicit and easy to audit
 
 ## Pythonic Script Defaults
 
-- keep the main flow easy to read top-to-bottom
-- isolate helper functions instead of nesting everything in `main()`
+- main flow readable top-to-bottom
+- isolate helper functions, avoid nesting everything in `main()`
 - validate arguments early
-- use explicit exit codes for automation-facing scripts
-- keep operational output clear and actionable
+- explicit exit codes for automation-facing scripts
+- operational output clear and actionable
 
 ## Suggested Layout
 
-For a single-file script:
+Single-file script:
 
 ```text
 script.py
 ```
 
-For a small script plus helpers:
+Small script plus helpers:
 
 ```text
 scripts/
@@ -88,33 +86,33 @@ scripts/
 
 ### Metadata
 
-- [ ] inline metadata block is present and valid
-- [ ] Python version is explicit
-- [ ] dependencies are minimal and justified
+- [ ] inline metadata block present and valid
+- [ ] Python version explicit
+- [ ] dependencies minimal and justified
 
 ### Script Design
 
-- [ ] arguments and usage are clear
-- [ ] side effects are explicit
-- [ ] errors are useful and actionable
-- [ ] output is readable or machine-friendly as needed
+- [ ] arguments and usage clear
+- [ ] side effects explicit
+- [ ] errors useful and actionable
+- [ ] output readable or machine-friendly as needed
 
 ### Safety
 
-- [ ] file paths are validated
+- [ ] file paths validated
 - [ ] dangerous commands require explicit intent
-- [ ] secrets do not live inside the script
-- [ ] network and subprocess usage is obvious
+- [ ] no secrets inside script
+- [ ] network and subprocess usage obvious
 
 ### Verification
 
-- [ ] happy path is exercised
-- [ ] failure path is exercised
-- [ ] representative sample input is tested
-- [ ] repeated runs are safe when the script should be idempotent
+- [ ] happy path exercised
+- [ ] failure path exercised
+- [ ] representative sample input tested
+- [ ] repeated runs safe when script should be idempotent
 
 ## Project-Specific Guardrails
 
 <!-- - Keep operational scripts deterministic -->
 <!-- - Do not silently overwrite files -->
-<!-- - Promote to a package once multiple modules or commands appear -->
+<!-- - Promote to package once multiple modules or commands appear -->

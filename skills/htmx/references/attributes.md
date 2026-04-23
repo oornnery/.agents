@@ -10,7 +10,7 @@
 | `hx-patch`  | PATCH request  | `hx-patch="/users/1"`  |
 | `hx-delete` | DELETE request | `hx-delete="/users/1"` |
 
-Prefer noun-based URLs and normal HTTP semantics.
+Prefer noun-based URLs, normal HTTP semantics.
 
 ## Trigger Patterns
 
@@ -48,7 +48,7 @@ Useful modifiers:
 
 ## Target Rules
 
-Use `hx-target` to choose the smallest stable surface to update.
+Use `hx-target` to pick smallest stable surface to update.
 
 Prefer:
 
@@ -57,11 +57,11 @@ Prefer:
 - `closest tr`
 - `this`
 
-Avoid fragile selectors that depend on incidental DOM structure.
+Avoid fragile selectors dependent on incidental DOM structure.
 
 ## Swap Rules
 
-Default to `innerHTML` unless another boundary is clearer.
+Default `innerHTML` unless another boundary clearer.
 
 Common values:
 
@@ -83,10 +83,10 @@ Common modifiers:
 
 ## History and Navigation
 
-Use history features only when the interaction should behave like navigation.
+Use history only when interaction should behave like navigation.
 
-- `hx-push-url="true"` when the new state deserves a history entry
-- `hx-replace-url="true"` when the state should not grow history
+- `hx-push-url="true"` when new state deserves history entry
+- `hx-replace-url="true"` when state should not grow history
 
 Good fits:
 
@@ -102,7 +102,7 @@ Bad fits:
 
 ## Indicators and Disabled State
 
-Use `hx-indicator` and `hx-disabled-elt` so request state is visible.
+Use `hx-indicator` and `hx-disabled-elt` so request state visible.
 
 ```html
 <form
@@ -127,28 +127,24 @@ Common patterns:
 - `this:replace`
 - `this:queue last`
 
-This matters for:
+Matters for:
 
 - autosave
 - validation plus submit
-- repeated clicks on the same action
+- repeated clicks on same action
 
 ## OOB Updates
 
-Use out-of-band swaps only when one server action should update more than one
-surface.
+Use out-of-band swaps only when one server action should update more than one surface.
 
 ```html
 <div id="notification" hx-swap-oob="true">Saved</div>
 ```
 
-Keep them explicit and sparse.
+Keep them explicit, sparse.
 
 ## Guardrails
 
-- do not stack many `hx-*` concerns on one element if the interaction becomes
-  unreadable
-- do not use `outerHTML` on unstable component roots without checking focus and
-  event implications
-- do not poll when event-driven updates or user-triggered refresh would be
-  enough
+- do not stack many `hx-*` concerns on one element if interaction becomes unreadable
+- do not use `outerHTML` on unstable component roots without checking focus and event implications
+- do not poll when event-driven updates or user-triggered refresh would be enough

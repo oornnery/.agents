@@ -1,34 +1,33 @@
-
 # Python Configuration Management
 
-Externalize configuration from code using environment variables and typed settings. Well-managed configuration enables the same code to run in any environment without modification.
+Externalize config from code via env vars + typed settings. Same code runs any environment.
 
 ## When to Use This Skill
 
-- Setting up a new project's configuration system
-- Migrating from hardcoded values to environment variables
-- Implementing pydantic-settings for typed configuration
-- Managing secrets and sensitive values
-- Creating environment-specific settings (dev/staging/prod)
-- Validating configuration at application startup
+- New project config system setup
+- Hardcoded values → env vars migration
+- pydantic-settings typed config
+- Secrets/sensitive value management
+- Environment-specific settings (dev/staging/prod)
+- Startup config validation
 
 ## Core Concepts
 
 ### 1. Externalized Configuration
 
-All environment-specific values (URLs, secrets, feature flags) come from environment variables, not code.
+All env-specific values (URLs, secrets, flags) from env vars, not code.
 
 ### 2. Typed Settings
 
-Parse and validate configuration into typed objects at startup, not scattered throughout code.
+Parse + validate config into typed objects at startup, not scattered through code.
 
 ### 3. Fail Fast
 
-Validate all required configuration at application boot. Missing config should crash immediately with a clear message.
+Validate required config at boot. Missing config = immediate crash with clear message.
 
 ### 4. Sensible Defaults
 
-Provide reasonable defaults for local development while requiring explicit values for sensitive settings.
+Reasonable defaults for local dev, explicit values required for sensitive settings.
 
 ## Quick Start
 
@@ -48,7 +47,7 @@ settings = Settings()  # Loads from environment
 
 ### Pattern 1: Typed Settings with Pydantic
 
-Create a central settings class that loads and validates all configuration.
+Central settings class loads + validates all config.
 
 ```python
 from pydantic_settings import BaseSettings
@@ -87,7 +86,7 @@ except ValidationError as e:
     sys.exit(1)
 ```
 
-Import `settings` throughout your application:
+Import `settings` throughout app:
 
 ```python
 from myapp.config import settings
@@ -102,7 +101,7 @@ def get_database_connection():
 
 ### Pattern 2: Fail Fast on Missing Configuration
 
-Required settings should crash the application immediately with a clear error.
+Required settings crash app immediately with clear error.
 
 ```python
 from pydantic_settings import BaseSettings
@@ -130,11 +129,11 @@ except ValidationError as e:
     sys.exit(1)
 ```
 
-A clear error at startup is better than a cryptic `None` failure mid-request.
+Clear startup error > cryptic `None` failure mid-request.
 
 ### Pattern 3: Local Development Defaults
 
-Provide sensible defaults for local development while requiring explicit values for secrets.
+Sensible defaults for local dev, explicit values required for secrets.
 
 ```python
 class Settings(BaseSettings):
@@ -152,7 +151,7 @@ class Settings(BaseSettings):
     model_config = {"env_file": ".env"}
 ```
 
-Create a `.env` file for local development (never commit this):
+`.env` file for local dev (never commit):
 
 ```bash
 # .env (add to .gitignore)
@@ -163,7 +162,7 @@ DEBUG=true
 
 ### Pattern 4: Namespaced Environment Variables
 
-Prefix related variables for clarity and easy debugging.
+Prefix related vars for clarity + easy debugging.
 
 ```bash
 # Database configuration
@@ -227,7 +226,7 @@ DEBUG=true
 
 ### Pattern 6: Environment-Specific Configuration
 
-Use an environment enum to switch behavior.
+Use env enum to switch behavior.
 
 ```python
 from enum import Enum
@@ -295,7 +294,7 @@ class Settings(BaseSettings):
     }
 ```
 
-Environment variables use double underscore for nesting:
+Env vars use double underscore for nesting:
 
 ```bash
 DATABASE__HOST=db.example.com
@@ -308,7 +307,7 @@ REDIS__URL=redis://redis.example.com:6379
 
 ### Pattern 8: Secrets from Files
 
-For container environments, read secrets from mounted files.
+For containers, read secrets from mounted files.
 
 ```python
 from pydantic_settings import BaseSettings
@@ -324,11 +323,11 @@ class Settings(BaseSettings):
     }
 ```
 
-Pydantic will look for `/run/secrets/db_password` if the env var isn't set.
+Pydantic looks for `/run/secrets/db_password` if env var not set.
 
 ### Pattern 9: Configuration Validation
 
-Add custom validation for complex requirements.
+Custom validation for complex requirements.
 
 ```python
 from pydantic_settings import BaseSettings
@@ -352,7 +351,7 @@ class Settings(BaseSettings):
 
 ## Best Practices Summary
 
-1. **Never hardcode config** - All environment-specific values from env vars
+1. **Never hardcode config** - All env-specific values from env vars
 2. **Use typed settings** - Pydantic-settings with validation
 3. **Fail fast** - Crash on missing required config at startup
 4. **Provide dev defaults** - Make local development easy

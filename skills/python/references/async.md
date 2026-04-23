@@ -1,22 +1,19 @@
-
 # Async Python Patterns
 
-Comprehensive guidance for implementing asynchronous Python applications using asyncio, concurrent programming patterns, and async/await for building high-performance, non-blocking systems.
+Async/await patterns for non-blocking Python systems.
 
 ## When to Use This Skill
 
-- Building async web APIs (FastAPI, aiohttp, Sanic)
-- Implementing concurrent I/O operations (database, file, network)
-- Creating web scrapers with concurrent requests
-- Developing real-time applications (WebSocket servers, chat systems)
-- Processing multiple independent tasks simultaneously
-- Building microservices with async communication
-- Optimizing I/O-bound workloads
-- Implementing async background tasks and queues
+- Async web APIs (FastAPI, aiohttp, Sanic)
+- Concurrent I/O (DB, file, network)
+- Web scrapers with concurrent requests
+- Real-time apps (WebSocket, chat)
+- Parallel independent tasks
+- Async microservices
+- I/O-bound workloads
+- Async background tasks/queues
 
 ## Sync vs Async Decision Guide
-
-Before adopting async, consider whether it's the right choice for your use case.
 
 | Use Case                         | Recommended Approach                        |
 | -------------------------------- | ------------------------------------------- |
@@ -26,26 +23,22 @@ Before adopting async, consider whether it's the right choice for your use case.
 | Simple scripts, few connections  | Sync (simpler, easier to debug)             |
 | Web APIs with high concurrency   | Async frameworks (FastAPI, aiohttp)         |
 
-**Key Rule:** Stay fully sync or fully async within a call path. Mixing creates hidden blocking and complexity.
+**Key Rule:** Stay fully sync or fully async within a call path. Mixing = hidden blocking + complexity.
 
 ## Core Concepts
 
 ### 1. Event Loop
 
-The event loop is the heart of asyncio, managing and scheduling asynchronous tasks.
-
-**Key characteristics:**
+Heart of asyncio -- manages/schedules async tasks.
 
 - Single-threaded cooperative multitasking
-- Schedules coroutines for execution
-- Handles I/O operations without blocking
+- Schedules coroutines
+- Non-blocking I/O
 - Manages callbacks and futures
 
 ### 2. Coroutines
 
-Functions defined with `async def` that can be paused and resumed.
-
-**Syntax:**
+`async def` functions -- pausable, resumable.
 
 ```python
 async def my_coroutine():
@@ -55,19 +48,19 @@ async def my_coroutine():
 
 ### 3. Tasks
 
-Scheduled coroutines that run concurrently on the event loop.
+Scheduled coroutines running concurrently on event loop.
 
 ### 4. Futures
 
-Low-level objects representing eventual results of async operations.
+Low-level objects representing eventual async results.
 
 ### 5. Async Context Managers
 
-Resources that support `async with` for proper cleanup.
+Resources supporting `async with` for proper cleanup.
 
 ### 6. Async Iterators
 
-Objects that support `async for` for iterating over async data sources.
+Objects supporting `async for` for async data sources.
 
 ## Quick Start
 
@@ -593,7 +586,7 @@ async def process_item(item: str):
 
 ### 3. Avoid Blocking Operations
 
-Never block the event loop with synchronous operations. A single blocking call stalls all concurrent tasks.
+One blocking call stalls all concurrent tasks.
 
 ```python
 # BAD - blocks the entire event loop
@@ -612,9 +605,9 @@ async def fetch_data_good(url: str):
         response = await client.get(url)
 ```
 
-**Wrapping Blocking Code with `asyncio.to_thread()` (Python 3.9+):**
+**Wrapping blocking code with `asyncio.to_thread()` (Python 3.9+):**
 
-When you must use synchronous libraries, offload to a thread pool:
+Offload sync code to thread pool:
 
 ```python
 import asyncio
@@ -631,7 +624,7 @@ async def call_sync_library(data: dict) -> dict:
     return await asyncio.to_thread(sync_library.process, data)
 ```
 
-**Lower-level approach with `run_in_executor()`:**
+**Lower-level: `run_in_executor()`:**
 
 ```python
 import asyncio

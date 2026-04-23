@@ -1,23 +1,20 @@
 # API
 
-Use this reference to shape HTTP contracts before implementation details.
-
-The rules are framework-agnostic, but the examples here assume Python with
-FastAPI and Pydantic because that is the current environment.
+Shape HTTP contracts before implementation. Framework-agnostic rules; examples assume Python/FastAPI/Pydantic.
 
 ## When to Use
 
-- creating new REST endpoints
-- defining CRUD contracts
-- designing query parameters, pagination, filtering, or sorting
-- standardizing success and error shapes
-- deciding route layout, auth boundaries, and nested resources
+- new REST endpoints
+- CRUD contracts
+- query params, pagination, filtering, sorting
+- standardizing success/error shapes
+- route layout, auth boundaries, nested resources
 
 ## Core REST Conventions
 
 ### Resource Naming
 
-Resources are nouns and preferably plural.
+Nouns, preferably plural.
 
 | Resource | Endpoint        |
 | -------- | --------------- |
@@ -25,13 +22,11 @@ Resources are nouns and preferably plural.
 | user     | `/api/users`    |
 | task     | `/api/tasks`    |
 
-Avoid verb-heavy routes such as:
-
+Avoid verb-heavy routes:
 - `POST /api/create-project`
 - `GET /api/getUsers`
 
 Prefer:
-
 - `GET /api/projects`
 - `POST /api/projects`
 - `GET /api/projects/{project_id}`
@@ -55,13 +50,11 @@ Prefer:
 ```
 
 Rules:
-
-- keep nesting depth to two levels
-- route names should describe resources, not internal implementation
-- path params should be explicit and stable: `{project_id}`, not `{x}`
+- nesting depth max two levels
+- route names describe resources, not internal implementation
+- path params explicit and stable: `{project_id}`, not `{x}`
 
 Examples:
-
 - `GET /api/projects`
 - `POST /api/projects`
 - `GET /api/projects/{project_id}`
@@ -71,18 +64,15 @@ Examples:
 
 ## Python Translation
 
-When translating JS-oriented REST guidance to Python:
-
-- use Pydantic models instead of Zod schemas
-- use FastAPI `Annotated` parameters for `Path`, `Query`, `Header`, and `Depends`
-- use `response_model` or explicit return types to keep response filtering stable
-- keep routers thin; validation and contract logic live at the API boundary
-- keep domain and persistence details out of route signatures and response types
+- Pydantic models instead of Zod schemas
+- FastAPI `Annotated` params for `Path`, `Query`, `Header`, `Depends`
+- `response_model` or explicit return types for stable response filtering
+- thin routers; validation/contract logic at API boundary
+- domain/persistence details out of route signatures and response types
 
 ## FastAPI Layout
 
-Prefer a layout that separates routes, schemas, dependencies, and error
-mapping.
+Separate routes, schemas, dependencies, error mapping.
 
 ```text
 src/myapp/api/
@@ -98,16 +88,15 @@ src/myapp/api/
     └── projects.py
 ```
 
-Good defaults:
-
+Defaults:
 - one router module per resource or cohesive sub-resource
-- shared pagination, error, and auth dependencies in `dependencies.py` or `responses.py`
-- Pydantic request and response models in `schemas/`
-- services injected into routes instead of writing DB logic inline
+- shared pagination, error, auth dependencies in `dependencies.py` or `responses.py`
+- Pydantic request/response models in `schemas/`
+- services injected into routes, no inline DB logic
 
 ## Response Shapes
 
-Choose one success family and keep it consistent across the API.
+One success family, consistent across API.
 
 ### Success
 
@@ -139,13 +128,11 @@ Collection:
 }
 ```
 
-Delete:
-
-- `204 No Content` with no response body
+Delete: `204 No Content`, no body.
 
 ### Errors
 
-Prefer a stable Problem Details style shape with optional field errors.
+Problem Details style, optional field errors.
 
 ```json
 {
@@ -160,12 +147,11 @@ Prefer a stable Problem Details style shape with optional field errors.
 ```
 
 Rules:
-
-- keep error shape as stable as success shape
-- include field-level issues for validation failures
-- do not leak stack traces, raw SQL errors, or library internals
-- map internal exceptions to client-facing HTTP errors at the boundary
-- return `Retry-After` on `429` when rate limiting is enforced
+- error shape as stable as success shape
+- field-level issues for validation failures
+- no stack traces, raw SQL errors, or library internals
+- map internal exceptions to HTTP errors at boundary
+- `Retry-After` on `429` when rate limiting
 
 ## Status Codes
 
@@ -184,7 +170,7 @@ Rules:
 
 ## Request Models
 
-Keep separate models for create, update, and read surfaces.
+Separate models for create, update, read.
 
 ```python
 from datetime import datetime
@@ -236,15 +222,14 @@ class ProjectListOut(BaseModel):
 ```
 
 Rules:
-
-- request models reflect what clients may send, not your DB row
-- response models reflect what clients may see, not your ORM entity
-- `PATCH` models should usually have optional fields
-- do not reuse internal persistence types as public contract types
+- request models reflect what clients send, not DB rows
+- response models reflect what clients see, not ORM entities
+- `PATCH` models usually have optional fields
+- no reusing internal persistence types as public contract types
 
 ## Boundary Helpers
 
-Keep response and error helpers small and boring.
+Small, boring response/error helpers.
 
 ```python
 from fastapi.encoders import jsonable_encoder
@@ -276,12 +261,11 @@ def problem_response(
     return JSONResponse(status_code=status_code, content=payload)
 ```
 
-Use helpers when they stabilize envelopes and reduce duplication.
-Do not build a response abstraction jungle for simple routes.
+Use helpers when they stabilize envelopes and reduce duplication. No response abstraction jungle for simple routes.
 
 ## FastAPI Example
 
-Keep the route thin and the contract explicit.
+Thin route, explicit contract.
 
 ```python
 from typing import Annotated
@@ -360,10 +344,9 @@ GET /api/projects?sort=-created_at
 ```
 
 Rules:
-
-- keep sort keys documented and whitelisted
-- prefer one sort parameter over many loosely-defined combinations
-- use `-field` or explicit `order=desc`, but stay consistent
+- sort keys documented and whitelisted
+- one sort param over loosely-defined combinations
+- `-field` or explicit `order=desc`, stay consistent
 
 ### Search
 
@@ -372,20 +355,19 @@ GET /api/projects?search=alpha
 ```
 
 Rules:
-
-- make search behavior predictable
-- document whether it is prefix, substring, exact, or ranked
-- enforce sensible limits on page size and result size
+- predictable search behavior
+- document prefix, substring, exact, or ranked
+- enforce sensible page/result size limits
 
 ### Pagination
 
-Use offset pagination for admin-style lists and modest datasets:
+Offset pagination for admin lists, modest datasets:
 
 ```text
 GET /api/projects?page=2&page_size=20
 ```
 
-Use cursor pagination for feeds, streams, and large datasets:
+Cursor pagination for feeds, streams, large datasets:
 
 ```text
 GET /api/projects?cursor=opaque-token&limit=20
@@ -393,32 +375,30 @@ GET /api/projects?cursor=opaque-token&limit=20
 
 ## Auth and Ownership
 
-- authenticate before reading sensitive data or performing mutations
-- authorize against the target resource, not only the route
-- check ownership or tenant scope before update and delete operations
-- do not let route convenience bypass domain authorization rules
+- authenticate before reading sensitive data or mutations
+- authorize against target resource, not only route
+- check ownership/tenant scope before update/delete
+- no route convenience bypassing domain authorization
 
 ## Contract Rules
 
-- design the happy path and failure path together
-- define create, list, read, update, and delete semantics explicitly
-- do not mix raw ORM objects, DTOs, and response models in one surface
-- keep nullability intentional and documented
+- design happy path and failure path together
+- define create, list, read, update, delete semantics explicitly
+- no mixing raw ORM objects, DTOs, response models in one surface
+- nullability intentional and documented
 - prefer additive evolution over breaking response changes
 
 ## BFF Boundary
 
-If the client needs aggregated or reshaped payloads that do not match the core
-resource model, load [bff.md](bff.md) instead of overloading the base API
-contract.
+Client needs aggregated/reshaped payloads that don't match core resource model? Load [bff.md](bff.md) instead of overloading base API contract.
 
 ## API Checklist
 
 - plural resource names
 - stable success and error shapes
 - explicit status codes
-- validated path, query, and body input
-- response models that filter output intentionally
+- validated path, query, body input
+- response models filter output intentionally
 - pagination limits and documented defaults
-- auth and ownership checks on sensitive routes
+- auth/ownership checks on sensitive routes
 - no leaked internal exceptions or persistence types

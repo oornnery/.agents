@@ -1,7 +1,6 @@
 # SQLModel Query Patterns and Optimization
 
-Use this reference when query count, relationship loading, or database
-performance becomes important.
+Use when query count, relationship loading, or DB performance matters.
 
 ## Basic Query Patterns
 
@@ -15,7 +14,7 @@ statement = select(User).where(User.id == user_id)
 user = session.exec(statement).first()
 ```
 
-Keep basic queries explicit and composable.
+Keep basic queries explicit, composable.
 
 ## Filtering
 
@@ -35,8 +34,7 @@ statement = select(User).where(
 )
 ```
 
-Prefer explicit filter composition over helper functions that obscure query
-shape.
+Prefer explicit filter composition over helpers that obscure query shape.
 
 ## Ordering and Pagination
 
@@ -46,7 +44,7 @@ statement = select(User).order_by(User.created_at.desc())
 statement = select(User).offset(skip).limit(limit)
 ```
 
-Use cursor-style pagination when datasets are large or append-heavy.
+Use cursor-style pagination for large or append-heavy datasets.
 
 ## Joins and Aggregations
 
@@ -62,13 +60,11 @@ statement = (
 )
 ```
 
-Keep heavy join and aggregation queries close to the repository or persistence
-layer instead of scattering them through handlers.
+Keep heavy joins/aggregations near repository or persistence layer. Don't scatter through handlers.
 
 ## Subqueries and CTEs
 
-Use subqueries and CTEs when they make complex filtering or aggregation easier
-to reason about. Keep them named and isolated so they remain reviewable.
+Use subqueries/CTEs when they simplify complex filtering or aggregation. Keep named and isolated for reviewability.
 
 ## N+1 Prevention
 
@@ -102,10 +98,9 @@ users = session.exec(statement).unique().all()
 
 Defaults:
 
-- use `selectinload` for collections in most application code
-- use `joinedload` when the join shape is simple and the row explosion is
-  acceptable
-- make loading strategy explicit in async code
+- `selectinload` for collections in most app code
+- `joinedload` when join shape is simple, row explosion acceptable
+- Make loading strategy explicit in async code
 
 ## Nested Eager Loading
 
@@ -116,44 +111,43 @@ statement = (
 )
 ```
 
-Be careful with nested eager loading on large graphs. It can still over-fetch.
+Beware nested eager loading on large graphs -- can over-fetch.
 
 ## Bulk Operations
 
-- use bulk inserts, updates, or deletes when row count is high
-- avoid per-row loops when a set-based operation is available
-- measure transaction size and lock impact before applying bulk changes in
-  production
+- Use bulk inserts/updates/deletes when row count is high
+- Avoid per-row loops when set-based operation exists
+- Measure transaction size and lock impact before bulk changes in production
 
 ## Raw SQL
 
 Use raw SQL only when:
 
-- the ORM expression becomes unreadable
-- the database feature is not exposed cleanly through normal query building
-- performance or explainability clearly improves
+- ORM expression becomes unreadable
+- DB feature not exposed cleanly through normal query building
+- Performance or explainability clearly improves
 
 When using raw SQL:
 
-- keep it parameterized
-- keep it local to the persistence layer
-- explain why the ORM path was not used
+- Keep parameterized
+- Keep local to persistence layer
+- Explain why ORM path wasn't used
 
 ## Query Profiling and Testing
 
 For slow queries:
 
-- enable SQL logging selectively
-- capture actual query count
-- run explain or explain analyze in a safe environment
-- verify indexes match the real filters and sort order
+- Enable SQL logging selectively
+- Capture actual query count
+- Run `explain` or `explain analyze` in safe environment
+- Verify indexes match real filters and sort order
 
 Test:
 
-- query count for critical list endpoints
-- relationship-heavy reads for N+1 regressions
-- pagination on realistic datasets
-- expensive aggregations and back-office screens
+- Query count for critical list endpoints
+- Relationship-heavy reads for N+1 regressions
+- Pagination on realistic datasets
+- Expensive aggregations and back-office screens
 
 ## Checklist
 

@@ -24,33 +24,31 @@ Keep bindings:
 - discoverable
 - aligned with visible UI behavior
 
-If action availability changes with state, refresh bindings deliberately or use
-reactive state that updates them cleanly.
+If action availability changes with state, refresh bindings deliberately or use reactive state that updates them cleanly.
 
 ## Focus Rules
 
-Focus behavior is part of the UX, not an afterthought.
+Focus behavior is part of UX, not afterthought.
 
 Check:
 
 - where focus starts
 - how focus moves with `tab` and arrow keys
-- whether dialogs and menus keep focus inside the active surface when needed
+- whether dialogs and menus keep focus inside active surface when needed
 - whether `escape` closes the right surface
 
 ## Mouse and Keyboard Events
 
-Use direct event handlers when bindings are not the right abstraction:
+Use direct event handlers when bindings aren't the right abstraction:
 
 - clicks on custom widgets
 - hover states
 - drag-like interactions
 - fine-grained key handling inside focused widgets
 
-Keep event handlers small and delegate real work outward.
+Keep event handlers small, delegate real work outward.
 
-For focused widgets, prefer widget-specific handlers over one giant global
-`on_key`.
+For focused widgets, prefer widget-specific handlers over one giant global `on_key`.
 
 ## Common Interaction Patterns
 
@@ -58,14 +56,14 @@ For focused widgets, prefer widget-specific handlers over one giant global
 
 - focus first field on open
 - submit with enter when appropriate
-- show validation near the field or form summary
+- show validation near field or form summary
 - keep status feedback visible
 
 ### Dialog
 
-- open with a clear action
+- open with clear action
 - close with `escape`
-- return focus to the invoking control when possible
+- return focus to invoking control when possible
 - keep confirm and cancel paths explicit
 
 ### Menu or Drawer
@@ -73,14 +71,14 @@ For focused widgets, prefer widget-specific handlers over one giant global
 - keep open state visible
 - support keyboard navigation
 - support explicit close action and escape
-- avoid trapping the user in a hidden state
+- avoid trapping user in hidden state
 
 ### Slider or Value Control
 
 - reflect value changes visibly
 - support keyboard adjustment
 - keep labels and units clear
-- keep tests focused on the displayed value and the underlying state owner
+- keep tests focused on displayed value and underlying state owner
 
 ## Notifications and Feedback
 
@@ -90,11 +88,10 @@ Use notifications or status areas for:
 - failure feedback
 - background work completion
 
-Do not rely only on hidden state changes that the user cannot see.
+Do not rely only on hidden state changes user cannot see.
 
 ## Guardrails
 
-- do not scatter related bindings across many owners without a clear priority
-- do not let one action mutate far-away widgets directly when messages or state
-  ownership would be cleaner
-- do not make keyboard and mouse behavior disagree on the same control
+- do not scatter related bindings across many owners without clear priority
+- do not let one action mutate far-away widgets directly when messages or state ownership would be cleaner
+- do not make keyboard and mouse behavior disagree on same control

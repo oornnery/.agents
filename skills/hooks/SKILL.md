@@ -5,20 +5,19 @@ description: Hook design and maintenance for local automation. Use when creating
 
 # Hooks
 
-Use this skill when working on local hook automation, hook wiring, or hook
-policies. Keep hooks small, predictable, and easy to smoke test.
+Use skill for local hook automation, wiring, policies. Hooks small, predictable, easy smoke test.
 
 ## Boundary
 
-This skill covers:
+Covers:
 
 - hook scripts in `hooks/*.sh`
 - hook wiring in `templates/settings/local.hooks.json`
-- local hook behavior such as reminders, gates, autofix, and lifecycle helpers
+- local hook behavior: reminders, gates, autofix, lifecycle helpers
 
-This skill does not replace:
+Not replace:
 
-- `skills/security/SKILL.md` for actual threat modeling or secret handling
+- `skills/security/SKILL.md` for threat modeling or secret handling
 - `skills/docs/SKILL.md` for broader documentation structure
 - `skills/rtk/SKILL.md` for RTK behavior itself
 
@@ -34,23 +33,22 @@ This skill does not replace:
 
 ## Assets
 
-Use these when a full hook example is more useful than isolated snippets.
+Use when full hook example beats isolated snippets.
 
-- `assets/project/hooks/git-safety-gate.sh` -- a focused blocker hook
-- `assets/project/hooks/session-context.sh` -- a JSON-emitting reminder hook
-- `assets/project/templates/settings/local.hooks.json` -- the matching local
-  settings wiring
+- `assets/project/hooks/git-safety-gate.sh` -- focused blocker hook
+- `assets/project/hooks/session-context.sh` -- JSON-emitting reminder hook
+- `assets/project/templates/settings/local.hooks.json` -- matching local settings wiring
 
 ## Principles
 
-- choose the smallest hook that enforces the behavior
-- keep blocker hooks for truly unsafe or policy-critical actions
-- use reminder hooks for guidance, not annoyance
-- emit structured JSON safely; prefer `jq` over hand-built JSON strings
-- keep stderr messages short, direct, and actionable
-- make hooks idempotent when possible
-- fail closed only when the risk of continuing is higher than the interruption
-- fail open for convenience helpers when the fallback is still safe
+- smallest hook enforcing behavior
+- blocker hooks for truly unsafe or policy-critical actions
+- reminder hooks for guidance, not annoyance
+- structured JSON; prefer `jq` over hand-built JSON strings
+- stderr messages short, direct, actionable
+- idempotent when possible
+- fail closed only when continuing risk > interruption
+- fail open for convenience helpers when fallback safe
 
 ## Workflow
 
@@ -58,24 +56,24 @@ Use these when a full hook example is more useful than isolated snippets.
 
 Decide:
 
-- which event should trigger the hook
-- whether it is a blocker, reminder, formatter, or state helper
-- what the minimal matcher should be
+- which event triggers hook
+- blocker, reminder, formatter, or state helper
+- minimal matcher
 
 ### 2. Keep the script focused
 
-Each hook should do one job:
+Each hook one job:
 
 - inspect input
 - decide
-- print a short message
+- print short message
 - exit clearly
 
-Do not hide broad automation inside a safety gate.
+No broad automation hidden inside safety gate.
 
 ### 3. Wire it once
 
-Reflect the behavior in `templates/settings/local.hooks.json` with:
+Reflect in `templates/settings/local.hooks.json`:
 
 - accurate matcher
 - short description
@@ -95,12 +93,12 @@ Validate settings wiring:
 jq empty templates/settings/local.hooks.json
 ```
 
-Then smoke test the changed hook with the smallest reproducible input.
+Smoke test changed hook with smallest reproducible input.
 
 ## Guardrails
 
-- do not use destructive git operations in hooks
-- do not silently swallow important failures
-- do not turn a reminder into a blocker without a concrete safety reason
-- do not duplicate the same policy in multiple hooks unless the events differ
-- do not add network-dependent behavior to routine local hooks
+- no destructive git operations in hooks
+- no silently swallowing important failures
+- no turning reminder into blocker without concrete safety reason
+- no duplicating same policy in multiple hooks unless events differ
+- no network-dependent behavior in routine local hooks

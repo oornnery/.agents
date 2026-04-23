@@ -1,7 +1,6 @@
 # RCA
 
-Use RCA when the problem keeps recurring, the failure is unclear, or a quick
-fix already failed once.
+Use RCA when problem recurs, failure unclear, or quick fix already failed once.
 
 ## When to Use
 
@@ -12,22 +11,22 @@ fix already failed once.
 
 ## Investigation Workflow
 
-1. reproduce the problem with evidence
+1. reproduce problem with evidence
 2. isolate where and when it starts
-3. build a short timeline
-4. choose the simplest RCA technique that fits
-5. verify the root cause against logs, code, config, or data
-6. fix the cause, add a guardrail, and check for nearby variants
+3. build short timeline
+4. choose simplest RCA technique that fits
+5. verify root cause against logs, code, config, or data
+6. fix cause, add guardrail, check nearby variants
 
 ## 5 Whys
 
-Use when the failure looks like one causal chain rather than many branches.
+Use when failure looks like one causal chain, not many branches.
 
 Rules:
 
-- every answer must be backed by evidence
-- avoid vague endpoints such as "human error"
-- stop when the next "why" would become speculative
+- every answer backed by evidence
+- avoid vague endpoints like "human error"
+- stop when next "why" becomes speculative
 
 Template:
 
@@ -41,8 +40,7 @@ Template:
 
 ## Fishbone
 
-Use when several categories of causes are plausible and you need a broad sweep
-before narrowing down.
+Use when several cause categories plausible, need broad sweep before narrowing down.
 
 Common categories:
 
@@ -55,13 +53,12 @@ Common categories:
 
 ## Fault Tree
 
-Use when the failure may depend on multiple conditions or several distinct
-paths to the same outage.
+Use when failure depends on multiple conditions or several distinct paths to same outage.
 
 Core idea:
 
 - **AND** = multiple conditions must be true
-- **OR** = any one of several conditions can trigger the failure
+- **OR** = any one of several conditions can trigger failure
 
 ## Postmortem
 
@@ -75,7 +72,7 @@ Capture:
 - action items
 - lessons learned
 
-Action items should include owner and due date.
+Action items include owner and due date.
 
 ## Common Patterns
 
@@ -91,5 +88,5 @@ Action items should include owner and due date.
 
 - evidence beats intuition
 - avoid blame; analyze systems and decisions
-- fix root cause, not only the visible symptom
-- add regression coverage after the fix
+- fix root cause, not just visible symptom
+- add regression coverage after fix

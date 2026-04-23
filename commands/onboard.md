@@ -5,14 +5,13 @@ description: Project onboarding and environment verification. Use when starting 
 
 # Onboard
 
-Onboard a project before making changes. The goal is to understand the stack,
-toolchain, validation flow, and repo shape with the minimum necessary reading.
+Onboard project before changes. Goal: understand stack, toolchain, validation, repo shape with minimum reading.
 
 ## Process
 
 ### 1. Detect the project type
 
-Check the common stack markers:
+Check stack markers:
 
 ```bash
 ls pyproject.toml package.json Cargo.toml go.mod 2>/dev/null
@@ -26,7 +25,7 @@ Interpretation:
 
 ### 2. Verify the matching toolchain
 
-Check only the tools relevant to the detected stack.
+Check only tools relevant to detected stack.
 
 Python:
 
@@ -53,15 +52,14 @@ rtk hook-audit
 
 ### 3. Install dependencies with the native tool
 
-Prefer the stack-native command:
+Prefer stack-native command:
 
 ```bash
 uv sync
 npm install
 ```
 
-Do not activate virtual environments manually. Use `uv run ...` for Python
-commands.
+Do not activate virtual environments manually. Use `uv run ...` for Python commands.
 
 ### 4. Find validation entrypoints
 
@@ -72,7 +70,7 @@ Check in this order:
 3. repo docs or scripts
 4. CI configuration if needed
 
-For Python repos, the default validation order is:
+For Python repos, default validation order:
 
 ```bash
 uv run ruff format --check .

@@ -42,24 +42,24 @@ uv build
 
 ## Public API Rules
 
-- treat exported modules, classes, functions, and CLI entrypoints as contracts
+- exported modules, classes, functions, CLI entrypoints = contracts
 - define intended public API explicitly
 - deprecate before breaking when practical
-- keep examples and README usage aligned with the actual package surface
+- keep examples and README aligned with actual package surface
 - avoid leaking internal module layout into public imports unless intentional
 
 ## Typing, Docs, and Compatibility
 
 - type public functions and important data structures
-- keep examples runnable and close to real usage
+- keep examples runnable, close to real usage
 - make deprecations explicit before breaking
 - avoid surprising import-time side effects
 
 ## Packaging Defaults
 
-- keep metadata, dependencies, and entrypoints explicit in `pyproject.toml`
+- keep metadata, dependencies, entrypoints explicit in `pyproject.toml`
 - verify build output before publishing
-- treat README and changelog as part of the public surface
+- treat README and changelog as part of public surface
 
 ## Layout
 
@@ -78,7 +78,7 @@ tests/
 
 ## Packaging and Release Notes
 
-- keep `pyproject.toml` as the source of truth for metadata and dependencies
+- `pyproject.toml` = source of truth for metadata and dependencies
 - ensure `README.md` reflects actual installation and usage
 - verify build artifacts before publishing
 - use changelog categories consistently for public releases
@@ -87,22 +87,22 @@ tests/
 
 ### Public Surface
 
-- [ ] intended public imports are explicit
-- [ ] examples match the real API
-- [ ] breaking changes are obvious and documented
-- [ ] import-time side effects are avoided
+- [ ] intended public imports explicit
+- [ ] examples match real API
+- [ ] breaking changes obvious and documented
+- [ ] import-time side effects avoided
 
 ### Packaging
 
-- [ ] metadata is complete in `pyproject.toml`
-- [ ] build output is verified before publish
-- [ ] versioning and changelog policy are clear
+- [ ] metadata complete in `pyproject.toml`
+- [ ] build output verified before publish
+- [ ] versioning and changelog policy clear
 
 ### Verification
 
-- [ ] public API behavior is tested
-- [ ] package import and build paths are tested
-- [ ] compatibility or regression cases are covered
+- [ ] public API behavior tested
+- [ ] package import and build paths tested
+- [ ] compatibility or regression cases covered
 
 ## Testing Focus
 

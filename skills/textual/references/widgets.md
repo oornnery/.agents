@@ -6,9 +6,9 @@ Use:
 
 - `Label` or `Static` for visible text
 - `Placeholder` for quick layout prototyping
-- `Header` and `Footer` for common app shell structure
+- `Header` and `Footer` for app shell structure
 
-Keep displayed state easy to query and update.
+Keep displayed state queryable, updatable.
 
 ## Input Widgets
 
@@ -18,39 +18,54 @@ Common choices:
 - `TextArea` for multi-line editing
 - `Button` for explicit actions
 - `Switch` for boolean toggles
-- `Select`, `OptionList`, or list-like widgets when the interaction fits them
+- `Select`, `OptionList`, or list-like widgets when interaction fits
 
-Use widget-specific messages instead of guessing internal state changes.
+Use widget-specific messages over guessing internal state changes.
 
 ## Data Widgets
 
 Use `DataTable` when:
 
-- the surface is genuinely tabular
+- surface is genuinely tabular
 - keyboard navigation matters
-- selection or sorting behavior should be explicit
+- selection or sorting should be explicit
+
+```python
+table = self.query_one("#my-table", DataTable)
+table.add_column("Name", width=20)
+table.add_column("Value", width=10)
+table.add_row("Alice", "42")
+```
 
 Keep table ids and column setup stable if tests depend on them.
 
 ## Containers
 
-Common containers:
+| container | layout |
+|-----------|--------|
+| `Vertical` | children stacked top to bottom |
+| `Horizontal` | children side by side |
+| `Grid` | grid layout with `grid-size`, `grid-gutter` |
+| `Container` | generic, layout via CSS |
+| `ScrollableContainer` | container with overflow scroll |
 
-- `Container`
-- `Horizontal`
-- `Vertical`
-- `Grid`
+Choose container matching layout directly, not piling extra wrappers.
 
-Choose the container that matches the layout directly instead of piling on
-extra wrappers.
+Context manager syntax for nesting:
+
+```python
+with Horizontal(classes="controls"):
+    yield Button("Save", id="btn-save")
+    yield Button("Cancel", id="btn-cancel")
+```
 
 ## Custom Widgets
 
-Create a custom widget when:
+Create custom widget when:
 
 - markup repeats
 - behavior belongs together
-- the widget owns a small local state boundary
+- widget owns small local state boundary
 
 Good custom widgets:
 
@@ -64,6 +79,8 @@ Bad custom widgets:
 - giant wrapper around half the app
 - thin alias over one built-in widget with no real behavior
 
+See `references/widget-development.md` for detailed patterns.
+
 ## Widget Messages
 
 Prefer widget messages and events for coordination:
@@ -73,4 +90,31 @@ Prefer widget messages and events for coordination:
 - `Input.Submitted`
 - widget-specific selection or change messages
 
-This keeps interaction logic closer to the widget boundary and easier to test.
+Keeps interaction logic near widget boundary, easier to test.
+
+## Widget Variants
+
+`Button` and other widgets accept `variant`:
+
+```python
+Button("Save", variant="primary")
+Button("Delete", variant="error")
+Button("Info", variant="default")
+```
+
+Built-in variants: `default`, `primary`, `success`, `warning`, `error`.
+
+## Updating Widget Content
+
+```python
+# Static/Label -- call update()
+self.query_one("#status", Static).update("Done")
+
+# Input -- set .value directly
+self.query_one("#name", Input).value = "Alice"
+
+# DataTable -- use table methods
+table = self.query_one("#tbl", DataTable)
+table.add_row("col1", "col2")
+table.clear()
+```

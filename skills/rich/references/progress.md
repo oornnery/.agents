@@ -11,7 +11,7 @@ with console.status('Loading data...'):
 
 ## Track
 
-Use `track()` for a single simple loop:
+Use `track()` for single simple loop:
 
 ```python
 from rich.progress import track
@@ -24,18 +24,18 @@ for item in track(items, description='Processing'):
 
 Use `Progress()` when:
 
-- there are multiple tasks
-- you want richer updates
+- multiple tasks
+- richer updates needed
 - totals matter
 
-Keep task descriptions short and meaningful.
+Keep task descriptions short, meaningful.
 
 ## Live
 
-Use `Live` when the current state should update in place:
+Use `Live` when current state updates in place:
 
 - dashboards
 - queues
 - long-running orchestration
 
-Prefer static output unless live state materially improves the UX.
+Prefer static output unless live state materially improves UX.

@@ -5,7 +5,7 @@
 Test outbound HTTP in layers:
 
 - unit tests with `MockTransport` or injected fake clients
-- integration tests only when request wiring and real upstream behavior matter
+- integration tests only when request wiring + real upstream behavior matter
 - avoid real network calls in routine test suites
 
 ## MockTransport Pattern
@@ -29,7 +29,7 @@ client = httpx.Client(
 )
 ```
 
-Use this when you want to assert:
+Assert via `MockTransport`:
 
 - method
 - path
@@ -71,10 +71,9 @@ Avoid:
 
 - patching `httpx.get`
 - patching `httpx.post`
-- patching many call sites just to fake one upstream
+- patching many call sites to fake one upstream
 
-Injection makes adapters easier to reason about and keeps tests close to the
-behavior being verified.
+Injection keeps adapters testable + tests close to verified behavior.
 
 ## Failure Testing
 
@@ -90,23 +89,22 @@ Also test:
 - 4xx and 5xx responses
 - invalid payload shape
 - retry exhaustion
-- partial or malformed line streams when relevant
+- partial/malformed line streams when relevant
 
 ## Integration Test Boundaries
 
-Use real integration tests when you need to verify:
+Use real integration tests to verify:
 
-- auth with a real service or local stub server
+- auth with real service or local stub server
 - streaming semantics
 - certificate, proxy, or redirect behavior
-- compatibility with a concrete upstream contract
+- compatibility with concrete upstream contract
 
-Keep these narrower and slower than unit tests.
+Keep narrower + slower than unit tests.
 
 ## Guardrails
 
-- do not let tests depend on public internet services
-- do not assert the exact internal order of unrelated headers unless the
-  contract requires it
-- do not hide network calls in fixtures that make failures hard to trace
-- do not over-mock; test the adapter contract, not implementation trivia
+- no tests depending on public internet services
+- no asserting exact internal order of unrelated headers unless contract requires it
+- no hiding network calls in fixtures that make failures hard to trace
+- no over-mock; test adapter contract, not implementation trivia

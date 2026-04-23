@@ -1,17 +1,16 @@
-
 # Python Anti-Patterns Checklist
 
-A reference checklist of common mistakes and anti-patterns in Python code. Review this before finalizing implementations to catch issues early.
+Common Python mistakes. Review before merge.
 
 ## When to Use This Skill
 
 - Reviewing code before merge
 - Debugging mysterious issues
-- Teaching or learning Python best practices
+- Teaching/learning Python best practices
 - Establishing team coding standards
 - Refactoring legacy code
 
-**Note:** This ref focuses on what to avoid. For positive patterns and architecture, load `design.md`.
+**Note:** Focuses on what to avoid. For positive patterns, load `design.md`.
 
 ## Infrastructure Anti-Patterns
 
@@ -340,6 +339,6 @@ Before finalizing code, verify:
 | Batch stops on error  | Return BatchResult with successes/failures |
 | No validation         | Validate at boundaries with Pydantic       |
 | Unclosed resources    | Context managers                           |
-| Blocking in async     | Async-native libraries                     |
+| Blocking in async     | Async-native libraries                    |
 | Missing types         | Type annotations on all public APIs        |
 | Only happy path tests | Test errors and edge cases                 |

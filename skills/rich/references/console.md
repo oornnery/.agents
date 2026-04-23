@@ -2,7 +2,7 @@
 
 ## Console Setup
 
-Use one console for normal output and one for errors when needed.
+Use one console for normal output, one for errors when needed.
 
 ```python
 from rich.console import Console
@@ -11,7 +11,7 @@ console = Console()
 error_console = Console(stderr=True)
 ```
 
-Keep console ownership near the CLI entrypoint.
+Keep console ownership near CLI entrypoint.
 
 ## Tables
 
@@ -22,17 +22,13 @@ Use tables for:
 - item inventories
 - result comparisons
 
-Keep:
-
-- headers short
-- numeric columns aligned
-- widths under control
+Keep headers short, numeric columns aligned, widths under control.
 
 ## Panels and Rules
 
 Use `Panel` and `Rule` to separate important sections.
 
-Do not wrap every message in a panel. Use framing only where scanning improves.
+Don't wrap every message in a panel. Use framing only where scanning improves.
 
 ## JSON and Syntax
 
@@ -41,10 +37,10 @@ Use:
 - `JSON` for human-readable payloads
 - `Syntax` for code or config examples
 
-Avoid these for machine-oriented output that should stay easy to parse or copy.
+Avoid for machine-oriented output that must stay easy to parse or copy.
 
 ## Markup
 
 Prefer Rich markup over raw ANSI escapes.
 
-Escape or disable markup if the content is untrusted.
+Escape or disable markup if content is untrusted.

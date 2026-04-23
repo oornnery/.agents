@@ -5,56 +5,51 @@ description: Update and align documentation with the current system state. Use f
 
 # Docs
 
-Update documentation so it matches the current code, workflow, and repo
-structure. Optimize for clarity, scanability, and low drift.
+Update docs to match current code, workflow, repo structure. Optimize clarity, scanability, low drift.
 
 ## Scope
 
-Use this command for:
-
 - `README.md`
-- docs pages and ADRs
-- changelog entries
-- docstrings when requested
-- local `SKILL.md` files
-- local `commands/*.md` and `agents/*.md`
+- docs pages, ADRs
+- changelogs
+- docstrings (when requested)
+- local `SKILL.md`
+- local `commands/*.md`, `agents/*.md`
 
-## Skills to use
+## Skills
 
-- `skills/docs/SKILL.md` always
-- `skills/python/SKILL.md` for docstrings and Python usage docs
-- `skills/arch/SKILL.md` for ADR or SDD updates
-- `skills/design/SKILL.md` for API or UI docs
-- `skills/cicd/SKILL.md` for CI docs
-- `skills/hooks/SKILL.md` for hook docs, settings wiring, and lifecycle notes
+- `skills/docs/SKILL.md` — always
+- `skills/python/SKILL.md` — docstrings, Python usage
+- `skills/arch/SKILL.md` — ADR, SDD
+- `skills/design/SKILL.md` — API, UI docs
+- `skills/cicd/SKILL.md` — CI docs
+- `skills/hooks/SKILL.md` — hook docs, settings wiring, lifecycle
 
 ## Source of truth
 
-Document from the real implementation surface, not from memory.
+Doc from real implementation, not memory:
 
-Common sources:
-
-- `pyproject.toml`, `uv.lock`, and task aliases for install, validation, and tooling docs
-- `.env.example`, typed settings, and config loaders for configuration docs
-- `.github/workflows/*.yml` or local workflow configs for CI docs
-- `hooks/*.sh` and `templates/settings/local.hooks.json` for hook behavior and wiring docs
-- local `skills/*/SKILL.md`, `commands/*.md`, and `agents/*.md` for this repo's operating docs
+- `pyproject.toml`, `uv.lock`, task aliases — install, validation, tooling
+- `.env.example`, typed settings, config loaders — configuration
+- `.github/workflows/*.yml` — CI
+- `hooks/*.sh`, `templates/settings/local.hooks.json` — hook behavior, wiring
+- local `skills/*/SKILL.md`, `commands/*.md`, `agents/*.md` — operating docs
 
 ## Process
 
-1. inspect the requested doc target and identify its source of truth
-2. update only the document(s) derived from that source
-3. keep examples specific, copy-pasteable, and aligned with the repo
-4. remove stale paths, names, commands, and references
-5. flag obsolete docs for removal when they no longer match any source of truth
+1. inspect target doc, identify source of truth
+2. update only docs derived from that source
+3. keep examples specific, copy-pasteable, repo-aligned
+4. remove stale paths, names, commands, references
+5. flag obsolete docs for removal when no source matches
 6. run Markdown validation after editing
 
 ## Constraints
 
-- do not change code logic while doing doc-only work
-- prefer focused edits over broad rewrites
-- keep top-level docs concise and move detail into focused pages when needed
-- do not invent behavior that the code does not implement
+- no code logic changes during doc-only work
+- focused edits over broad rewrites
+- top-level docs concise; move detail into focused pages
+- no invented behavior code doesn't implement
 
 ## Related
 

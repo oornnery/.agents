@@ -5,8 +5,7 @@ description: Create a structured implementation plan or design document. Use whe
 
 # Plan
 
-Produce a plan document, not code. The plan should make implementation,
-testing, and rollout concrete without over-specifying the code.
+Produce plan document, not code. Plan should make implementation, testing, rollout concrete without over-specifying code.
 
 ## When to use
 
@@ -14,8 +13,8 @@ Use this command for:
 
 - new features with multiple moving parts
 - architecture or layering decisions
-- ambiguous requests that need phased execution
-- work that benefits from SPEC, ARCH, or SDD output
+- ambiguous requests needing phased execution
+- work benefiting from SPEC, ARCH, or SDD output
 
 ## Process
 
@@ -33,10 +32,10 @@ Identify:
 
 Read only enough to answer:
 
-- what architecture is already in use
-- which files or modules are likely affected
+- what architecture already in use
+- which files or modules likely affected
 - where boundaries already exist
-- what validations and tests will prove success
+- what validations and tests prove success
 
 Load supporting skills only when needed:
 
@@ -82,7 +81,7 @@ Use this shape:
 
 ### 5. Keep it implementation-ready
 
-Each phase should be independently verifiable and specific about:
+Each phase independently verifiable and specific about:
 
 - file paths or affected components
 - contracts or interfaces

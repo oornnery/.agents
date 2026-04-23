@@ -1,7 +1,6 @@
-
 # Python Error Handling
 
-Build robust Python applications with proper input validation, meaningful exceptions, and graceful failure handling. Good error handling makes debugging easier and systems more reliable.
+Robust Python apps need proper input validation, meaningful exceptions, graceful failure handling. Good error handling makes debugging easier, systems more reliable.
 
 ## When to Use This Skill
 
@@ -45,7 +44,7 @@ def fetch_page(url: str, page_size: int) -> Page:
 
 ### Pattern 1: Early Input Validation
 
-Validate all inputs at API boundaries before any processing begins.
+Validate all inputs at API boundaries before processing begins.
 
 ```python
 def process_order(

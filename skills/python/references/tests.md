@@ -1,13 +1,12 @@
-
 # Python Testing Patterns
 
-Comprehensive guide to implementing robust testing strategies in Python using pytest, fixtures, mocking, parameterization, and test-driven development practices.
+Guide to testing Python with pytest, fixtures, mocking, parameterization, TDD.
 
 ## When to Use This Skill
 
 - Writing unit tests for Python code
 - Setting up test suites and test infrastructure
-- Implementing test-driven development (TDD)
+- Implementing TDD
 - Creating integration tests for APIs and services
 - Mocking external dependencies and services
 - Testing async code and concurrent operations
@@ -28,12 +27,12 @@ Comprehensive guide to implementing robust testing strategies in Python using py
 ### 2. Test Structure (AAA Pattern)
 
 - **Arrange**: Set up test data and preconditions
-- **Act**: Execute the code under test
-- **Assert**: Verify the results
+- **Act**: Execute code under test
+- **Assert**: Verify results
 
 ### 3. Test Coverage
 
-- Measure what code is exercised by tests
+- Measure what code tests exercise
 - Identify untested code paths
 - Aim for meaningful coverage, not just high percentages
 
@@ -41,7 +40,7 @@ Comprehensive guide to implementing robust testing strategies in Python using py
 
 - Tests should be independent
 - No shared state between tests
-- Each test should clean up after itself
+- Each test cleans up after itself
 
 ## Quick Start
 
@@ -366,7 +365,7 @@ def test_exception_info():
 
 ### One Behavior Per Test
 
-Each test should verify exactly one behavior. This makes failures easy to diagnose and tests easy to maintain.
+Each test should verify exactly one behavior. Makes failures easy to diagnose and tests easy to maintain.
 
 ```python
 # BAD - testing multiple behaviors
@@ -428,7 +427,7 @@ def test_create_user_rejects_invalid_email():
 
 ### Test Naming Convention
 
-A common pattern: `test_<unit>_<scenario>_<expected_outcome>`. Adapt to your team's preferences.
+Common pattern: `test_<unit>_<scenario>_<expected_outcome>`. Adapt to team preferences.
 
 ```python
 # Pattern: test_<unit>_<scenario>_<expected>
@@ -467,7 +466,7 @@ def test_function():  # Doesn't explain what's tested
 
 ### Testing Retry Behavior
 
-Verify that retry logic works correctly using mock side effects.
+Verify retry logic using mock side effects.
 
 ```python
 from unittest.mock import Mock
@@ -516,7 +515,7 @@ def test_does_not_retry_on_permanent_error():
 
 ### Mocking Time with Freezegun
 
-Use freezegun to control time in tests for predictable time-dependent behavior.
+Control time in tests for predictable time-dependent behavior.
 
 ```python
 from freezegun import freeze_time
@@ -613,11 +612,11 @@ pytest --cov=myapp --cov-fail-under=80 tests/
 pytest --cov=myapp --cov-report=term-missing tests/
 ```
 
-Advanced patterns are included below in the "Advanced Reference" section.
+Advanced patterns below in "Advanced Reference" section.
 
 ## Python Testing Patterns — Advanced Reference
 
-Advanced testing patterns including async code, monkeypatching, temporary files, conftest setup, property-based testing, database testing, CI/CD integration, and configuration.
+Async code, monkeypatching, temporary files, conftest setup, property-based testing, database testing, CI/CD integration, configuration.
 
 ## Pattern 6: Testing Async Code
 

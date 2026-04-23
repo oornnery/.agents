@@ -1,15 +1,60 @@
 {
   "version": 1,
   "skills": {
+    "backprop": {
+      "source": "JuliusBrussee/cavekit",
+      "sourceType": "github",
+      "computedHash": "7d23e415bf412ff01fa8c3d920c269f6ac7a9ca0c337eafda861d412ba8f946c"
+    },
+    "build": {
+      "source": "JuliusBrussee/cavekit",
+      "sourceType": "github",
+      "computedHash": "380b2ed44d9766582dca06e3a564ffafe3129132e8b0051664716521b76c9c50"
+    },
     "building-pydantic-ai-agents": {
       "source": "pydantic/skills",
       "sourceType": "github",
       "computedHash": "f30a3037bbb153cccc88d996ea8e74865cbdd788c416139d2b080ae78732354a"
     },
+    "caveman": {
+      "source": "JuliusBrussee/cavekit",
+      "sourceType": "github",
+      "computedHash": "b7296730e7d074253e6806b9e71dab4a6e1cbfeb643cafc000f9ce7bec0a825c"
+    },
+    "caveman-commit": {
+      "source": "JuliusBrussee/caveman",
+      "sourceType": "github",
+      "computedHash": "76994afc39b68f4dbe098df76262b68d9928a23ee0f6aaebb11ba0e0f55bfa13"
+    },
+    "caveman-compress": {
+      "source": "JuliusBrussee/caveman",
+      "sourceType": "github",
+      "computedHash": "300fb8578258161e1752a2a4142a7e9ff178c960bcb83b84422e2987421f33bf"
+    },
+    "caveman-help": {
+      "source": "JuliusBrussee/caveman",
+      "sourceType": "github",
+      "computedHash": "3cd5f7d3f88c8ef7b16a6555dc61f5a11b14151386697609ab6887ab8b5f059d"
+    },
+    "caveman-review": {
+      "source": "JuliusBrussee/caveman",
+      "sourceType": "github",
+      "computedHash": "1dc59e7e896bc9dd449e43116c4c8b2e656b88c3370df91848330c17347af3d0"
+    },
+    "check": {
+      "source": "JuliusBrussee/cavekit",
+      "sourceType": "github",
+      "computedHash": "9318e8cf08cbb3be90cb1970d4cfa225f18645f5775d83e2bce83c2dc813220a"
+    },
     "cicd-expert": {
       "source": "martinholovsky/claude-skills-generator",
       "sourceType": "github",
       "computedHash": "0bdbb10c296b5f70e4fe588f4be30bd77f300b06873557af09498fffcd294360"
+    },
+    "compress": {
+      "source": "JuliusBrussee/caveman",
+      "sourceType": "github",
+      "computedHash": "05c97bc3120108acd0b80bdef7fb4fa7c224ba83c8d384ccbc97f92e8a065918"
     },
     "fastapi": {
       "source": "fastapi/fastapi",
@@ -46,6 +91,11 @@
       "sourceType": "github",
       "computedHash": "36b8b60c8d67ee2c94edaeca24d2c182369c8bec1cce3289db428d1f029d3949"
     },
+    "spec": {
+      "source": "JuliusBrussee/cavekit",
+      "sourceType": "github",
+      "computedHash": "968e19b8644a9dc182bd481fe6e534befc78f158514dfa9d16c53ecd7a543065"
+    },
     "sqlmodel-expert": {
       "source": "bilalmk/todo_correct",
       "sourceType": "github",
@@ -56,15 +106,35 @@
       "sourceType": "github",
       "computedHash": "988d80e52c67c3692d43cc963b6a048a239895e88b272b061de55370d0f8efc3"
     },
+    "textual": {
+      "source": "kyleking/vcr-tui",
+      "sourceType": "github",
+      "computedHash": "80791804d5823a8949c8887de5bf11a0a39c243234b28d5bebd4e3276c31368c"
+    },
     "textual-builder": {
       "source": "ypares/agent-skills",
       "sourceType": "github",
       "computedHash": "8c9a99e033b86a35c780957dc52030f37e4d4143a9ef8620f1d0e0da4eb2852d"
     },
+    "textual-layout-styling": {
+      "source": "dawiddutoit/custom-claude",
+      "sourceType": "github",
+      "computedHash": "ac0914f056086030ea807ba20cfa8d1388d436e37a19116b7c4ddf133b75acb4"
+    },
+    "textual-reactive-programming": {
+      "source": "dawiddutoit/custom-claude",
+      "sourceType": "github",
+      "computedHash": "7aaa8ecd8afd1aa4509f6af1ba27918271c4856a3c7c627367903dc5705a2932"
+    },
     "textual-testing": {
       "source": "dawiddutoit/custom-claude",
       "sourceType": "github",
       "computedHash": "3e42968e67ba8cc4d85d4e3f93c546b3de057280cce117177cc56639fdb313ed"
+    },
+    "textual-widget-development": {
+      "source": "dawiddutoit/custom-claude",
+      "sourceType": "github",
+      "computedHash": "30bda9259f3182e68338f7252b5eea55819aff737a6cdd00822d3f0b673df177"
     }
   }
 }

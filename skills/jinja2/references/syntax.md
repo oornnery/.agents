@@ -28,8 +28,7 @@ for comments.
 {% endif %}
 ```
 
-Keep conditionals readable. If the logic becomes business-heavy, move it into
-Python first.
+Keep conditionals readable. Move business-heavy logic to Python.
 
 ## Loops
 
@@ -55,7 +54,7 @@ Useful loop values:
 {% set title = page_title | default('Untitled') %}
 ```
 
-Use `set` for small presentational values, not for complex computation.
+Use `set` for small presentational values, not complex computation.
 
 ## Filters
 
@@ -96,7 +95,7 @@ Use whitespace trimming when needed:
 {%- endif -%}
 ```
 
-Use it deliberately. Overuse can make templates harder to read.
+Use deliberately. Overuse hurts readability.
 
 ## Guardrails
 

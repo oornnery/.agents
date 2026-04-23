@@ -1,14 +1,12 @@
 # Git Worktrees
 
-Worktrees let you check out multiple branches at once in separate directories
-while sharing the same `.git` database. Use them when switching branches would
-interrupt active work or create unnecessary stash churn.
+Worktrees = multiple branch checkouts in separate dirs, shared `.git` database. Use when switching branches disrupts active work or creates stash churn.
 
 ## When to use
 
-- hotfix while mid-feature
+- hotfix mid-feature
 - PR review in isolation
-- verification without leaving the current branch
+- verification without leaving current branch
 - parallel agent work with separate trees
 - comparing two implementations side by side
 
@@ -55,18 +53,17 @@ git worktree remove ../my-app-verify
 
 ### Parallel agent work
 
-Use a worktree when two agents need to operate on different branches or when a
-review/verification pass should stay isolated from the implementation tree.
+Use worktree when two agents need different branches or review/verification must stay isolated from implementation tree.
 
 ## Caveats
 
-- all worktrees share the same `.git` directory
-- a branch checked out in one worktree cannot be checked out in another
-- detached HEAD worktrees are useful for read-only verification
+- all worktrees share same `.git` directory
+- branch checked out in one worktree cannot be checked out in another
+- detached HEAD worktrees useful for read-only verification
 - always remove worktrees when done
-- never remove a worktree with uncommitted changes without warning
+- never remove worktree with uncommitted changes without warning
 
-If a worktree goes stale, run:
+If worktree goes stale, run:
 
 ```bash
 git worktree prune
@@ -74,7 +71,7 @@ git worktree prune
 
 ## Directory convention
 
-Keep temporary worktrees adjacent to the main repo:
+Keep temporary worktrees adjacent to main repo:
 
 ```text
 projects/

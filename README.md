@@ -144,13 +144,156 @@ npx skills add "https://github.com/oornnery/skills" --skill python -y
 npx skills add "https://github.com/oornnery/skills" --skill security -y
 ```
 
-## RTK Integration
+## Token Optimization Stack
 
-RTK (Rust Token Killer) auto-rewrites CLI commands for major token savings.
-Install it globally with:
+This repo treats token efficiency as a systems problem, not a single-tool
+problem. The goal is to reduce waste across the whole agent loop: shell output,
+always-loaded instructions, skill loading, session recovery, code retrieval,
+and noisy backend/tool responses.
+
+### What Changed In This Repo
+
+The main repo changes follow a few rules:
+
+- keep always-loaded files small and topic-focused
+- move detail into specialized skills and references instead of bloating base
+  instructions
+- prefer narrow skills with progressive disclosure over broad catch-all skills
+- use hooks and persistent memory to recover context instead of re-explaining it
+- prefer structured CLI output and explicit error context over noisy tool dumps
+
+That is why the repo now leans harder on short `AGENTS.*` variants, scoped
+`SKILL.md` files, compressed instruction files, and memory/hooks that preserve
+useful state across sessions.
+
+### Design Principles
+
+| Layer                    | Repo approach                                                                                          |
+| ------------------------ | ------------------------------------------------------------------------------------------------------ |
+| Terminal output          | use RTK to rewrite noisy commands before they hit context                                              |
+| Base instructions        | keep `AGENTS.base` and startup docs terse; push details into variants and skills                       |
+| Skill loading            | keep triggers narrow so most skills stay metadata-only until needed                                    |
+| Session continuity       | use hooks plus persistent memory so compaction does not force a full re-brief                          |
+| Backend and tool context | prefer CLI `--json`, semantic exit codes, and structured errors; use MCP for live state, not doc dumps |
+| Retrieval                | treat graph, symbol, and semantic search as optional layers, not defaults to stack blindly             |
+| Measurement              | leave room for token audits and compaction checks instead of guessing                                  |
+
+### RTK
+
+RTK is the shell-compression layer. It auto-rewrites CLI commands so high-noise
+output is compact before it reaches the model.
 
 ```bash
 rtk init -g
+```
+
+Guidance in `skills/rtk/SKILL.md`.
+
+### Caveman Ecosystem (JuliusBrussee)
+
+This repo uses Caveman as the prompt/output discipline layer. The useful part is
+that it is composable: response compression, input-file compression, terse
+commit/review flows, and spec-driven execution all work independently.
+
+#### Caveman — output compression
+
+Use at session start when you want terse answers without changing the actual
+reasoning depth. It reduces output tokens while keeping the technical content.
+
+| Trigger                      | Effect                             |
+| ---------------------------- | ---------------------------------- |
+| `/caveman` or "caveman mode" | activates terse output for session |
+| "less tokens please"         | same                               |
+| `/caveman ultra`             | maximum compression                |
+
+Install: already in `.agents/skills/caveman/` via `npx skills add JuliusBrussee/caveman`.
+
+#### Caveman-compress — input file compression
+
+Use on always-loaded files that cost tokens every session. The repo strategy is
+to compress startup-heavy files and keep human-readable backups next to them.
+
+```bash
+cd .agents/skills/caveman-compress && python3 -m scripts <filepath>
+```
+
+Trigger: `/caveman:compress <filepath>` or "compress memory file".
+
+#### Caveman-commit — terse commit messages
+
+Keeps commit subjects short and reason-first.
+
+Trigger: `/caveman-commit` or "write a commit message".
+
+#### Caveman-review — terse code review
+
+Keeps review comments compact and actionable.
+
+Trigger: `/caveman-review` or "review this PR".
+
+### Cavekit — spec-driven workflow
+
+This is the repo's execution discipline layer: write a spec, build against it,
+and backprop failures into the spec instead of letting process drift.
+
+| Command      | What it does                                              |
+| ------------ | --------------------------------------------------------- |
+| `/ck:spec`   | create or amend SPEC.md                                   |
+| `/ck:build`  | plan → execute → auto-backprop failures into SPEC.md      |
+| `/ck:check`  | read-only drift report between code and SPEC.md           |
+
+Install: already in `.agents/skills/` via `npx skills add JuliusBrussee/cavekit`.
+
+### Cavemem — persistent cross-session memory
+
+This is the continuity layer. It stores compact session memory locally so the
+agent can recover relevant prior decisions without restating everything in the
+next session.
+
+```bash
+npm install -g cavemem
+cavemem install         # wires hooks into Claude Code
+cavemem search "<q>"    # query past context
+cavemem viewer          # browse at localhost:37777
+cavemem status          # check health
+```
+
+MCP tools available to agents: `search`, `timeline`, `get_observations`, `list_sessions`. Memory accumulates at session boundaries — no manual steps. `<private>...</private>` stripped at write.
+
+Settings: `~/.cavemem/settings.json`.
+
+### Ideas Adapted Into The Repo
+
+Not everything was installed directly. Several projects shaped how the repo was
+refined:
+
+- `InsForge/InsForge`: backend context engineering; keep static knowledge in
+  skills, use CLI for structured actions, reserve MCP for live state
+- `mksglu/context-mode`: compaction recovery and session-state ideas adapted
+  into hook and harness patterns
+- `drona23/claude-token-efficient`: terse defaults, less repetition, smaller
+  startup instructions
+- `nadimtuhin/claude-token-optimizer`: topic-based docs and smaller
+  always-loaded core files
+- `alexgreensh/token-optimizer`: token audits, compaction checkpoints, and
+  measurement as future work
+- `tirth8205/code-review-graph`, `Mibayy/token-savior`, and
+  `zilliztech/claude-context`: retrieval should be layered and piloted, not all
+  enabled by default
+
+### Recommended Workflow
+
+1. Use RTK for shell noise.
+2. Start sessions with `/caveman` when terse output is enough.
+3. Compress expensive always-loaded files with `caveman-compress`.
+4. Use Cavekit for spec/build/check loops instead of free-form drift.
+5. Let Cavemem carry session memory through hooks.
+
+### Reinstall Caveman Skills
+
+```bash
+npx skills add JuliusBrussee/caveman     # caveman, caveman-compress, caveman-commit, caveman-review, compress, caveman-help
+npx skills add JuliusBrussee/cavekit     # spec, build, check, backprop, caveman
 ```
 
 ## Acknowledgments
