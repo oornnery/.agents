@@ -47,7 +47,7 @@ Invalid input:
 - show field or form errors
 - use `422` when request shape valid but content invalid
 
-Makes validation:
+Makes valid:
 
 - inspectable in tests
 - easier to reason about in logs
@@ -89,7 +89,7 @@ Bad fit:
 
 ## Inline Field Validation
 
-Use field-level validation when it genuinely helps form flow.
+Use field-level valid when it genuinely helps form flow.
 
 ```html
 <input
@@ -113,7 +113,7 @@ Use status codes matching failure:
 - `401` and `403` auth boundaries
 - `404` missing resources
 - `409` state conflicts
-- `422` semantic validation failures
+- `422` semantic valid failures
 
 Keep error fragments readable. Do not leak stack traces or sensitive details into HTML responses.
 
@@ -130,4 +130,4 @@ Keep error fragments readable. Do not leak stack traces or sensitive details int
 - check full-page and fragment behaviors stay consistent
 - check partials map to stable UI boundaries
 - check headers and OOB updates intentional, not incidental
-- check validation and auth responses remain understandable when requested asynchronously
+- check valid and auth responses remain understandable when requested asynchronously

@@ -64,7 +64,7 @@ def connect():
     return psycopg.connect(f"host={DB_HOST}...")
 ```
 
-**Fix:** Use environment variables with typed settings.
+**Fix:** Use env variables with typed settings.
 
 ```python
 # GOOD
@@ -314,12 +314,12 @@ Before finalizing code, verify:
 
 - [ ] No scattered timeout/retry logic (centralized)
 - [ ] No double retry (app + infrastructure)
-- [ ] No hard-coded configuration or secrets
+- [ ] No hard-coded config or secrets
 - [ ] No exposed internal types (ORM models, protobufs)
 - [ ] No mixed I/O and business logic
 - [ ] No bare `except Exception: pass`
 - [ ] No ignored partial failures in batches
-- [ ] No missing input validation
+- [ ] No missing input valid
 - [ ] No unclosed resources (using context managers)
 - [ ] No blocking calls in async code
 - [ ] All public functions have type hints
@@ -332,13 +332,13 @@ Before finalizing code, verify:
 | Anti-Pattern          | Fix                                        |
 | --------------------- | ------------------------------------------ |
 | Scattered retry logic | Centralized decorators                     |
-| Hard-coded config     | Environment variables + pydantic-settings  |
+| Hard-coded config     | Env variables + pydantic-settings          |
 | Exposed ORM models    | DTO/response schemas                       |
 | Mixed I/O + logic     | Repository pattern                         |
 | Bare except           | Catch specific exceptions                  |
 | Batch stops on error  | Return BatchResult with successes/failures |
-| No validation         | Validate at boundaries with Pydantic       |
+| No valid              | Validate at boundaries with Pydantic       |
 | Unclosed resources    | Context managers                           |
-| Blocking in async     | Async-native libraries                    |
+| Blocking in async     | Async-native libraries                     |
 | Missing types         | Type annotations on all public APIs        |
 | Only happy path tests | Test errors and edge cases                 |

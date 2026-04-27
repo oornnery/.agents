@@ -8,14 +8,14 @@ description: HTTPX client patterns for Python services, scripts, and
 
 # HTTPX
 
-Use this skill when work is primarily outbound HTTP in Python.
+Use when work is primarily outbound HTTP in Python.
 
 ## Boundary
 
 Use this skill for:
 
 - sync and async HTTP clients
-- shared client configuration
+- shared client config
 - timeouts, limits, redirects, and connection reuse
 - uploads, downloads, and streaming
 - auth headers and custom auth flows
@@ -36,7 +36,7 @@ Pair with:
 ## Assets
 
 - `assets/client.py` -- typed `crudcrud.com` client example with shared config and explicit CRUD methods
-- `assets/testing.py` -- test of same `crudcrud.com` adapter using `MockTransport` instead of real network calls
+- `assets/testing.py` -- test of same `crudcrud.com` adapter using `MockTransport` over real network calls
 
 ## What Stays Here
 

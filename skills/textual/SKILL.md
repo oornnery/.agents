@@ -7,7 +7,7 @@ description: Textual patterns for building and testing terminal UIs in Python.
 
 # Textual
 
-Use when work is primarily a Textual TUI, terminal workflow, or tests for Textual widgets and screens.
+Use when work is primarily Textual TUI, terminal workflow, or tests for Textual widgets and screens.
 
 ## Boundary
 
@@ -31,7 +31,7 @@ Pair with:
 - `references/widgets.md` -- common widgets, tables, forms, containers, custom widget guidance
 - `references/widget-development.md` -- custom widget patterns: base class selection, composition, lifecycle, advanced compositions
 - `references/layout-and-styling.md` -- `.tcss`, containers, layout, spacing, ids, classes, visual structure, themes, colors
-- `references/reactive-programming.md` -- reactive attrs, watchers, computed props, validation, complex state, `recompose`
+- `references/reactive-programming.md` -- reactive attrs, watchers, computed props, valid, complex state, `recompose`
 - `references/interactivity.md` -- bindings, actions, focus, mouse and keyboard handling, interaction patterns
 - `references/testing.md` -- headless tests, full Pilot API, resize, animations, workers, assert patterns for complex widgets
 
@@ -47,7 +47,7 @@ Keep this file focused on defaults and guardrails.
 
 - keep here: app design defaults, testing stance, review cues
 - move to refs: widget catalogs, long examples, styling details, specific test recipes
-- use assets for copyable app and test skeletons instead of growing giant code blocks in refs
+- use assets for copyable app and test skeletons over growing giant code blocks in refs
 
 ## Core Defaults
 
@@ -61,7 +61,7 @@ Keep this file focused on defaults and guardrails.
 - screens or focused containers for dialog-like flows, not one giant app class
 - stable widget ids/classes so styling, querying, tests align
 - prefer built-in widgets/messages before inventing custom abstractions
-- test interactions headlessly with `run_test()` instead of only checking implementation details
+- test interactions headlessly with `run_test()` over only checking impl details
 - always call `super().__init__(name=name, id=id, classes=classes)` in custom widget `__init__`
 - replace list/dict entirely to trigger watchers -- `.append()` won't fire `watch_*`
 - frozen dataclasses for immutable reactive data points
@@ -75,7 +75,6 @@ from textual.widgets import Footer, Header, Label
 
 class DemoApp(App):
     CSS_PATH = "app.tcss"
-
     def compose(self) -> ComposeResult:
         yield Header()
         yield Label("Hello, Textual!", id="status")
@@ -103,19 +102,19 @@ For deeper patterns, load `references/testing.md`.
 ## Reactive Defaults
 
 - declare type: `attr: reactive[Type] = reactive(default)`
-- use `init=False` when initializing in `__init__`; omit when reactive sets the default
+- use `init=False` when initializing in `__init__`; omit when reactive sets default
 - use `recompose=True` when attribute change should rebuild child widget tree
 - use `layout=True` when attribute change affects size/position
 - watcher signature: `watch_attr(self, old: T, new: T) -> None`
 - computed: use `@property` for derived values; update via watcher when dependency changes
-- for validation: constrain in `watch_*`, revert or clamp the value there
+- for valid: constrain in `watch_*`, revert or clamp value there
 
 For full patterns, load `references/reactive-programming.md`.
 
 ## Widget Development Defaults
 
 - extend `Static` for display-only content; extend `Container`/`Vertical`/`Horizontal` for composition
-- put `DEFAULT_CSS` on the class for self-contained defaults
+- put `DEFAULT_CSS` on class for self-contained defaults
 - use keyword-only args (after `*`) for `id`, `name`, `classes`
 - always pass `name`, `id`, `classes` to `super().__init__()`
 - store config in `_prefixed` instance vars; never in class vars that aren't `ClassVar`

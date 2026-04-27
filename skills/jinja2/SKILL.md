@@ -56,7 +56,7 @@ Keep this file focused on defaults and guardrails.
 - use host formatting helpers for dates, currency, localized values when host provides them
 - keep ids, classes, partial boundaries stable when templates power htmx or interactive surfaces
 - default to escaped output; use `safe` only for trusted HTML
-- give templates explicit empty states instead of silent blank sections
+- give templates explicit empty states over silent blank sections
 
 ## Template Structure Rules
 

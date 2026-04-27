@@ -12,7 +12,7 @@ Use when CLI needs better structure, readability, feedback.
 Use for terminal presentation and interaction design.
 
 - pair with `python` when implementing CLI in Python
-- keep logging policy, validation, domain behavior outside this skill
+- keep logging policy, valid, domain behavior outside this skill
 - use for how output rendered, not what system means
 
 ## Reference Map
@@ -59,7 +59,7 @@ Use `Table` for compact comparison, status, inventory output.
 Use `Panel` and `Rule` to separate sections only when it improves scanning.
 
 - prefer one or two strong separators over heavy framing everywhere
-- do not turn every message into a panel
+- do not turn every message into panel
 
 ### Status and Progress
 
@@ -114,6 +114,6 @@ Prefer `Live` only when evolving state matters. Static output usually easier to 
 
 - success output short and calm
 - failures explicit and actionable
-- progress output transient when possible
+- progress output transient where possible
 - final summaries compact
 - important identifiers copyable without stripping decorations

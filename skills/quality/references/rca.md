@@ -4,7 +4,7 @@ Use RCA when problem recurs, failure unclear, or quick fix already failed once.
 
 ## When to Use
 
-- production incident or outage
+- prod incident or outage
 - recurring bug that keeps being "fixed"
 - flaky test with no clear cause
 - performance degradation over time
@@ -46,7 +46,7 @@ Common categories:
 
 - Code
 - Infrastructure
-- Configuration
+- Config
 - Dependencies
 - Process
 - Data
@@ -88,5 +88,5 @@ Action items include owner and due date.
 
 - evidence beats intuition
 - avoid blame; analyze systems and decisions
-- fix root cause, not just visible symptom
+- fix root cause, not visible symptom
 - add regression coverage after fix

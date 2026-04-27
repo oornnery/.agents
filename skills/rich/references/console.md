@@ -28,7 +28,7 @@ Keep headers short, numeric columns aligned, widths under control.
 
 Use `Panel` and `Rule` to separate important sections.
 
-Don't wrap every message in a panel. Use framing only where scanning improves.
+Don't wrap every message in panel. Use framing only where scanning improves.
 
 ## JSON and Syntax
 

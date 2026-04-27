@@ -2,12 +2,12 @@
 
 ## Choose Base Class
 
-| base | when |
-|------|------|
-| `Static` | display-only, renders string/Rich renderable |
-| `Container` / `Vertical` / `Horizontal` | composition -- holds child widgets |
-| `Widget` | fully custom rendering + composition |
-| built-in (`Button`, `Input`, etc.) | use first, before custom |
+| base                                    | when                                         |
+| --------------------------------------- | -------------------------------------------- |
+| `Static`                                | display-only, renders string/Rich renderable |
+| `Container` / `Vertical` / `Horizontal` | composition -- holds child widgets           |
+| `Widget`                                | fully custom rendering + composition         |
+| built-in (`Button`, `Input`, etc.)      | use first, before custom                     |
 
 ## Minimal Custom Widget
 
@@ -23,16 +23,15 @@ class StatusCard(Static):
         padding: 1;
     }
     """
-
     def __init__(self, label: str, *, name: str | None = None, id: str | None = None, classes: str | None = None) -> None:
         super().__init__(name=name, id=id, classes=classes)  # always pass through
         self._label = label
-
     def render(self) -> str:
         return self._label
 ```
 
 Rules:
+
 - keyword-only args after `*` for `name`, `id`, `classes`
 - always pass `name`, `id`, `classes` to `super().__init__()`
 - store config in `_prefixed` instance vars
@@ -59,12 +58,10 @@ class UserCard(Vertical):
         border-top: solid $primary;
     }
     """
-
     def __init__(self, name: str, email: str, **kwargs: object) -> None:
         super().__init__(**kwargs)
         self._name = name
         self._email = email
-
     def compose(self) -> ComposeResult:
         yield Static(self._name, classes="header")
         yield Label(self._email, id="email")
@@ -80,15 +77,12 @@ class MyWidget(Widget):
     def on_mount(self) -> None:
         """Widget is mounted and ready. Query children here."""
         self.query_one("#title").update("Loaded")
-
     def on_unmount(self) -> None:
         """Widget being removed. Clean up resources."""
         pass
-
     def on_show(self) -> None:
         """Widget became visible."""
         pass
-
     def on_hide(self) -> None:
         """Widget became hidden."""
         pass
@@ -107,7 +101,6 @@ class SearchBox(Widget):
         def __init__(self, query: str) -> None:
             super().__init__()
             self.query = query
-
     def action_submit(self) -> None:
         self.post_message(self.Submitted(self.query_one(Input).value))
 
@@ -149,7 +142,6 @@ class DashboardWidget(Vertical):
     DashboardWidget .chart-section { height: 1fr; border-top: solid $primary; }
     DashboardWidget .controls { height: 3; background: $surface; border-top: solid $primary; }
     """
-
     def compose(self) -> ComposeResult:
         yield Static(self._title, classes="header")
         with Grid(classes="stats-grid"):
@@ -161,13 +153,11 @@ class DashboardWidget(Vertical):
         with Horizontal(classes="controls"):
             yield Button("Refresh", id="btn-refresh", variant="primary")
             yield Button("Export", id="btn-export")
-
     async def on_mount(self) -> None:
         table = self.query_one("#activity-table", DataTable)
         table.add_column("Time", width=20)
         table.add_column("User", width=20)
         table.add_column("Action", width=40)
-
     def update_stats(self, users: int, orders: int, revenue: float) -> None:
         self.query_one("#stat-users", Static).update(f"Users: {users}")
         self.query_one("#stat-orders", Static).update(f"Orders: {orders}")
@@ -182,7 +172,6 @@ from typing import ClassVar
 class MyWidget(Static):
     # Class-level constant -- shared across all instances
     BORDER_COLOR: ClassVar[str] = "$primary"
-
     def __init__(self, **kwargs: object) -> None:
         super().__init__(**kwargs)
         # Instance-level state -- unique per instance
@@ -196,11 +185,9 @@ async def test_user_card() -> None:
     class TestApp(App):
         def compose(self) -> ComposeResult:
             yield UserCard("Alice", "alice@example.com", id="card")
-
     async with TestApp().run_test() as pilot:
         card = pilot.app.query_one("#card", UserCard)
         assert card._name == "Alice"
-
         await pilot.click("#btn-edit")
         await pilot.pause()
         # assert expected behavior

@@ -4,7 +4,7 @@
 
 `request changes`
 
-The review found one high-severity authorization gap and one medium-severity
+review found one high-severity authorization gap and one medium-severity
 logging issue.
 
 ## Findings
@@ -14,8 +14,7 @@ logging issue.
   Location: `src/myapp/api/payments.py:42`
   Evidence: payment detail endpoint loads by ID without checking tenant or owner
   Impact: cross-tenant data exposure
-  Fix: enforce object-level authorization before returning the record
-
+  Fix: enforce object-level authorization before returning record
 - Rule ID: SEC-014
   Severity: Medium
   Location: `src/myapp/auth/session.py:18`

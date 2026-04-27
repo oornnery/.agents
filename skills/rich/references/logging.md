@@ -23,7 +23,7 @@ Rich tracebacks useful for:
 - operator-facing CLIs
 - internal automation
 
-Keep production-safe error messaging separate from verbose tracebacks when audience not purely technical.
+Keep prod-safe error messaging separate from verbose tracebacks when audience not purely technical.
 
 ## stderr
 

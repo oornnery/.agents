@@ -99,6 +99,6 @@ Use deliberately. Overuse hurts readability.
 
 ## Guardrails
 
-- do not turn template expressions into a second programming language
+- do not turn template expressions into second programming language
 - do not hide fragile string-building logic in nested filters
 - do not use `safe` casually

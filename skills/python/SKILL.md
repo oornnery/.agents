@@ -1,120 +1,74 @@
 ---
 name: python
-description: Python guidance for project onboarding, uv, typing, testing, async, configuration, packaging, observability, resilience, resource management, FastAPI conventions, and common debug and build-fix patterns. Load when writing, reviewing, debugging, or maintaining Python code.
+description: Python guidance for project onboarding, uv, typing, testing, async, configuration, packaging, observability, resilience, resource management, FastAPI conventions, and common debug/build-fix patterns. Load when writing, reviewing, debugging, or maintaining Python code.
 ---
 
 # Python
 
+Policy-level Python guidance. Load one focused ref for deep detail; keep this file as router + defaults.
+
 ## Reference Map
 
-Core guidance here for default workflow. Load only the ref that matches the task. Each ref is self-contained.
-
-### Project and Toolchain
-
-- `references/uv.md` -- dependency management, environments, Python installs,
-  lockfiles, and advanced `uv` workflows
-- `references/structure.md` -- module layout, package boundaries, and
-  public API structure
-- `references/config.md` -- environment variables, typed settings,
-  secrets, and config loading
-- `references/packaging.md` -- build metadata, packaging layouts, publishing,
-  and advanced packaging patterns
-
-### Implementation and Correctness
-
-- `references/style.md` -- formatting, linting, naming, docstrings, and
-  style defaults
-- `references/types.md` -- type hints, generics, protocols, narrowing,
-  and checker guidance
-- `references/errors.md` -- boundary validation, exception design, and
-  partial failure handling
-- `references/design.md` -- KISS, SRP, composition, layering, and
-  dependency injection
-- `references/anti-patterns.md` -- review checklist for common Python mistakes
-
-### Runtime Behavior
-
-- `references/async.md` -- asyncio, concurrency, cancellation, and
-  non-blocking IO
-- `references/jobs.md` -- workers, queues, idempotency, and job
-  orchestration
-- `references/resources.md` -- context managers, cleanup, streaming,
-  and lifetime control
-- `references/resilience.md` -- retries, backoff, timeouts, and fault-tolerance
-  patterns
-- `references/observability.md` -- structured logging, metrics, tracing, and
-  production diagnostics, instrumentation, and logging bridges
-- `references/perf.md` -- profiling, benchmarking, and optimization
-  techniques
-
-### Testing
-
-- `references/tests.md` -- pytest patterns, fixtures, mocking, coverage, and
-  advanced testing workflows
+| Need                    | Ref                                      |
+| ----------------------- | ---------------------------------------- |
+| uv, deps, venv, Python  | `references/uv.md`                       |
+| package/module layout   | `references/structure.md`                |
+| env/settings/secrets    | `references/config.md`                   |
+| packaging/publishing    | `references/packaging.md`                |
+| style/ruff/naming       | `references/style.md`                    |
+| typing/protocols        | `references/types.md`                    |
+| validation/exceptions   | `references/errors.md`                   |
+| design/SRP/composition  | `references/design.md`                   |
+| anti-pattern review     | `references/anti-patterns.md`            |
+| asyncio/concurrency     | `references/async.md`                    |
+| jobs/workers/queues     | `references/jobs.md`                     |
+| resources/cleanup       | `references/resources.md`                |
+| retries/timeouts        | `references/resilience.md`               |
+| logs/metrics/tracing    | `references/observability.md`            |
+| profiling/perf          | `references/perf.md`                     |
+| pytest/testing          | `references/tests.md`                    |
 
 ## Assets
 
-Small real project shapes:
+- `assets/project/pyproject.toml`
+- `assets/project/src/myapp/main.py`
+- `assets/project/src/myapp/settings.py`
+- `assets/project/tests/test_main.py`
+- `assets/project/scripts/report.py`
 
-- `assets/project/pyproject.toml` -- repo-aligned Python toolchain config
-- `assets/project/src/myapp/main.py` -- a small application entrypoint
-- `assets/project/src/myapp/settings.py` -- typed settings example
-- `assets/project/tests/test_main.py` -- a matching test module
-- `assets/project/scripts/report.py` -- a standalone `uv` script example
+## Onboarding
 
-## Policy
-
-Keep this file lean and policy-level.
-
-- Here: onboarding, stack defaults, validation order, core defaults, debug workflow, build-fix order, review cues, FastAPI defaults.
-- Refs: tool-specific setup, long examples, advanced variants, framework-specific patterns.
-- Load one focused ref over growing this file.
-- Guidance for one theme goes in that theme's ref.
-
-## Project Onboarding
-
-Detect a Python project:
+Detect:
 
 ```bash
 ls pyproject.toml 2>/dev/null
 ```
 
-For this stack, `pyproject.toml` usually means a `uv`-managed Python project.
+Before edit:
 
-Before editing:
-
-1. verify toolchain
-2. identify validation entrypoints
-3. inspect layout, config, test setup
+1. verify tools
+2. find validation entrypoints
+3. inspect layout/config/tests
 4. check momentum: `git log --oneline -10`
 
-Check validation entrypoints in this order:
+Validation discovery order:
 
 1. task aliases in `pyproject.toml`
-2. direct `uv run` commands
-3. project README or scripts
-4. CI config if still unclear
-
-Primary refs: `references/uv.md`, `references/structure.md`,
-`references/config.md`, and `references/packaging.md`.
-
-## Map the Project
-
-Before changing: repo layout, architecture style, config loading, test location, recent commits.
+2. direct `uv run ...`
+3. README/scripts
+4. CI config
 
 ## Default Stack
 
-- language: Python 3.12+
-- package manager: `uv`
-- linter and formatter: `ruff`
-- type checker: `ty`
-- test runner: `pytest`
-- markdown lint: `rumdl`
-- token optimizer: `rtk`
+- Python 3.12+
+- `uv`
+- `ruff`
+- `ty`
+- `pytest`
+- `rumdl`
+- `rtk`
 
-## Validation Order
-
-Validate in order and fail fast:
+## Validation
 
 ```bash
 uv run ruff format --check .
@@ -124,7 +78,7 @@ uv run ty check
 uv run pytest -v
 ```
 
-If the project exposes task aliases, prefer them:
+Prefer task aliases when repo defines them:
 
 ```bash
 uv run task lint
@@ -133,10 +87,7 @@ uv run task test
 uv run task test-cov
 ```
 
-Primary refs: `references/style.md`, `references/types.md`, and
-`references/tests.md`.
-
-## Toolchain Verification
+Verify tools:
 
 ```bash
 uv --version
@@ -145,9 +96,7 @@ ty --version
 python --version
 ```
 
-## Install Dependencies
-
-Use the native package manager:
+Install deps:
 
 ```bash
 uv sync
@@ -155,142 +104,88 @@ uv sync
 
 ## Core Defaults
 
-Keep these as the default stance before loading deeper refs:
+- use `uv`, `uv run`, `uv add`; avoid direct `pip`
+- format with `ruff`
+- prefer `pathlib`, f-strings, absolute imports
+- type public APIs; use `Protocol` at boundaries; contain `Any`
+- externalize config/secrets with typed settings loaded at startup
+- validate external input at boundaries; convert raw payloads early
+- keep IO at edges; avoid leaking ORM/transport types
+- prefer composition/focused modules over clever abstractions
+- default sync unless real concurrent I/O pressure exists
+- keep async path async end-to-end when used
+- centralize retries, timeouts, cleanup
+- make background jobs idempotent and explicit about state/ownership
+- keep observability structured and outside core business logic
+- test behavior and boundaries; avoid framework-heavy tests when simple tests suffice
+- optimize only after measuring bottleneck
 
-- use `uv`, `uv run`, and `uv add`; avoid direct `pip` workflows -- see
-  `references/uv.md`
-- format with `ruff`, keep naming boring and descriptive, and prefer
-  `pathlib`, f-strings, and absolute imports -- see
-  `references/style.md`
-- type public APIs, use `Protocol` at boundaries, and keep `Any` contained --
-  see `references/types.md`
-- externalize config and secrets with typed settings loaded explicitly at
-  startup -- see `references/config.md`
-- validate external input at system boundaries and convert raw strings or
-  payloads into typed domain values early -- see
-  `references/errors.md`
-- keep IO at the edges, avoid leaking ORM or transport types, and prefer
-  composition and focused modules over clever abstractions -- see
-  `references/design.md` and `references/structure.md`
-- default to sync code unless there is real concurrent I/O pressure; when async
-  is needed, keep the call path async end-to-end -- see `references/async.md`
-- centralize retries, timeouts, and resource cleanup instead of scattering them
-  through business code -- see `references/resilience.md`,
-  `references/resources.md`, and `references/anti-patterns.md`
-- make background work idempotent and explicit about job state, retries, and
-  ownership boundaries -- see `references/jobs.md`
-- keep observability structured and separate from core business logic -- see
-  `references/observability.md`
-- test behavior, isolate boundaries, and prefer clear unit and integration
-  coverage over framework-heavy tests -- see `references/tests.md`
-- use `references/perf.md` only after measuring a real bottleneck; do
-  not optimize by guesswork
+## Build-Fix
 
-## Build-Fix Workflow
+Order:
 
-Fix failures in this order:
-
-1. formatting
+1. format
 2. lint
 3. markdown
 4. typing
 5. tests
 
-After each fix, re-run the failing check.
-Stop and report if the fix requires architectural change.
+After each fix, rerun failing check. Stop/report if fix needs architecture change.
 
-Primary refs: `references/style.md`, `references/types.md`,
-`references/tests.md`, and `references/uv.md`.
+Common fixes:
 
-## Common Build Fixes
+| Tool   | Signal                   | Fix                                  |
+| ------ | ------------------------ | ------------------------------------ |
+| ruff   | formatting/import/style  | format or remove/fix code            |
+| ty     | type/import mismatch     | fix type, import path, or dependency |
+| pytest | assertion/import/fixture | fix logic, path, or fixture          |
 
-| Tool        | Error Pattern             | Fix                                  |
-| ----------- | ------------------------- | ------------------------------------ |
-| ruff format | file would be reformatted | `uv run ruff format <file>`          |
-| ruff check  | import unused             | remove the import                    |
-| ruff check  | missing type annotation   | add annotation                       |
-| ty          | incompatible type         | fix type or add cast                 |
-| ty          | module not found          | add dependency or fix import path    |
-| pytest      | assertion error           | fix logic or update expected value   |
-| pytest      | import error              | fix module path or add `__init__.py` |
-| pytest      | fixture not found         | add `conftest.py`                    |
+## Debug
 
-## Common Debug Patterns
+1. reproduce exactly
+2. record env
+3. read traceback bottom-up
+4. inspect `git log --oneline -10` and `git diff`
+5. isolate boundary
+6. use `git bisect` if regression likely
+7. confirm fix with failing test/command
+8. remove temp debug/breakpoints
 
-| Symptom                 | Check                                       |
-| ----------------------- | ------------------------------------------- |
-| `TypeError`             | wrong type passed; check function signature |
-| `AttributeError`        | missing attribute; check object type        |
-| `ImportError`           | missing dependency or circular import       |
-| `KeyError`              | missing dict key; check input data shape    |
-| `TimeoutError`          | slow IO or infinite loop                    |
-| `ValidationError`       | Pydantic model mismatch; check payload      |
-| flaky test              | shared state, timing, or ordering issue     |
-| works locally, fails CI | env difference: deps, Python version, or OS |
+Rules: do not guess first; fix root cause; one hypothesis at time; do not silence with broad `try/except`; do not change tests to match bug.
 
-## Debugging Workflow
+## FastAPI Cues
 
-1. reproduce the failure exactly
-2. record environment details
-3. read the traceback from the bottom up
-4. inspect recent changes with `git log --oneline -10` and `git diff`
-5. isolate the failure boundary
-6. if regression is suspected, use `git bisect`
-7. confirm the fix with the failing test or command
-8. remove temporary debug statements and `breakpoint()` calls
-
-Rules:
-
-- do not guess before reproducing
-- fix the root cause, not only the symptom
-- prefer one hypothesis at a time
-- do not add broad `try/except` to silence errors
-- do not change tests to match broken behavior
-- do not mix bug fixes with refactoring
-
-Primary refs: `references/observability.md`, `references/perf.md`,
-`references/async.md`, and `references/anti-patterns.md`.
-
-## FastAPI Conventions
-
-Keep this section short and framework-adjacent. For async, validation, typing,
-and observability details, load `references/async.md`, `references/errors.md`,
-`references/types.md`, and
-`references/observability.md`.
-
-- prefer `Annotated` for `Path`, `Query`, `Header`, and `Depends`
-- create reusable dependency aliases when they simplify repeated signatures
-- do not use ellipsis `...` for required FastAPI or Pydantic fields
-- prefer explicit return types or `response_model` to validate and filter output
-- use router-level `prefix`, `tags`, and shared dependencies on the router itself
-- default to `def` rather than `async def` when internals may block
-- do not run blocking code inside async handlers
+- use `Annotated` for `Path`, `Query`, `Header`, `Depends`
+- reusable dependency aliases only when repeated signatures simplify
+- no ellipsis `...` for required FastAPI/Pydantic fields
+- explicit return type or `response_model`
+- router-level `prefix`, `tags`, dependencies
+- default `def` if internals may block
+- no blocking code inside async handlers
 - prefer HTTPX over Requests
-- do not use deprecated `ORJSONResponse` or `UJSONResponse` shortcuts as a performance crutch
-- do not use Pydantic `RootModel` when a normal typed structure is enough
+- no deprecated `ORJSONResponse`/`UJSONResponse` performance crutch
+- no `RootModel` when normal typed structure is enough
 
 ## Review Focus
 
-When reviewing Python changes, prioritize:
-
-- correctness: edge cases, error paths, race conditions
-- security: boundary validation, secrets, injection, auth checks
-- performance: blocking in async paths, N+1 queries, unbounded loops
+- correctness: edge cases, error paths, races
+- security: boundary validation, secrets, injection, auth
+- performance: blocking async, N+1, unbounded loops
 - maintainability: SRP, dead code, magic values, noisy comments
-- convention adherence: naming, style, and existing project patterns
+- conventions: naming, style, project patterns
 
-Skip trivial style feedback already enforced by tooling.
+Skip style already enforced by tools.
 
-## Refactoring Rules
+## Refactoring
 
-- preserve external behavior
-- do not sneak in feature work
-- do not rewrite stable code just because it looks old
-- reduce complexity only where readability or maintenance clearly improve
-- keep one logical change at a time
+- preserve behavior
+- no hidden feature work
+- do not rewrite stable code just because old
+- reduce complexity only with clear maintenance gain
+- one logical change at time
 
 ## Workflow Cues
 
-- if the work is mostly API contract shape, pair this with `design`
-- if the work is mostly architecture and boundaries, pair this with `arch`
-- if the work is test-first or failure-diagnosis focused, pair this with `quality`
+- API contract shape -> pair `design`
+- architecture/boundaries -> pair `arch`
+- test-first or failure diagnosis -> pair `quality`

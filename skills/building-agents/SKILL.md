@@ -5,960 +5,314 @@ description: Building tool-using LLM agents in Python -- runtime context, prompt
 
 # Building Tool-Using Agents in Python
 
-A field guide for building **LLM agents** — systems that reason over context, call tools, persist state, and act inside a bounded runtime.
+Use for agent runtime architecture: context collection, prompt shape, tool contracts, parsing, permissioning, context reduction, memory, delegation.
 
 ## Boundary
 
-Use this skill for agent runtime architecture: context collection, prompt
-shape, tool contracts, parsing, permissioning, context reduction, memory, and
-delegation.
-
-- pair with `python` for repo-specific Python implementation conventions and toolchain
-- pair with `arch` when the agent runtime must fit a broader system architecture or SDD
-- pair with `security` when tool risk, approval gates, trust boundaries, or threat modeling matter
-- pair with `quality` when adding eval loops, regression checks, or RCA after agent failures
-- pair with `docs` when the deliverable is a design doc or operational guide rather than the runtime itself
-
-This skill should own the harness and control loop. It should not become a
-grab-bag for every general Python, architecture, or security rule.
+- Pair with `python` for Python impl/toolchain.
+- Pair with `arch` when runtime must fit system architecture or SDD.
+- Pair with `security` for tool risk, approvals, trust boundaries, threat modeling.
+- Pair with `quality` for eval loops, regression checks, RCA after agent failures.
+- Pair with `docs` when deliverable is design/ops doc.
+- Own harness + control loop. Do not absorb generic Python/arch/security rules.
 
 ## Assets
 
-Use these when a repo-shaped example is more useful than another excerpt.
-
-- `assets/project/pyproject.toml` -- a small Python agent project setup
-- `assets/project/main.py` -- the app entrypoint for a simple agent runtime
-- `assets/project/agent.py` -- agent construction and result typing
-- `assets/project/tools.py` -- tool registration and implementations
-- `assets/project/session.py` -- session memory and transcript shaping
-- `assets/project/tests/test_agent.py` -- a small test surface for the runtime
-
-## The mental model
-
-An agent is a **runtime harness** around an LLM that does the practical work of:
-
-1. collecting relevant runtime context
-2. building a stable prompt
-3. exposing a closed set of tools the model can call
-4. validating and permissioning every action
-5. parsing the model's response into a structured intent
-6. managing context growth so the prompt does not explode
-7. persisting state between turns
-8. optionally delegating bounded work to subagents
-
-Model does one thing: emit a tool call or a final answer. Rest is harness. **"A lot of apparent model quality is really context quality."**
-
-The control flow is the classic **ReAct loop**:
-
-```text
-user input
-   │
-   ▼
-collect context
-   │
-   ▼
-build prompt
-   │
-   ▼
-call model
-   │
-   ▼
-parse response
-   │
-   ├──► tool call ──► validate ──► approve ──► execute ──► record ──┐
-   │                                                                 │
-   ├──► retry notice ──► record ──────────────────────────────────────┤
-   │                                                                 │
-   └──► final answer ──► record ──► return to user                   │
-                                                                     │
-   ◄─────────────────────────────────────────────────────────────────┘
-```
-
-Production-grade requires:
-
-- **Circuit breakers** — `max_steps` + `max_attempts`; no infinite loops.
-- **Self-healing parser** — malformed output returns a `retry` notice next turn; no crash.
-
----
-
-## The eight components
-
-### 1. Runtime context
-
-Agent never starts blind. Shape: immutable snapshot + `render()` for prompt text. Domain-specific fields vary.
-
-For a generic agent, runtime context may include:
-
-- current working directory
-- active task or user goal
-- user preferences
-- environment metadata (OS, time zone, locale)
-- available tools and connectors
-- relevant files, documents, or memories
-- recent activity summary
-
-For a **coding agent specifically**, it includes:
-
-- resolved repo root (`git rev-parse --show-toplevel`)
-- current branch and default branch
-- `git status` (short form) and recent commits
-- contents of anchor files: `templates/project/variants/AGENTS.base.md`,
-  project `AGENTS.*.md` variants, `README.md`, `pyproject.toml`, `package.json`
-
-**Generic implementation.** `dataclass(frozen=True, slots=True)`, `pathlib.Path`, `render()` returning prompt text.
-
-```python
-from __future__ import annotations
-
-from dataclasses import dataclass, field
-from pathlib import Path
-
-
-@dataclass(frozen=True, slots=True)
-class RuntimeContext:
-    cwd: Path
-    summary: str = ""
-    environment: dict[str, str] = field(default_factory=dict)
-    resources: dict[str, str] = field(default_factory=dict)
-
-    def render(self) -> str:
-        parts = [f"cwd: {self.cwd}"]
-        if self.summary:
-            parts.append(f"summary: {self.summary}")
-        if self.environment:
-            env = ", ".join(f"{k}={v}" for k, v in self.environment.items())
-            parts.append(f"environment: {env}")
-        if self.resources:
-            parts.append("resources:")
-            parts.extend(f"  - {k}: {v}" for k, v in self.resources.items())
-        return "\n".join(parts)
-```
-
-**Coding agent.** Same shape, more fields:
-
-```python
-import subprocess
-from dataclasses import dataclass, field
-from pathlib import Path
-
-ANCHOR_FILES = (
-    "templates/project/variants/AGENTS.base.md",
-    "README.md",
-    "pyproject.toml",
-    "package.json",
-)
-DOC_SNIPPET_LIMIT = 1200
-
-
-def _git(args: list[str], cwd: Path, fallback: str = "") -> str:
-    """Run git silently. Return stdout or fallback on any failure."""
-    try:
-        result = subprocess.run(
-            ["git", *args],
-            cwd=cwd,
-            capture_output=True,
-            text=True,
-            check=True,
-            timeout=5,
-        )
-    except (subprocess.SubprocessError, FileNotFoundError):
-        return fallback
-    return result.stdout.strip() or fallback
-
-
-@dataclass(frozen=True, slots=True)
-class WorkspaceContext:
-    cwd: Path
-    repo_root: Path
-    branch: str
-    status: str
-    recent_commits: tuple[str, ...]
-    project_docs: dict[str, str] = field(default_factory=dict)
-
-    @classmethod
-    def discover(cls, cwd: Path | str = ".") -> WorkspaceContext:
-        cwd = Path(cwd).resolve()
-        repo_root = Path(_git(["rev-parse", "--show-toplevel"], cwd, str(cwd))).resolve()
-
-        docs: dict[str, str] = {}
-        for name in ANCHOR_FILES:
-            path = repo_root / name
-            if path.is_file():
-                text = path.read_text(encoding="utf-8", errors="replace")
-                docs[name] = text[:DOC_SNIPPET_LIMIT]
-
-        return cls(
-            cwd=cwd,
-            repo_root=repo_root,
-            branch=_git(["branch", "--show-current"], cwd, "-"),
-            status=_git(["status", "--short"], cwd, "clean"),
-            recent_commits=tuple(_git(["log", "--oneline", "-5"], cwd).splitlines()),
-            project_docs=docs,
-        )
-
-    def render(self) -> str:
-        commits = "\n".join(f"  - {c}" for c in self.recent_commits) or "  - none"
-        docs = "\n".join(f"## {name}\n{body}" for name, body in self.project_docs.items())
-        return (
-            f"Workspace:\n"
-            f"  cwd: {self.cwd}\n"
-            f"  repo_root: {self.repo_root}\n"
-            f"  branch: {self.branch}\n"
-            f"  status:\n{self.status}\n"
-            f"  recent_commits:\n{commits}\n"
-            f"  project_docs:\n{docs}"
-        )
-```
-
----
-
-### 2. Prompt shape and cache reuse
-
-Sessions are repetitive. Stable parts (tools, rules, context) barely change. Rebuilding every turn wastes tokens and misses **prompt cache** hits (~10% savings on cache hits).
-
-Split prompt into _stable prefix_ and _volatile suffix_:
-
-```text
-┌─────────────────────────────────┐
-│  STABLE PREFIX (built once)     │
-│  - agent rules                  │
-│  - tool descriptions            │
-│  - role / operating mode        │
-│  - runtime context              │
-├─────────────────────────────────┤
-│  VOLATILE SUFFIX (every turn)   │
-│  - working memory               │
-│  - compacted transcript         │
-│  - current user message         │
-└─────────────────────────────────┘
-```
-
-**Implementation.**
-
-```python
-from textwrap import dedent
-
-AGENT_RULES = dedent("""\
-    You are an agent. Rules:
-    - Use tools instead of guessing about the world.
-    - Return exactly one <tool>...</tool> or one <final>...</final>.
-    - Never invent tool results.
-    - Required tool arguments must not be empty.
-    - Do not repeat the same tool call with the same arguments.
-""").strip()
-
-
-def build_stable_prefix(context: RuntimeContext, tools: dict[str, "Tool"]) -> str:
-    tool_lines = "\n".join(
-        f"- {name}({tool.signature}) [{tool.risk}] {tool.description}"
-        for name, tool in tools.items()
-    )
-    return f"{AGENT_RULES}\n\nTools:\n{tool_lines}\n\nContext:\n{context.render()}"
-
-
-def build_prompt(prefix: str, memory: str, transcript: str, user_message: str) -> str:
-    return (
-        f"{prefix}\n\n"
-        f"Memory:\n{memory}\n\n"
-        f"Transcript:\n{transcript}\n\n"
-        f"User: {user_message}"
-    )
-```
-
-The prefix is computed **once** in the agent's `__post_init__` and stored. Only `build_prompt` runs per turn. With Anthropic's API you would mark the prefix portion with `cache_control={"type": "ephemeral"}`; with OpenAI, identical prefixes are auto-cached.
-
----
-
-### 3. Structured tools
-
-Arbitrary commands are reckless. Expose a **closed set of named tools** with typed inputs, descriptions, and risk flags.
-
-**Generic tool examples** that show up in many domains:
-
-| Tool                                                            | Domain                           |
-| --------------------------------------------------------------- | -------------------------------- |
-| `read_file`, `write_file`, `patch_file`, `list_files`, `search` | coding, ops, research            |
-| `run_shell`                                                     | coding, ops                      |
-| `fetch_url`, `web_search`                                       | research, personal assistant     |
-| `query_memory`, `save_note`                                     | personal assistant, RAG          |
-| `create_task`, `list_tasks`, `complete_task`                    | personal assistant, project ops  |
-| `call_api`                                                      | automation, integration          |
-| `delegate`                                                      | every agent that needs subagents |
-
-`Tool` is a frozen dataclass + callable. Registry: `dict[str, Tool]`. No metaclass, no plugin system, no hierarchy. **Flat is better than nested.**
-
-```python
-from collections.abc import Callable
-from dataclasses import dataclass
-from typing import Any, Literal
-
-Risk = Literal["safe", "risky"]
-
-
-@dataclass(frozen=True, slots=True)
-class Tool:
-    name: str
-    description: str
-    signature: str   # human-readable, e.g. "path: str, start: int = 1"
-    risk: Risk
-    run: Callable[[dict[str, Any]], str]
-```
-
-Each tool is a function returning `Tool`. Closures capture resources (workspace, http client, db handle) — no globals.
-
-```python
-def make_read_file_tool(workspace: WorkspaceContext) -> Tool:
-    def run(args: dict[str, Any]) -> str:
-        path = safe_path(workspace.repo_root, args["path"])
-        start = int(args.get("start", 1))
-        end = int(args.get("end", 200))
-        lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
-        return "\n".join(
-            f"{i:>4}: {line}"
-            for i, line in enumerate(lines[start - 1 : end], start)
-        )
-
-    return Tool(
-        name="read_file",
-        description="Read a UTF-8 file by line range.",
-        signature="path: str, start: int = 1, end: int = 200",
-        risk="safe",
-        run=run,
-    )
-
-
-def make_fetch_url_tool(http_client: "HttpClient") -> Tool:
-    def run(args: dict[str, Any]) -> str:
-        return http_client.get(args["url"]).text[:5000]
-
-    return Tool(
-        name="fetch_url",
-        description="Fetch the contents of a URL.",
-        signature="url: str",
-        risk="safe",
-        run=run,
-    )
-
-
-tools: dict[str, Tool] = {
-    "read_file": make_read_file_tool(workspace),
-    "fetch_url": make_fetch_url_tool(http),
-    # ...
-}
-```
-
----
-
-### 4. Validation and permissions
-
-Model **suggests**; runtime **decides**. Most important distinction in safe agent design.
-
-**Validation should check:**
-
-- the tool exists
-- required arguments are present and non-empty
-- argument types and shapes are acceptable
+Use assets over inline examples when implementing:
+
+- `assets/project/pyproject.toml` -- Python agent project setup
+- `assets/project/main.py` -- entrypoint
+- `assets/project/agent.py` -- agent construction/result typing
+- `assets/project/tools.py` -- tool registry + implementations
+- `assets/project/session.py` -- memory/transcript shaping
+- `assets/project/tests/test_agent.py` -- runtime tests
+
+## Mental Model
+
+Agent = runtime harness around model. Model emits tool call or final answer; harness owns everything else.
+
+Core loop:
+
+1. collect runtime context
+2. build stable prompt
+3. call model
+4. parse response as tool/final/retry
+5. validate + approve tool call
+6. execute + record result
+7. reduce context/memory
+8. stop on final or circuit breaker
+
+Non-negotiables:
+
+- `max_steps` and `max_attempts`; no infinite loops.
+- Malformed output becomes retry notice; no crash.
+- Tool results are recorded before next model call.
+- Runtime decides; model only suggests.
+- Apparent model quality is often context quality.
+
+## Components
+
+| Component         | Contract                                                                   |
+| ----------------- | -------------------------------------------------------------------------- |
+| Runtime context   | immutable snapshot + `render()` prompt text                                |
+| Prompt shape      | stable prefix + volatile suffix; cache stable parts                        |
+| Tools             | closed registry of typed `Tool` objects                                    |
+| Validation        | check tool name, args, paths, domains, mutation risk, recursion/delegation |
+| Permissions       | `ASK` / `AUTO` / `NEVER`; risky tools require approval                     |
+| Parser            | one response = one tool call, one final answer, or retry                   |
+| Context reduction | clip tool output, dedupe old reads, summarize old transcript               |
+| Sessions          | append-only transcript + small working memory                              |
+| Delegation        | bounded read-only child agents with smaller step budget and depth limit    |
+
+## Runtime Context
+
+Default shape:
+
+- `dataclass(frozen=True, slots=True)`
+- `pathlib.Path`
+- domain fields only
+- `render() -> str`
+
+Coding context includes:
+
+- repo root: `git rev-parse --show-toplevel`
+- branch, short status, recent commits
+- selected anchor docs: `AGENTS*`, `README.md`, manifests
+- snippet limits for docs
+
+Use assets for concrete code.
+
+## Prompt Shape
+
+Split prompt:
+
+- stable prefix: rules, tools, operating mode, runtime context
+- volatile suffix: working memory, compact transcript, current user message
+
+Build stable prefix once. Cache if provider supports it; otherwise keep text identical for auto-cache hits.
+
+Prompt rules:
+
+- force exact output contract
+- tell model to use tools over guessing
+- forbid invented tool results
+- forbid repeated same tool call/args
+- require one `<tool>...</tool>` or one `<final>...</final>`
+
+## Tools
+
+Expose closed set of named tools. Avoid arbitrary command execution by default.
+
+Tool contract:
+
+- frozen dataclass
+- `name`
+- `description`
+- human-readable `signature`
+- `risk`: `safe` or `risky`
+- `run(args: dict[str, Any]) -> str`
+
+Common tools:
+
+- coding: `list_files`, `read_file`, `search`, `write_file`, `patch_file`, `run_shell`
+- research: `web_search`, `fetch_url`, `read_file`, `save_note`
+- assistant: `list_tasks`, `create_task`, `complete_task`, `query_memory`
+- ops: `query_logs`, `query_metrics`, `list_alerts`, `run_runbook`, `page_oncall`
+- all domains: `delegate`
+
+Flat registry beats plugin hierarchy until real extension pressure exists.
+
+## Validation and Permissions
+
+Validate before execution:
+
+- tool exists
+- required args present and non-empty
+- arg types/shapes acceptable
 - paths stay inside allowed roots
 - network calls hit allowed domains
-- mutations require approval if needed
-- recursion / delegation depth is bounded
+- risky mutations have approval
+- recursion/delegation depth bounded
 
-**The two non-negotiable safety primitives for any agent that touches a filesystem:**
+Filesystem invariant:
 
-**Path containment.** Most common bug in homebrew agents. Every filesystem op must verify the resolved path stays inside workspace.
+- resolve path
+- compare against workspace root with `Path.relative_to`
+- reject escapes
 
-```python
-from pathlib import Path
+Approval invariant:
 
+- `ASK`: ask human
+- `AUTO`: allow
+- `NEVER`: deny
 
-def safe_path(root: Path, raw: str) -> Path:
-    """Resolve `raw` against `root`. Raise if it escapes."""
-    candidate = Path(raw).resolve() if Path(raw).is_absolute() else (root / raw).resolve()
-    try:
-        candidate.relative_to(root)  # raises ValueError if outside
-    except ValueError as exc:
-        raise PermissionError(f"path escapes workspace: {raw}") from exc
-    return candidate
-```
+Dispatcher owns validation, approval, execution, error capture. Return errors as strings the model can see and correct next turn.
 
-`Path.relative_to` is the canonical check.
+## Parsing
 
-**Approval gating.** Use a `StrEnum`, not a callback hierarchy.
+Response contract: exactly one tool call or one final answer.
 
-```python
-from enum import StrEnum
+Supported formats:
 
+- JSON inside `<tool>` for simple args
+- XML attrs/body for multiline content
+- `<final>...</final>` for final answer
 
-class ApprovalPolicy(StrEnum):
-    ASK = "ask"
-    AUTO = "auto"
-    NEVER = "never"
+Parser returns tagged result:
 
+- `("tool", payload)`
+- `("final", text)`
+- `("retry", message)`
 
-def approve(name: str, args: dict[str, Any], policy: ApprovalPolicy) -> bool:
-    if policy is ApprovalPolicy.AUTO:
-        return True
-    if policy is ApprovalPolicy.NEVER:
-        return False
-    answer = input(f"approve {name} {args}? [y/N] ").strip().lower()
-    return answer in {"y", "yes"}
-```
+Retry message is recorded into next turn. This makes weak/malformed model output recoverable.
 
-**Dispatcher.** Validation + approval + execution + error capture in one place. Errors become strings the model sees — self-correct on next turn, no crash.
+## Context Reduction
 
-```python
-def run_tool(
-    name: str,
-    args: dict[str, Any],
-    tools: dict[str, Tool],
-    policy: ApprovalPolicy,
-) -> str:
-    tool = tools.get(name)
-    if tool is None:
-        return f"error: unknown tool {name!r}"
-    if tool.risk == "risky" and not approve(name, args, policy):
-        return f"error: approval denied for {name}"
-    try:
-        return clip(tool.run(args))
-    except (KeyError, ValueError, PermissionError) as exc:
-        return f"error: {name} failed: {exc}"
-```
+Context hygiene keeps agents alive after turn 8.
 
----
+Rules:
 
-### 5. Parsing model output
+- cap every tool output; mark truncation
+- preserve recent events at higher fidelity
+- compress older events aggressively
+- dedupe repeated old reads
+- keep working memory small and current
+- separate stable prefix from volatile history
 
-Contract: every response is _one tool call_ or _one final answer_.
+Suggested limits:
 
-Two viable formats:
+- tool output: ~4k chars
+- recent item: ~900 chars
+- old item: ~180 chars
+- full rendered history: ~12k chars
 
-- **JSON** inside `<tool>` tags — clean for simple args
-- **XML attributes with body** — necessary for multi-line content (escaping newlines in JSON is painful)
-
-```text
-<tool>{"name":"search","args":{"query":"latest python release"}}</tool>
-
-<tool name="write_file" path="hello.py"><content>
-print("hello world")
-</content></tool>
-
-<final>The latest Python release is 3.13.</final>
-```
-
-Regexes at module level, walrus operator for match-and-bind, tagged tuple for branching:
-
-```python
-import json
-import re
-from typing import Any, Literal
-
-ParseKind = Literal["tool", "final", "retry"]
-ParseResult = tuple[ParseKind, Any]
-
-_TOOL_RE = re.compile(r"<tool>(?P<body>.*?)</tool>", re.DOTALL)
-_FINAL_RE = re.compile(r"<final>(?P<body>.*?)</final>", re.DOTALL)
-
-
-def parse_response(raw: str) -> ParseResult:
-    if match := _TOOL_RE.search(raw):
-        try:
-            payload = json.loads(match.group("body"))
-        except json.JSONDecodeError:
-            return "retry", "tool block was not valid JSON"
-        if not isinstance(payload, dict) or "name" not in payload:
-            return "retry", "tool payload missing name"
-        return "tool", payload
-
-    if match := _FINAL_RE.search(raw):
-        return "final", match.group("body").strip()
-
-    return "retry", "no <tool> or <final> tag found"
-```
-
-**`retry` branch:** produces a message the model sees next turn — survives flaky models without crashing.
-
----
-
-### 6. Context reduction (defeating bloat)
-
-Most underrated component. Three large reads + test output = 80k token prompt. Agent intelligence is context hygiene.
-
-**Clipping.** Cap any single piece of text; mark truncation.
-
-```python
-MAX_TOOL_OUTPUT = 4000
-
-
-def clip(text: str, limit: int = MAX_TOOL_OUTPUT) -> str:
-    if len(text) <= limit:
-        return text
-    return f"{text[:limit]}\n...[truncated {len(text) - limit} chars]"
-```
-
-**Recency-weighted transcript.** Recent events: full fidelity. Older: aggressively compressed. Duplicate reads: dropped.
-
-```python
-from typing import Any
-
-RECENT_WINDOW = 6
-RECENT_LIMIT = 900
-OLD_LIMIT = 180
-MAX_HISTORY = 12_000
-
-
-def render_history(history: list[dict[str, Any]]) -> str:
-    if not history:
-        return "- empty"
-
-    seen_reads: set[str] = set()
-    recent_start = max(0, len(history) - RECENT_WINDOW)
-    lines: list[str] = []
-
-    for i, item in enumerate(history):
-        is_recent = i >= recent_start
-
-        # dedupe old read_file calls — they bloat fast
-        if not is_recent and item.get("tool") == "read_file":
-            path = str(item.get("args", {}).get("path", ""))
-            if path in seen_reads:
-                continue
-            seen_reads.add(path)
-
-        limit = RECENT_LIMIT if is_recent else OLD_LIMIT
-        lines.append(f"[{item['role']}] {clip(item['content'], limit)}")
-
-    return clip("\n".join(lines), MAX_HISTORY)
-```
-
-Separates agents that survive 30 turns from ones that derail at turn 8.
-
----
-
-### 7. Sessions and working memory
+## Sessions and Memory
 
 Two layers:
 
-- **Full transcript** — durable, append-only, disk JSON. For resume and prompt compaction.
-- **Working memory** — small, distilled, mutable. Current task + last few resources + notes. Goes into prompt each turn.
+- full transcript: durable append-only JSON for resume/compaction
+- working memory: small mutable prompt state
 
-Transcript = hard drive. Working memory = RAM.
+Working memory tracks:
 
-Dataclasses hold data; `SessionStore` handles persistence. No ORM — `Path.write_text` + JSON is enough.
+- current task
+- recent files/entities
+- decisions
+- short notes from recent tool results
 
-```python
-import json
-import uuid
-from dataclasses import asdict, dataclass, field
-from datetime import datetime, timezone
-from pathlib import Path
-from typing import Any
+Use `Path.write_text` + JSON first. Add database only after persistence pressure is real.
 
+## Delegation
 
-def utcnow() -> str:
-    return datetime.now(timezone.utc).isoformat()
+Delegation reduces main transcript noise and parallelizes bounded side work.
 
+Constraints:
 
-@dataclass(slots=True)
-class WorkingMemory:
-    task: str = ""
-    files: list[str] = field(default_factory=list)   # for coding agents
-    entities: list[str] = field(default_factory=list)  # for personal assistants
-    notes: list[str] = field(default_factory=list)
+- child is read-only by default
+- child approval policy = `NEVER`
+- `max_depth` small, usually `1`
+- child `max_steps` smaller than parent
+- pass summary of parent history, not whole transcript
+- expose narrower tool subset
 
-    def remember(self, bucket: list[str], item: str, limit: int) -> None:
-        if not item:
-            return
-        if item in bucket:
-            bucket.remove(item)
-        bucket.append(item)
-        del bucket[:-limit]
+Do not create `SubAgent` subclass unless responsibilities truly diverge. Same `Agent` class with stricter config is enough.
 
-    def render(self) -> str:
-        return (
-            f"task: {self.task or '-'}\n"
-            f"files: {', '.join(self.files) or '-'}\n"
-            f"entities: {', '.join(self.entities) or '-'}\n"
-            f"notes:\n" + ("\n".join(f"  - {n}" for n in self.notes) or "  - none")
-        )
+## Full Agent Loop
 
+`Agent.ask` should stay small:
 
-@dataclass(slots=True)
-class Session:
-    id: str = field(
-        default_factory=lambda: f"{datetime.now():%Y%m%d-%H%M%S}-{uuid.uuid4().hex[:6]}"
-    )
-    created_at: str = field(default_factory=utcnow)
-    history: list[dict[str, Any]] = field(default_factory=list)
-    memory: WorkingMemory = field(default_factory=WorkingMemory)
+1. record user message
+2. build prompt from stable prefix + memory + rendered history
+3. call model
+4. parse result
+5. on final: record + return
+6. on retry: record retry notice + continue
+7. on tool: dispatch, record tool result, update memory
+8. stop at step limit
 
-
-class SessionStore:
-    def __init__(self, root: Path) -> None:
-        self.root = root
-        self.root.mkdir(parents=True, exist_ok=True)
-
-    def _path(self, session_id: str) -> Path:
-        return self.root / f"{session_id}.json"
-
-    def save(self, session: Session) -> None:
-        self._path(session.id).write_text(
-            json.dumps(asdict(session), indent=2),
-            encoding="utf-8",
-        )
-
-    def load(self, session_id: str) -> Session:
-        data = json.loads(self._path(session_id).read_text(encoding="utf-8"))
-        memory = WorkingMemory(**data.pop("memory"))
-        return Session(memory=memory, **data)
-
-    def latest(self) -> str | None:
-        files = sorted(self.root.glob("*.json"), key=lambda p: p.stat().st_mtime)
-        return files[-1].stem if files else None
-```
-
-`asdict` handles JSON free. Use `pathlib`, not `os.path`.
-
----
-
-### 8. Bounded delegation
-
-Subagent keeps main transcript clean and parallelizes side queries. Unbounded subagents become the same problem twice.
-
-**Constraints:**
-
-- `read_only=True` — subagents cannot mutate state
-- `approval_policy=NEVER` — no human in the loop for the child
-- `max_depth` — children cannot recurse past a small limit (typically 1)
-- smaller `max_steps` — bounded work budget
-- a summary of the parent's history is passed in, but the child has its own `Session`
-- often, a narrower tool subset
+Use `ModelClient` `Protocol` with one method:
 
 ```python
-def delegate(parent: "Agent", task: str, max_steps: int = 3) -> str:
-    if parent.depth >= parent.max_depth:
-        raise PermissionError("delegate depth exceeded")
-
-    child = Agent(
-        model=parent.model,
-        tools=parent.read_only_tools(),
-        store=parent.store,
-        context=parent.context,
-        depth=parent.depth + 1,
-        max_depth=parent.max_depth,
-        max_steps=max_steps,
-        read_only=True,
-        approval_policy=ApprovalPolicy.NEVER,
-    )
-    child.session.memory.task = task
-    child.session.memory.notes = [clip(render_history(parent.session.history), 300)]
-    return f"delegate_result:\n{child.ask(task)}"
-```
-
-Same `Agent` class, recursive. **No `SubAgent` subclass.** Subagents reduce noise; not because they're smarter.
-
----
-
-## The full agent loop
-
-All components above feed into `Agent.ask` (~50 lines):
-
-```python
-from dataclasses import dataclass, field
-from typing import Any
-
-
-@dataclass
-class Agent:
-    model: "ModelClient"
-    tools: dict[str, Tool]
-    store: SessionStore
-    context: RuntimeContext
-    session: Session = field(default_factory=Session)
-    approval_policy: ApprovalPolicy = ApprovalPolicy.ASK
-    max_steps: int = 6
-    depth: int = 0
-    max_depth: int = 1
-    read_only: bool = False
-
-    def __post_init__(self) -> None:
-        self._prefix = build_stable_prefix(self.context, self.tools)
-
-    def ask(self, user_message: str) -> str:
-        if not self.session.memory.task:
-            self.session.memory.task = user_message[:300]
-        self._record({"role": "user", "content": user_message, "at": utcnow()})
-
-        for _ in range(self.max_steps):
-            prompt = build_prompt(
-                self._prefix,
-                self.session.memory.render(),
-                render_history(self.session.history),
-                user_message,
-            )
-            raw = self.model.complete(prompt)
-            kind, payload = parse_response(raw)
-
-            if kind == "final":
-                self._record({"role": "assistant", "content": payload, "at": utcnow()})
-                return payload
-
-            if kind == "retry":
-                self._record({
-                    "role": "assistant",
-                    "content": f"[retry] {payload}",
-                    "at": utcnow(),
-                })
-                continue
-
-            # tool call
-            result = run_tool(
-                payload["name"],
-                payload.get("args", {}),
-                self.tools,
-                self.approval_policy,
-            )
-            self._record({
-                "role": "tool",
-                "tool": payload["name"],
-                "args": payload.get("args", {}),
-                "content": result,
-                "at": utcnow(),
-            })
-            self._note_tool(payload["name"], payload.get("args", {}), result)
-
-        return "Stopped after reaching the step limit without a final answer."
-
-    def _record(self, item: dict[str, Any]) -> None:
-        self.session.history.append(item)
-        self.store.save(self.session)
-
-    def _note_tool(self, name: str, args: dict[str, Any], result: str) -> None:
-        if name in {"read_file", "write_file", "patch_file"} and "path" in args:
-            self.session.memory.remember(self.session.memory.files, str(args["path"]), 8)
-        snippet = clip(result.replace("\n", " "), 220)
-        self.session.memory.remember(self.session.memory.notes, f"{name}: {snippet}", 5)
-```
-
-That is the entire agent. Every other piece — `RuntimeContext`, `Tool`, `Session`, `parse_response` — is supporting it.
-
-`ModelClient` is a one-method `Protocol` — swap implementations (Ollama, Anthropic, OpenAI, OpenRouter, fake) without touching the agent:
-
-```python
-from typing import Protocol
-
-
 class ModelClient(Protocol):
     def complete(self, prompt: str, max_new_tokens: int = 512) -> str: ...
 ```
 
-`FakeModelClient` returns canned outputs from a list — the right test pattern.
+Test loop with `FakeModelClient` returning canned outputs.
 
----
+## Specialization Recipes
 
----
+| Agent              | Context                                     | First Tools                                    | Memory                            |
+| ------------------ | ------------------------------------------- | ---------------------------------------------- | --------------------------------- |
+| Coding             | `WorkspaceContext`, git state, anchor docs  | files, search, patch/write, shell, delegate    | task, last files, tool notes      |
+| Research           | question, deadline, constraints             | search, fetch, read, save/list notes, delegate | sources, hypotheses, subquestions |
+| Personal assistant | user, time zone, calendar/tasks handles     | tasks, memory, notes, calendar, web            | goal, entities, decisions         |
+| Ops/support        | connected systems, on-call, active incident | logs, metrics, alerts, runbook, page, status   | incident state, actions, evidence |
 
-## Specialization recipes
+Risky prod tools use approval.
 
-Specialization for common domains — thin layer on top of the base agent:
+## Project Layout
 
-### Coding agent
-
-Use `WorkspaceContext` (git-aware; component 1).
-
-**Tools to implement first:**
-
-```python
-tools = {
-    "list_files":  make_list_files_tool(workspace),
-    "read_file":   make_read_file_tool(workspace),
-    "search":      make_search_tool(workspace),     # ripgrep with fallback
-    "write_file":  make_write_file_tool(workspace), # risky
-    "patch_file":  make_patch_file_tool(workspace), # risky, exact-string replace
-    "run_shell":   make_run_shell_tool(workspace),  # risky, with timeout
-    "delegate":    make_delegate_tool(),
-}
-```
-
-Memory: task, last 8 files, 5 tool notes. Reference: `rasbt/mini-coding-agent`.
-
-### Research agent
-
-**`RuntimeContext` holds** the user's question, the deadline, and known constraints.
-
-**Tools to implement first:**
-
-```python
-tools = {
-    "web_search":    make_web_search_tool(http),
-    "fetch_url":     make_fetch_url_tool(http),
-    "read_file":     make_read_file_tool(workspace),
-    "save_note":     make_save_note_tool(notes_dir),
-    "list_notes":    make_list_notes_tool(notes_dir),
-    "delegate":      make_delegate_tool(),
-}
-```
-
-Memory: question, hypothesis, sources, open subquestions. Dedupe URLs in `render_history`.
-
-### Personal assistant
-
-**`RuntimeContext` holds** the user's name, time zone, calendar handle, task list handle, and recent activity summary.
-
-**Tools to implement first:**
-
-```python
-tools = {
-    "list_tasks":    make_list_tasks_tool(tasks),
-    "create_task":   make_create_task_tool(tasks),    # risky
-    "complete_task": make_complete_task_tool(tasks),  # risky
-    "query_memory":  make_query_memory_tool(memory_db),
-    "save_note":     make_save_note_tool(notes_dir),
-    "fetch_calendar": make_fetch_calendar_tool(cal),
-    "web_search":    make_web_search_tool(http),
-}
-```
-
-Memory: goal, recent entities, decisions. Long-term memory: separate store outside session JSON.
-
-### Ops / support agent
-
-**`RuntimeContext` holds** the connected systems, the on-call schedule, and the active incident if any.
-
-**Tools to implement first:**
-
-```python
-tools = {
-    "query_logs":    make_query_logs_tool(loki),
-    "query_metrics": make_query_metrics_tool(prom),
-    "list_alerts":   make_list_alerts_tool(alertmanager),
-    "run_runbook":   make_run_runbook_tool(runbooks),  # risky
-    "page_oncall":   make_page_oncall_tool(pager),     # risky
-    "post_status":   make_post_status_tool(slack),     # risky
-}
-```
-
-Approval policy: `ASK` for risky tools in production.
-
-Same loop, parser, memory. Specialization = which tools + which context fields.
-
----
-
-## Suggested project layout
-
-`mini_coding_agent.py` is ~1000 lines on purpose: teaching material. Split for real work.
-
-**Generic agent runtime:**
+Generic runtime:
 
 ```text
 src/agent_runtime/
-├── __init__.py
-├── cli.py              # argparse + REPL
-├── agent.py            # the Agent class and ask() loop
-├── context.py          # RuntimeContext (specializable)
-├── prompt.py           # build_stable_prefix, build_prompt, AGENT_RULES
-├── parser.py           # parse_response, ParseKind types
-├── compaction.py       # clip, render_history
-├── permissions.py      # safe_path, approve, ApprovalPolicy
-├── session.py          # Session, WorkingMemory, SessionStore
+├── agent.py
+├── context.py
+├── prompt.py
+├── parser.py
+├── compaction.py
+├── permissions.py
+├── session.py
 ├── models/
-│   ├── base.py         # ModelClient Protocol
-│   ├── fake.py         # FakeModelClient for tests
-│   ├── ollama.py
-│   ├── anthropic.py    # native tool use
-│   ├── openai.py
-│   └── openrouter.py
 └── tools/
-    ├── base.py         # Tool dataclass, Risk type
-    ├── fs.py           # read_file, write_file, patch_file, list_files
-    ├── search.py       # ripgrep wrapper with fallback
-    ├── shell.py        # run_shell with timeout
-    ├── web.py          # fetch_url, web_search
-    ├── memory.py       # query_memory, save_note
-    ├── tasks.py        # create_task, list_tasks, complete_task
-    └── delegate.py     # bounded subagent spawner
 tests/
-    test_parser.py
-    test_permissions.py
-    test_compaction.py
-    test_loop.py        # uses FakeModelClient
 ```
 
-**Specialization** lives in a thin layer on top:
+Specializations stay thin:
 
 ```text
 src/coding_agent/
-├── workspace.py        # WorkspaceContext (git-aware)
-├── tools.py            # registry assembling fs/search/shell tools
-└── cli.py              # entrypoint that wires it together
-
-src/personal_assistant/
-├── context.py          # PersonalContext (calendar, time zone, prefs)
-├── tools.py            # registry assembling memory/tasks/web tools
+├── workspace.py
+├── tools.py
 └── cli.py
 ```
 
-Runtime shared. Specializations ~200 lines each. (`pi-mono` pattern: separate provider, runtime, domain.)
+Runtime shared. Domain layer chooses tools/context.
 
----
+## Build Order
 
-## What to build first, what to defer
+Build v1:
 
-### Build now (v1)
+- runtime/specialized context
+- JSON `SessionStore`
+- `WorkingMemory`
+- parser: tool/final/retry/empty
+- core domain tools
+- `safe_path` if touching files
+- approval policy
+- recency-weighted history
+- one read-only delegated child
+- fake model + pytest tests
 
-- `RuntimeContext` (or specialized variant)
-- `SessionStore` writing JSON
-- `WorkingMemory` with LRU helpers
-- The four-way parser (`tool` / `final` / `retry` / empty)
-- A handful of core tools for your domain
-- `safe_path` containment check (if touching files)
-- `ApprovalPolicy` with `ask` / `auto` / `never`
-- Recency-weighted `render_history`
-- One read-only delegated subagent
-- A `FakeModelClient` and pytest tests for the loop
+Defer:
 
-That is a real agent. Stop here, use it for two weeks, then iterate.
-
-### Defer (v2 and beyond)
-
-- Persistent agent teams
-- Background tasks
-- Worktree isolation per task
-- Web UI / Slack / Discord bridges
-- Automatic risk classification
-- Skill loading from directories
-- Full MCP server with discovery and OAuth
-- Streaming tool output
-- Multi-model routing
-- Workflow planner / executor split
-- Stateful long-horizon orchestration
-
-Later layers in `pi-mono` and `learn-coding-agent`. Core loop first — add these after it's solid.
-
----
+- persistent agent teams
+- background tasks
+- per-task worktrees
+- web/Slack/Discord bridges
+- automatic risk classification
+- directory skill loading
+- full MCP server/OAuth
+- streaming tool output
+- multi-model routing
+- planner/executor split
+- long-horizon orchestration
 
 ## References
 
-The original sources this skill is built from:
-
-- **Sebastian Raschka — _Components of A Coding Agent_** (the foundational article that defines the framing)
-  [https://magazine.sebastianraschka.com/p/components-of-a-coding-agent](https://magazine.sebastianraschka.com/p/components-of-a-coding-agent)
-
-- **Sebastian Raschka — video walkthrough**
-  [https://www.youtube.com/watch?v=SQm3-NpOvJU&t=1098s](https://www.youtube.com/watch?v=SQm3-NpOvJU&t=1098s)
-
-- **`rasbt/mini-coding-agent`** — the canonical ≈1000-line reference implementation in pure stdlib Python; the components in this skill map directly onto its code comments
-  [https://github.com/rasbt/mini-coding-agent](https://github.com/rasbt/mini-coding-agent)
-  [https://github.com/rasbt/mini-coding-agent/blob/main/mini_coding_agent.py](https://github.com/rasbt/mini-coding-agent/blob/main/mini_coding_agent.py)
-
-- **`badlogic/pi-mono`** — production-grade modularization (unified LLM API, agent core, CLI, TUI, web UI, Slack bot, vLLM pods); the model for splitting a monolithic agent into reusable packages
-  [https://github.com/badlogic/pi-mono/tree/main](https://github.com/badlogic/pi-mono/tree/main)
-
-- **`sanbuphy/learn-coding-agent`** — research on Claude-Code-style architecture; documents the 12 progressive mechanisms beyond the basic loop (planning, knowledge on demand, background tasks, worktree isolation, etc.)
-  [https://github.com/sanbuphy/learn-coding-agent](https://github.com/sanbuphy/learn-coding-agent)
-
-- **`Leonxlnx/agentic-ai-prompt-research`** — reconstructed prompt patterns, agent coordination, and security classification from commercial agents; the source for _how_ the big systems write their system prompts
-  [https://github.com/Leonxlnx/agentic-ai-prompt-research](https://github.com/Leonxlnx/agentic-ai-prompt-research)
-
-- **The Zen of Python** — `python -c "import this"`
-
-The recommended reading order is: Raschka's article first (mental model), then `mini-coding-agent` source (concrete reference), then `pi-mono` (modularization), then the prompt-research repo (how the commercial agents actually phrase things).
+- Raschka, _Components of Coding Agent_: <https://magazine.sebastianraschka.com/p/components-of-a-coding-agent>
+- `rasbt/mini-coding-agent`: <https://github.com/rasbt/mini-coding-agent>
+- `badlogic/pi-mono`: <https://github.com/badlogic/pi-mono/tree/main>
+- `sanbuphy/learn-coding-agent`: <https://github.com/sanbuphy/learn-coding-agent>
+- `Leonxlnx/agentic-ai-prompt-research`: <https://github.com/Leonxlnx/agentic-ai-prompt-research>
+- Zen of Python: `python -c "import this"`

@@ -16,7 +16,7 @@ Use for:
 - rebasing and syncing feature branches
 - bisecting regressions
 - stashing and worktrees
-- tags and release-oriented git operations
+- tags and release-oriented git ops
 
 Pair with:
 
@@ -31,7 +31,7 @@ Pair with:
 - do not push unless explicitly asked
 - do not skip hooks with `--no-verify`
 - do not use destructive resets or cleanup commands casually
-- do not delete a dirty worktree without warning
+- do not delete dirty worktree without warning
 
 ## Common workflow
 
@@ -50,20 +50,20 @@ Prefer short-lived feature branches and reviewable PRs.
 PR checklist:
 
 - title is conventional commit style summary
-- description explains the WHY
-- validation passes for changed surface
+- description explains WHY
+- valid passes for changed surface
 - no secrets or unrelated changes included
 
 Draft PRs appropriate for early feedback on incomplete work.
 
 ## Rebase vs merge
 
-| Scenario                  | Preferred action      |
-| ------------------------- | --------------------- |
-| update a feature branch   | `git rebase`          |
-| merge a completed PR      | squash merge          |
-| preserve explicit history | merge commit          |
-| isolate a regression      | `git bisect`          |
+| Scenario                  | Preferred action |
+| ------------------------- | ---------------- |
+| update feature branch     | `git rebase`     |
+| merge completed PR        | squash merge     |
+| preserve explicit history | merge commit     |
+| isolate regression        | `git bisect`     |
 
 ### Rebase pattern
 
@@ -116,7 +116,7 @@ Use annotated tags for releases:
 git tag -a v1.2.0 -m "release 1.2.0"
 ```
 
-Create tags only after validation passes and only when release intent is clear.
+Create tags only after valid passes and only when release intent is clear.
 
 ## Worktrees
 

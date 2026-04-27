@@ -1,6 +1,6 @@
 # SDD
 
-Use when work needs system design doc before or during implementation.
+Use when work needs system design doc before or during impl.
 
 ## When to Use
 
@@ -15,7 +15,7 @@ Use when work needs system design doc before or during implementation.
 2. capture current state and change trigger
 3. list realistic design options
 4. choose one direction with explicit trade-offs
-5. define rollout, validation, and fallback
+5. define rollout, valid, and fallback
 
 ## Core Sections
 
@@ -65,7 +65,7 @@ Spell out boundaries concretely:
 
 Prefer incremental rollout over one-shot cutovers.
 
-- phase change when possible
+- phase change where possible
 - include migration or compatibility notes
 - define how each phase validated
 - define rollback or containment plan for risky changes
@@ -77,7 +77,7 @@ Prefer incremental rollout over one-shot cutovers.
 - call out trade-offs explicitly
 - keep rollout incremental and verifiable
 - document why one option chosen over nearby alternatives
-- make risk and validation as explicit as design itself
+- make risk and valid as explicit as design itself
 
 ## Good Outputs
 
@@ -91,5 +91,5 @@ Prefer incremental rollout over one-shot cutovers.
 - writing architecture prose without naming decision
 - documenting only chosen option and hiding alternatives
 - treating SDD like speculative future roadmap
-- skipping rollout and validation because design "seems obvious"
+- skipping rollout and valid because design "seems obvious"
 - turning SDD into impl notes that will instantly drift

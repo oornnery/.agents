@@ -5,7 +5,7 @@ description: Documentation patterns for Markdown structure, README shape, ADRs, 
 
 # Docs
 
-Use this skill when improving project documentation, not only writing prose.
+Use when improving project docs, not only writing prose.
 
 ## Boundary
 
@@ -13,11 +13,11 @@ Use this skill for document structure, readability, docs workflows, ADRs,
 changelogs, and Markdown quality.
 
 - pair with `python` when doc work is mainly docstrings or Python usage docs
-- pair with `arch` when document is an ADR or SDD about boundaries and rollout
+- pair with `arch` when document is ADR or SDD about boundaries and rollout
 - pair with `design` when documenting API contracts or UI decisions
 
-This skill shapes the documentation artifact itself, not replaces domain-specific
-guidance of the other skills.
+This skill shapes docs artifact itself, not replaces domain-specific
+guidance of other skills.
 
 ## Core Workflow
 
@@ -65,7 +65,7 @@ Use ADRs for meaningful technical decisions.
 
 - create for major architecture, storage, integration, or versioning choices
 - number sequentially
-- deprecate or supersede old ADRs instead of deleting
+- deprecate or supersede old ADRs over deleting
 
 ## Changelogs
 
@@ -85,7 +85,7 @@ Write entries as work happens; do not reconstruct whole release from memory late
 ### Headings
 
 - start with one `#` title
-- increase heading depth one level at a time
+- increase heading depth one level at time
 - keep headings short and descriptive
 - avoid empty sections and one-line stub headings
 
@@ -93,7 +93,7 @@ Write entries as work happens; do not reconstruct whole release from memory late
 
 - prefer short paragraphs over dense walls of text
 - use bullets for enumerations, commands, and checklists
-- keep bullet phrasing parallel when possible
+- keep bullet phrasing parallel where possible
 - avoid deep nesting unless hierarchy essential
 
 ### Code Blocks
@@ -107,18 +107,18 @@ Write entries as work happens; do not reconstruct whole release from memory late
 
 - use descriptive link text
 - use tables only when matrix genuinely compact
-- prefer sections or bullets when explanations longer than a phrase
+- prefer sections or bullets when explanations longer than phrase
 
 ### Readability
 
 - prefer explicit names over shorthand
 - preserve local style unless it harms readability or lint compliance
-- delete duplicated guidance instead of maintaining two versions
+- delete duplicated guidance over maintaining two versions
 
 ## Docstrings
 
 Document non-obvious behavior, invariants, constraints, and side effects.
-Do not restate the signature.
+Do not restate signature.
 
 - always: public library APIs
 - usually: complex business logic or tricky algorithms
@@ -134,7 +134,7 @@ Do not restate the signature.
 | `classDiagram`    | domain models and responsibilities       |
 | `stateDiagram`    | workflows and explicit state transitions |
 
-Keep diagrams small, focused, and close to the part of the system they explain.
+Keep diagrams small, focused, and close to part of system they explain.
 
 ## Auto-Generated Docs
 
@@ -181,6 +181,6 @@ style = "aligned"
 ## Rules of Thumb
 
 - keep top-level docs focused; move detail to focused docs when needed
-- document decisions, not just usage
+- document decisions, not usage
 - examples beat abstract explanation
 - if doc is hard to scan, it will not get used

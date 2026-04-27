@@ -2,7 +2,7 @@
 
 ## Scope
 
-- Web application with authenticated users
+- Web app with authenticated users
 - Background worker for asynchronous jobs
 - Third-party payment provider
 
@@ -22,15 +22,15 @@
 
 ## Trust Boundaries
 
-- browser -> application
-- application -> database
-- application -> third-party payment API
+- browser -> app
+- app -> database
+- app -> third-party payment API
 - tenant -> tenant
 
 ## Threats
 
 - broken object authorization on payment records
-- forged webhooks without signature validation
+- forged webhooks without signature valid
 - stored XSS in rich text notes
 - file upload abuse and path traversal
 
@@ -38,7 +38,7 @@
 
 - signed webhook verification
 - per-object authorization checks
-- server-side validation and escaping
+- server-side valid and escaping
 - upload size and type restrictions
 
 ## Residual Risk

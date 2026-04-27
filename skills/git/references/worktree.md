@@ -53,7 +53,7 @@ git worktree remove ../my-app-verify
 
 ### Parallel agent work
 
-Use worktree when two agents need different branches or review/verification must stay isolated from implementation tree.
+Use worktree when two agents need different branches or review/verification must stay isolated from impl tree.
 
 ## Caveats
 

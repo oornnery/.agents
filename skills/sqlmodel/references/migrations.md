@@ -1,6 +1,6 @@
 # SQLModel and Alembic Migrations
 
-Use when changing schema, backfilling data, or preparing production-safe migrations.
+Use when changing schema, backfilling data, or preparing prod-safe migrations.
 
 ## Setup
 
@@ -124,7 +124,7 @@ Rules:
 - one logical reshape per migration
 - document irreversible transforms
 - avoid hidden assumptions about row count or data cleanliness
-- test data migrations against realistic staging data when possible
+- test data migrations against realistic staging data where possible
 
 ## Best Practices
 
@@ -133,13 +133,13 @@ Rules:
 - test upgrade and downgrade when feasible
 - use descriptive migration names
 - never edit applied migrations in place
-- stage complex migrations instead of doing everything in one step
+- stage complex migrations over doing everything in one step
 
 ## Rollback Strategy
 
 - keep downgrades honest; if rollback is unsafe or destructive, say so plainly
 - test downgrade paths on staging or disposable databases
-- use snapshot or backup strategy before risky production changes
+- use snapshot or backup strategy before risky prod changes
 
 ## Production Workflow
 
@@ -147,34 +147,34 @@ Rules:
 
 1. modify models
 2. generate migration
-3. review generated SQL and operations
+3. review generated SQL and ops
 4. test upgrade and downgrade
-5. commit the migration
+5. commit migration
 
 ### Staging
 
-1. deploy application code
+1. deploy app code
 2. run `uv run alembic upgrade head`
 3. verify schema and data integrity
 4. test critical app paths
 
 ### Production
 
-1. back up the database
-2. deploy in a controlled window when required
+1. back up database
+2. deploy in controlled window when required
 3. run `uv run alembic upgrade head`
-4. monitor logs, metrics, and application behavior
+4. monitor logs, metrics, and app behavior
 5. verify critical flows
 
 ## Zero-Downtime Pattern
 
-For large tables or production-sensitive changes:
+For large tables or prod-sensitive changes:
 
 1. add new column as nullable
 2. deploy code that writes both old and new fields
 3. backfill existing rows
 4. make new column required
-5. deploy code that reads the new field
+5. deploy code that reads new field
 6. drop old field only after new path is stable
 
 ## Troubleshooting
@@ -193,9 +193,9 @@ uv run alembic current
 
 Then either:
 
-- fix the migration and rerun
+- fix migration and rerun
 - downgrade and retry
-- or stamp only when you fully understand the current schema state
+- or stamp only when you fully understand current schema state
 
 ### Async Setup Drift
 
@@ -203,7 +203,7 @@ If app is async but migrations are misconfigured, verify:
 
 - `-t async` was used when initializing Alembic
 - database URL uses async driver where expected
-- migration environment matches the app's metadata imports
+- migration env matches app's metadata imports
 
 ## Checklist
 
@@ -213,4 +213,4 @@ If app is async but migrations are misconfigured, verify:
 - [ ] data migrations are explicit
 - [ ] upgrade path is tested
 - [ ] downgrade path is tested or honestly limited
-- [ ] production rollout plan matches the blast radius
+- [ ] prod rollout plan matches blast radius

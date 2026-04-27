@@ -77,7 +77,7 @@ Prefer lazy when:
 
 - do not reach for `map_elements()` when expression exists
 - do not materialize intermediate frames unless needed
-- do not load full CSVs eagerly just to filter immediately
+- do not load full CSVs eagerly to filter immediately
 - do not leave string columns as generic text if categorical or temporal types more correct
 - do not guess about bottlenecks; inspect plans and measure first
 

@@ -13,7 +13,6 @@ class MyApp(App):
         ("q", "quit", "Quit"),
         ("ctrl+s", "save", "Save"),
     ]
-
     def action_save(self) -> None:
         self.notify("Saved")
 ```
@@ -35,11 +34,11 @@ Check:
 - where focus starts
 - how focus moves with `tab` and arrow keys
 - whether dialogs and menus keep focus inside active surface when needed
-- whether `escape` closes the right surface
+- whether `escape` closes right surface
 
 ## Mouse and Keyboard Events
 
-Use direct event handlers when bindings aren't the right abstraction:
+Use direct event handlers when bindings aren't right abstraction:
 
 - clicks on custom widgets
 - hover states
@@ -56,14 +55,14 @@ For focused widgets, prefer widget-specific handlers over one giant global `on_k
 
 - focus first field on open
 - submit with enter when appropriate
-- show validation near field or form summary
+- show valid near field or form summary
 - keep status feedback visible
 
 ### Dialog
 
 - open with clear action
 - close with `escape`
-- return focus to invoking control when possible
+- return focus to invoking control where possible
 - keep confirm and cancel paths explicit
 
 ### Menu or Drawer

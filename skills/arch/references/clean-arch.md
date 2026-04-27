@@ -8,27 +8,27 @@ Dependencies point inward. Core business model unaware of frameworks, databases,
 
 ## Layer Responsibilities
 
-| Layer          | Responsibilities                                                                           | Dependency Rule                              |
-| -------------- | ------------------------------------------------------------------------------------------ | -------------------------------------------- |
-| Domain         | entities, value objects, aggregates, domain services, repository interfaces, domain events | depends on nothing outside the domain        |
-| Application    | use case orchestration, handlers, DTOs, transactions                                       | depends on domain only                       |
-| Infrastructure | repository implementations, API clients, storage, queues, framework wiring                 | depends on application and domain contracts  |
-| Presentation   | routes, CLI commands, handlers, request/response schemas, auth middleware                  | depends on application and selected adapters |
+| Layer          | Responsibilities                                                                           | Dependency Rule                      |
+| -------------- | ------------------------------------------------------------------------------------------ | ------------------------------------ |
+| Domain         | entities, value objects, aggregates, domain services, repository interfaces, domain events | depends on nothing outside domain    |
+| App            | use case orchestration, handlers, DTOs, transactions                                       | depends on domain only               |
+| Infrastructure | repository implementations, API clients, storage, queues, framework wiring                 | depends on app and domain contracts  |
+| Presentation   | routes, CLI commands, handlers, request/response schemas, auth middleware                  | depends on app and selected adapters |
 
 ## Vocabulary
 
 - **Clean Architecture** emphasizes inner vs outer circles
-- **Onion Architecture** emphasizes concentric layers around the domain
+- **Onion Architecture** emphasizes concentric layers around domain
 - **Hexagonal Architecture** emphasizes ports and adapters
 
 Variations of same idea. Do not over-optimize naming.
 
 ## Ports and Adapters
 
-- **Port** = interface owned by the application core
-- **Primary adapter** = drives the app, such as HTTP, CLI, tests
-- **Secondary adapter** = is driven by the app, such as SQL, Redis, external APIs
-- use `Protocol` or equivalent abstractions at the boundary
+- **Port** = interface owned by app core
+- **Primary adapter** = drives app, such as HTTP, CLI, tests
+- **Secondary adapter** = is driven by app, such as SQL, Redis, external APIs
+- use `Protocol` or equivalent abstractions at boundary
 
 ## Directory Shape
 
@@ -46,7 +46,7 @@ Use only if it clarifies codebase. Do not force large directory split on tiny pr
 
 Wire implementations to abstractions at entrypoint:
 
-- application startup
+- app startup
 - main module
 - dependency injection container
 - route dependency factory
@@ -58,15 +58,15 @@ Only place that knows about all layers at once.
 | Layer          | Preferred Tests                                 |
 | -------------- | ----------------------------------------------- |
 | Domain         | unit tests for business behavior and invariants |
-| Application    | unit or integration tests with fake adapters    |
-| Infrastructure | integration tests against the real dependency   |
+| App            | unit or integration tests with fake adapters    |
+| Infrastructure | integration tests against real dependency       |
 | Presentation   | contract or end-to-end tests                    |
 
 ## Common Violations
 
 - domain imports ORM, HTTP, or framework types
 - route handlers contain business logic
-- services return ORM rows instead of domain objects or DTOs
+- services return ORM rows over domain objects or DTOs
 - infrastructure is called directly from domain code
 - circular imports reveal broken dependency direction
 

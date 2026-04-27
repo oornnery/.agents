@@ -11,22 +11,22 @@ Keep `arch` as single entrypoint. Load only relevant reference file for problem 
 
 ## Pick the Right Reference
 
-| If the problem is mainly about...          | Read                                |
-| ------------------------------------------ | ----------------------------------- |
-| domain language, invariants, model clarity | `references/ddd.md`                 |
-| layers, dependency direction, adapters     | `references/clean-arch.md`          |
-| responsibilities and abstractions          | `references/solid.md`               |
-| recurring implementation shapes            | `references/patterns.md`            |
-| system design decisions and rollout shape  | `references/sdd.md`                 |
-| more than one of the above                 | start with one, then read the next  |
+| If problem is mainly about...              | Read                           |
+| ------------------------------------------ | ------------------------------ |
+| domain language, invariants, model clarity | `references/ddd.md`            |
+| layers, dependency direction, adapters     | `references/clean-arch.md`     |
+| responsibilities and abstractions          | `references/solid.md`          |
+| recurring impl shapes                      | `references/patterns.md`       |
+| system design decisions and rollout shape  | `references/sdd.md`            |
+| more than one of above                     | start with one, then read next |
 
 ## Shared Rules
 
 - keep business rules explicit and testable
-- push IO and framework details to the edges
+- push IO and framework details to edges
 - prefer composition before deep inheritance trees
 - add abstractions only when they reduce real duplication or coupling
-- choose the simplest structure that preserves clarity
+- choose simplest structure that preserves clarity
 
 ## Quick Checks
 
@@ -34,7 +34,7 @@ Keep `arch` as single entrypoint. Load only relevant reference file for problem 
 - layers leaking into each other -> read `references/clean-arch.md`
 - one module doing too much -> read `references/solid.md`
 - need repeatable shape for recurring problem -> read `references/patterns.md`
-- need capture system design before implementation -> read `references/sdd.md`
+- need capture system design before impl -> read `references/sdd.md`
 
 ## Workflow
 

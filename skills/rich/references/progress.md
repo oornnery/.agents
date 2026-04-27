@@ -2,7 +2,7 @@
 
 ## Status
 
-Use `console.status()` for short-lived feedback around one operation:
+Use `console.status()` for short-lived feedback around one op:
 
 ```python
 with console.status('Loading data...'):

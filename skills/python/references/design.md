@@ -6,7 +6,7 @@ Write maintainable Python code using fundamental design principles. Patterns bui
 
 - Designing new components or services
 - Refactoring complex or tangled code
-- Deciding whether to create an abstraction
+- Deciding whether to create abstraction
 - Choosing between inheritance and composition
 - Evaluating code complexity and coupling
 - Planning modular architectures
@@ -44,20 +44,18 @@ def get_formatter(name: str) -> Formatter:
 
 ### Pattern 1: KISS - Keep It Simple
 
-Before adding complexity, ask: does a simpler solution work?
+Before adding complexity, ask: does simpler solution work?
 
 ```python
 # Over-engineered: Factory with registration
 class OutputFormatterFactory:
     _formatters: dict[str, type[Formatter]] = {}
-
     @classmethod
     def register(cls, name: str):
         def decorator(formatter_cls):
             cls._formatters[name] = formatter_cls
             return formatter_cls
         return decorator
-
     @classmethod
     def create(cls, name: str) -> Formatter:
         return cls._formatters[name]()
@@ -92,27 +90,22 @@ class UserHandler:
     async def create_user(self, request: Request) -> Response:
         # HTTP parsing
         data = await request.json()
-
         # Validation
         if not data.get("email"):
             return Response({"error": "email required"}, status=400)
-
         # Database access
         user = await db.execute(
             "INSERT INTO users (email, name) VALUES ($1, $2) RETURNING *",
             data["email"], data["name"]
         )
-
         # Response formatting
         return Response({"id": user.id, "email": user.email}, status=201)
 
 # GOOD: Separated concerns
 class UserService:
     """Business logic only."""
-
     def __init__(self, repo: UserRepository) -> None:
         self._repo = repo
-
     async def create_user(self, data: CreateUserInput) -> User:
         # Only business rules here
         user = User(email=data.email, name=data.name)
@@ -120,10 +113,8 @@ class UserService:
 
 class UserHandler:
     """HTTP concerns only."""
-
     def __init__(self, service: UserService) -> None:
         self._service = service
-
     async def create_user(self, request: Request) -> Response:
         data = CreateUserInput(**(await request.json()))
         user = await self._service.create_user(data)
@@ -176,7 +167,6 @@ class UserRepository:
 class UserService:
     def __init__(self, repo: UserRepository) -> None:
         self._repo = repo
-
     async def get_user(self, user_id: str) -> User:
         user = await self._repo.get_by_id(user_id)
         if user is None:
@@ -192,7 +182,7 @@ async def get_user(user_id: str) -> UserResponse:
 
 ### Pattern 4: Composition Over Inheritance
 
-Build behavior by combining objects rather than inheriting.
+Build behavior by combining objects over inheriting.
 
 ```python
 # Inheritance: Rigid and hard to test
@@ -200,14 +190,12 @@ class EmailNotificationService(NotificationService):
     def __init__(self):
         super().__init__()
         self._smtp = SmtpClient()  # Hard to mock
-
     def notify(self, user: User, message: str) -> None:
         self._smtp.send(user.email, message)
 
 # Composition: Flexible and testable
 class NotificationService:
     """Send notifications via multiple channels."""
-
     def __init__(
         self,
         email_sender: EmailSender,
@@ -217,7 +205,6 @@ class NotificationService:
         self._email = email_sender
         self._sms = sms_sender
         self._push = push_sender
-
     async def notify(
         self,
         user: User,
@@ -225,13 +212,10 @@ class NotificationService:
         channels: set[str] | None = None,
     ) -> None:
         channels = channels or {"email"}
-
         if "email" in channels:
             await self._email.send(user.email, message)
-
         if "sms" in channels and self._sms and user.phone:
             await self._sms.send(user.phone, message)
-
         if "push" in channels and self._push and user.device_token:
             await self._push.send(user.device_token, message)
 
@@ -276,7 +260,7 @@ def process_returns(returns: list[Return]) -> list[Result]:
 
 ### Pattern 6: Function Size Guidelines
 
-Keep functions focused. Extract when a function:
+Keep functions focused. Extract when function:
 
 - Exceeds 20-50 lines (varies by complexity)
 - Serves multiple distinct purposes
@@ -318,7 +302,6 @@ class Cache(Protocol):
 
 class UserService:
     """Service with injected dependencies."""
-
     def __init__(
         self,
         repository: UserRepository,
@@ -328,19 +311,16 @@ class UserService:
         self._repo = repository
         self._cache = cache
         self._logger = logger
-
     async def get_user(self, user_id: str) -> User:
         # Check cache first
         cached = await self._cache.get(f"user:{user_id}")
         if cached:
             self._logger.info("Cache hit", user_id=user_id)
             return User.from_json(cached)
-
         # Fetch from database
         user = await self._repo.get_by_id(user_id)
         if user:
             await self._cache.set(f"user:{user_id}", user.to_json(), ttl=300)
-
         return user
 
 # Production
@@ -411,10 +391,10 @@ def calculate_discount(user: User, order_history: list[Order]) -> float:
 List every change that could require editing this class. If items span different domains (HTTP parsing AND business rules AND formatting), split it. If all changes stem from same domain concern, class may be appropriately sized.
 
 **Constructor with 7+ parameters from DI.**
-Sign of too many responsibilities, not a DI problem. Split class into smaller units first -- constructors naturally shrink.
+Sign of too many responsibilities, not DI problem. Split class into smaller units first -- constructors naturally shrink.
 
 **Composition producing deeply nested wrappers hard to trace.**
-Keep composition shallow (2-3 levels). If wrapping is the only mechanism, consider Protocol-based approach or function composition instead of decorator chain.
+Keep composition shallow (2-3 levels). If wrapping is only mechanism, consider Protocol-based approach or function composition over decorator chain.
 
 **Rule of three says don't abstract, but duplication causing bugs when one copy updated but not other.**
 Diverging duplication is dangerous -- abstract sooner. Rule of three is heuristic, not law. If copies already diverging incorrectly, extract immediately and add test for shared behavior.
@@ -424,5 +404,5 @@ Layering violation. Service must not import from handlers. Introduce shared type
 
 ## Related Skills
 
-- [tests](tests.md) — Test each layer in isolation using the dependency injection structure established here
-- [structure](structure.md) — Set up project structure and tooling that enforces layer boundaries from the start
+- [tests](tests.md) — Test each layer in isolation using dependency injection structure established here
+- [structure](structure.md) — Set up project structure and tooling that enforces layer boundaries from start

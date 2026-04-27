@@ -18,7 +18,7 @@ Covers:
 Not replace:
 
 - `skills/security/SKILL.md` for threat modeling or secret handling
-- `skills/docs/SKILL.md` for broader documentation structure
+- `skills/docs/SKILL.md` for broader docs structure
 - `skills/rtk/SKILL.md` for RTK behavior itself
 
 ## Current hook surfaces
@@ -46,7 +46,7 @@ Use when full hook example beats isolated snippets.
 - reminder hooks for guidance, not annoyance
 - structured JSON; prefer `jq` over hand-built JSON strings
 - stderr messages short, direct, actionable
-- idempotent when possible
+- idempotent where possible
 - fail closed only when continuing risk > interruption
 - fail open for convenience helpers when fallback safe
 
@@ -97,7 +97,7 @@ Smoke test changed hook with smallest reproducible input.
 
 ## Guardrails
 
-- no destructive git operations in hooks
+- no destructive git ops in hooks
 - no silently swallowing important failures
 - no turning reminder into blocker without concrete safety reason
 - no duplicating same policy in multiple hooks unless events differ

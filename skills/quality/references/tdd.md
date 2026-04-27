@@ -18,8 +18,8 @@ Each cycle: minutes, not hours. Longer = step too big.
 
 ## Core Rules
 
-- write test before implementation
-- one red test at a time
+- write test before impl
+- one red test at time
 - smallest code that passes
 - refactor only on green
 - hard test = design wants simplification
@@ -47,9 +47,7 @@ uv run pytest --cov=src --cov-report=term-missing -v
 ```python
 def test_expired_token_returns_401(client):
     token = create_token(expired=True)
-
     response = client.get("/protected", headers={"Authorization": f"Bearer {token}"})
-
     assert response.status_code == 401
 ```
 
@@ -62,7 +60,6 @@ Use Given / When / Then naming when it improves clarity:
 ```python
 def test_given_empty_cart_when_checkout_then_raises_error(cart_service):
     cart = cart_service.create_cart(user_id="user-1")
-
     with pytest.raises(EmptyCartError):
         cart_service.checkout(cart.id)
 ```
@@ -99,7 +96,7 @@ def test_create_user(client):
 Recommended order:
 
 - happy path
-- validation failures
+- valid failures
 - edge cases
 - refactor
 
@@ -113,7 +110,7 @@ Recommended order:
 
 ## Anti-Patterns
 
-- testing implementation not behavior
+- testing impl not behavior
 - tests after code
 - steps too large
 - over-mocking

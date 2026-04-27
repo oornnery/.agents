@@ -7,7 +7,7 @@ description: GitHub Actions CI guidance for validation gates, workflow permissio
 
 Use this skill for GitHub Actions CI only.
 
-Local skill: PR/push validation, required checks,
+Local skill: PR/push valid, required checks,
 workflow safety, caching, matrices, artifacts, workflow verification.
 Not for GitLab CI, Jenkins, ArgoCD, or deployment topology.
 
@@ -17,7 +17,7 @@ Use this skill for:
 
 - GitHub Actions workflow shape
 - branch and event triggers for CI
-- job dependencies and validation gates
+- job dependencies and valid gates
 - permissions, secrets, and trust boundaries inside GitHub Actions
 - caching, matrices, artifacts, and CI performance
 - workflow verification with `actionlint`, `act`, and GitHub tooling
@@ -153,10 +153,10 @@ Preferred order for Python repos:
 
 Rules:
 
-- keep build or artifact-producing jobs downstream of validation gates
+- keep build or artifact-producing jobs downstream of valid gates
 - do not hide required failures behind `continue-on-error`
 - use required status checks in branch protection for real blocking jobs
-- if one stage is flaky, fix the flake; do not downgrade the gate casually
+- if one stage is flaky, fix flake; do not downgrade gate casually
 
 ## Parallelization and Job Shape
 
@@ -189,7 +189,7 @@ Split jobs when:
 
 ## Matrix Builds
 
-Use matrix only when compatibility is part of the contract.
+Use matrix only when compatibility is part of contract.
 
 ```yaml
 jobs:
@@ -212,7 +212,7 @@ Rules:
 
 - keep matrix axes small and meaningful
 - use `fail-fast: false` only when collecting full compatibility data is valuable
-- do not add OS or Python-version matrices the project does not actually support
+- do not add OS or Python-version matrices project does not support
 
 ## Path Filters
 
@@ -236,7 +236,7 @@ Use path filters when:
 
 - frontend and backend change independently
 - docs-only changes should skip heavy test jobs
-- package or service boundaries are already clear in the repo
+- package or service boundaries are already clear in repo
 
 ## Caching
 
@@ -252,12 +252,12 @@ Rules:
 
 - key caches from lockfiles or precise inputs
 - prefer setup actions with built-in cache support when repo already uses them
-- avoid caching entire virtual environment unless proven stable
+- avoid caching entire virtual env unless proven stable
 - treat stale caches as correctness risk, not only performance detail
 
 ## Artifacts and Outputs
 
-Upload only what later jobs or humans actually need.
+Upload only what later jobs or humans need.
 
 Good artifacts:
 
@@ -314,7 +314,7 @@ Verification loop:
 - no job timeouts
 - uploading whole workspace as artifact
 - caching unstable directories without lockfile-based keys
-- one giant workflow mixing unprivileged validation with privileged jobs at same trust level
+- one giant workflow mixing unprivileged valid with privileged jobs at same trust level
 
 ## CI Checklist
 

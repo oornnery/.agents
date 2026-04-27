@@ -72,7 +72,7 @@ df.with_columns(pl.col('score').mean().over('team'))
 
 ## Migration Advice
 
-- migrate one pipeline at a time
+- migrate one pipeline at time
 - write regression tests around output schema and values
 - use lazy mode where pandas pipelines were slow or memory-heavy
 - do not port `apply` habits blindly; look for native expressions first

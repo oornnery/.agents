@@ -1,6 +1,6 @@
 # Python Code Style & Documentation
 
-Consistent style + clear docs = maintainable codebases. Covers modern Python tooling, naming, documentation standards.
+Consistent style + clear docs = maintainable codebases. Covers modern Python tooling, naming, docs standards.
 
 ## When to Use This Skill
 
@@ -9,7 +9,7 @@ Consistent style + clear docs = maintainable codebases. Covers modern Python too
 - Establishing team coding standards
 - Configuring `ruff`, `mypy`, or `pyright`
 - Reviewing code for style consistency
-- Creating project documentation
+- Creating project docs
 
 ## Core Concepts
 
@@ -83,7 +83,7 @@ ruff format .       # Format code
 
 ### Pattern 2: Type Checking Configuration
 
-Configure strict type checking for production code.
+Configure strict type checking for prod code.
 
 ```toml
 # pyproject.toml
@@ -204,23 +204,18 @@ def process_batch(
     on_progress: Callable[[int, int], None] | None = None,
 ) -> BatchResult:
     """Process items concurrently using a worker pool.
-
     Processes each item in the batch using the configured number of
     workers. Progress can be monitored via the optional callback.
-
     Args:
         items: The items to process. Must not be empty.
         max_workers: Maximum concurrent workers. Defaults to 4.
         on_progress: Optional callback receiving (completed, total) counts.
-
     Returns:
         BatchResult containing succeeded items and any failures with
         their associated exceptions.
-
     Raises:
         ValueError: If items is empty.
         ProcessingError: If the batch cannot be processed.
-
     Example:
         >>> result = process_batch(items, max_workers=8)
         >>> print(f"Processed {len(result.succeeded)} items")
@@ -233,22 +228,17 @@ def process_batch(
 ```python
 class UserService:
     """Service for managing user operations.
-
     Provides methods for creating, retrieving, updating, and
     deleting users with proper validation and error handling.
-
     Attributes:
         repository: The data access layer for user persistence.
         logger: Logger instance for operation tracking.
-
     Example:
         >>> service = UserService(repository, logger)
         >>> user = service.create_user(CreateUserInput(...))
     """
-
     def __init__(self, repository: UserRepository, logger: Logger) -> None:
         """Initialize the user service.
-
         Args:
             repository: Data access layer for users.
             logger: Logger for tracking operations.
@@ -324,7 +314,7 @@ pytest
 \`\`\`
 ```
 
-**CHANGELOG Format (Keep a Changelog):**
+**CHANGELOG Format (Keep Changelog):**
 
 ```markdown
 # Changelog
@@ -351,8 +341,8 @@ pytest
 3. **120 character lines** -- Modern standard for readability
 4. **Descriptive names** -- Clarity over brevity
 5. **Absolute imports** -- More maintainable than relative
-6. **Google-style docstrings** -- Consistent, readable documentation
-7. **Document public APIs** -- Every public function needs a docstring
-8. **Keep docs updated** -- Treat documentation as code
+6. **Google-style docstrings** -- Consistent, readable docs
+7. **Document public APIs** -- Every public function needs docstring
+8. **Keep docs updated** -- Treat docs as code
 9. **Automate in CI** -- Run linters on every commit
 10. **Target Python 3.10+** -- For new projects, Python 3.12+ recommended for modern language features

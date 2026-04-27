@@ -96,7 +96,7 @@ Good fits:
 
 Bad fits:
 
-- transient validation
+- transient valid
 - one-off loading spinners
 - tiny inline component state
 
@@ -130,7 +130,7 @@ Common patterns:
 Matters for:
 
 - autosave
-- validation plus submit
+- valid plus submit
 - repeated clicks on same action
 
 ## OOB Updates

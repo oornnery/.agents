@@ -9,7 +9,7 @@ Module/class: one reason to change.
 Heuristics:
 
 - described w/ "and" = does too much
-- split validation, persistence, notifications, orchestration when they drift apart
+- split valid, persistence, notifications, orchestration when they drift apart
 - prefer small focused modules over service objects that absorb everything
 
 ## O -- Open/Closed Principle
@@ -54,7 +54,7 @@ High-level modules depend on abstractions, not low-level implementations.
 Practical defaults:
 
 - define interfaces at boundary
-- inject adapters instead of instantiating deep in code
+- inject adapters over instantiating deep in code
 - wire implementations at composition root
 
 ## Python-Friendly Defaults

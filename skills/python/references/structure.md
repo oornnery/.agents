@@ -19,7 +19,7 @@ Group related code that changes together. One module, one purpose.
 
 ### 2. Explicit Interfaces
 
-`__all__` defines public. Unlisted = internal implementation detail.
+`__all__` defines public. Unlisted = internal impl detail.
 
 ### 3. Flat Hierarchies
 
@@ -139,7 +139,7 @@ tests/
 │   └── test_order_service.py
 ```
 
-Clean separation between production and test code. Standard for larger projects.
+Clean separation between prod and test code. Standard for larger projects.
 
 ## Advanced Patterns
 

@@ -7,7 +7,7 @@ description: Security review, threat modeling, and secure-by-default guidance.
 
 # Security
 
-Application security guidance. Framework- and language-agnostic. Principles and review patterns across APIs, backends, frontends, workers, CLIs, and external integrations.
+App security guidance. Framework- and language-agnostic. Principles and review patterns across APIs, backends, frontends, workers, CLIs, and external integrations.
 
 ## Boundary
 
@@ -15,17 +15,17 @@ Security reasoning, review order, threat modeling, and risk prioritization.
 
 - pair with `python` for secure Python code
 - pair with `design` for risk in API shape, BFF boundaries, or UI trust
-- pair with `quality` for RCA or regression guards after a fix
+- pair with `quality` for RCA or regression guards after fix
 
 Not for framework-specific secure coding notes.
 
 ## Assets
 
-Use these when the deliverable should look like real security work product.
+Use these when deliverable should look like real security work product.
 
-- `assets/threat-model.md` -- a filled threat model template
-- `assets/audit-report.md` -- a compact review findings report
-- `assets/findings.md` -- a small findings list in the expected evidence format
+- `assets/threat-model.md` -- filled threat model template
+- `assets/audit-report.md` -- compact review findings report
+- `assets/findings.md` -- small findings list in expected evidence format
 
 ## Operating Modes
 
@@ -33,20 +33,20 @@ Use these when the deliverable should look like real security work product.
 2. **Passive review** (always on) -- notice violations in touched code.
 3. **Active audit** (explicit request) -- systematic scan with report.
 4. **Threat modeling** (explicit request) -- map assets, trust boundaries,
-   abuse paths, and mitigations before or alongside implementation.
+   abuse paths, and mitigations before or alongside impl.
 
 ## Audit Workflow
 
-1. Define the scope: entry points, data stores, external services, privileged
-   operations, and sensitive user flows.
+1. Define scope: entry points, data stores, external services, privileged
+   ops, and sensitive user flows.
 2. Identify assets: credentials, secrets, personal data, money movement,
    integrity-critical state, admin actions, and internal systems access.
 3. Map trust boundaries: browser to server, public to private network,
    service to service, user to admin, tenant to tenant, and app to third party.
 4. Treat all external input as attacker-controlled until validated.
-5. Review the system using the checklist below, prioritizing auth,
+5. Review system using checklist below, prioritizing auth,
    authorization, data exposure, and injection first.
-6. Record concrete findings with evidence, impact, and the minimal safe fix.
+6. Record concrete findings with evidence, impact, and minimal safe fix.
 
 ## Core Principles
 
@@ -54,14 +54,14 @@ Use these when the deliverable should look like real security work product.
   fields, actions, and integrations.
 - Validate at boundaries. Parse, validate, normalize, and constrain external
   input before business logic uses it.
-- Least privilege. Grant the minimum permissions needed for users, services,
+- Least privilege. Grant minimum permissions needed for users, services,
   tokens, files, queries, and background jobs.
 - Defense in depth. Assume one control may fail; keep independent layers.
 - Minimize exposure. Return only needed data, log only needed data, and expose
-  only the endpoints and capabilities the system truly needs.
+  only endpoints and capabilities system truly needs.
 - Keep secrets out of code, logs, URLs, client storage, and error messages.
-- Prefer safe defaults in production. Debug features, test shortcuts, and broad
-  trust should be opt-in only for local development.
+- Prefer safe defaults in prod. Debug features, test shortcuts, and broad
+  trust should be opt-in only for local dev.
 - Security is systemic. Stored data, queue messages, database content, and
   third-party responses can all be attacker-controlled.
 
@@ -69,7 +69,7 @@ Use these when the deliverable should look like real security work product.
 
 - Request paths, query params, headers, cookies, bodies, and uploaded files
 - Webhooks, queue messages, scheduled job payloads, and CLI arguments
-- Environment variables and configuration from outside the repo
+- Env variables and config from outside repo
 - Database content that originated from users or external systems
 - Third-party API responses, redirects, and downloaded files
 - Browser storage, URL fragments, cross-window messages, and DOM content
@@ -78,7 +78,7 @@ Use these when the deliverable should look like real security work product.
 
 1. Authentication and authorization
 2. Secrets, session handling, and data exposure
-3. Validation, output encoding, and injection
+3. Valid, output encoding, and injection
 4. File handling, redirects, and outbound network access
 5. Browser, cross-origin, and client-side trust boundaries
 6. Availability, abuse resistance, and resource exhaustion
@@ -89,24 +89,24 @@ Use these when the deliverable should look like real security work product.
 ### Production Baseline
 
 - Dev servers, hot reload, debug endpoints, and verbose error pages are off
-  or protected in production.
+  or protected in prod.
 - Admin, docs, internal tooling, and operational endpoints are protected or
   disabled when not needed.
 - Host, origin, proxy, and deployment trust are explicitly configured rather
   than inferred from arbitrary headers.
-- TLS expectations are clear at the edge, and transport security assumptions
-  match the actual deployment topology.
+- TLS expectations are clear at edge, and transport security assumptions
+  match actual deployment topology.
 - Dependencies are pinned or otherwise controlled, patched regularly, and
   sourced from trusted registries or internal mirrors.
 
 ### Authentication and Authorization
 
-- Authentication is enforced consistently on all protected operations.
+- Authentication is enforced consistently on all protected ops.
 - Authorization is checked per action and per object, not only at route entry.
 - Privileged fields, admin actions, and cross-tenant access paths have
   explicit checks.
 - Tokens, sessions, and API keys are validated correctly, rotated when needed,
-  and scoped to the minimum required privileges.
+  and scoped to minimum required privileges.
 - Passwords and other credentials are never stored or compared in plaintext.
 - Secrets are not placed in URLs, hidden form fields, client-readable storage,
   or source control.
@@ -117,10 +117,10 @@ Use these when the deliverable should look like real security work product.
 
 - External input is schema-driven, validated, normalized, and bounded.
 - Unexpected fields, unsafe enum values, and malformed state transitions are
-  rejected rather than ignored.
+  rejected over ignored.
 - Length, size, count, pagination, and rate limits exist where input could
   grow without bound.
-- Responses return the minimum needed fields and avoid leaking internal state,
+- Responses return minimum needed fields and avoid leaking internal state,
   secrets, stack traces, or sensitive identifiers.
 - Error messages are useful but do not expose credentials, tokens, queries,
   file paths, internal topology, or exploitable details.
@@ -130,11 +130,11 @@ Use these when the deliverable should look like real security work product.
 - Queries, commands, templates, and interpreters never receive attacker input
   through string concatenation or equivalent unsafe composition.
 - Dynamic code execution and unsafe deserialization are avoided unless there is
-  a compelling, isolated, and tightly controlled reason.
-- Output is encoded or escaped for the target sink so untrusted content cannot
+  compelling, isolated, and tightly controlled reason.
+- Output is encoded or escaped for target sink so untrusted content cannot
   become executable code, markup, templates, or policy directives.
 - Untrusted template sources, HTML fragments, selectors, expressions, or
-  configuration snippets are treated as code execution risk.
+  config snippets are treated as code execution risk.
 - File paths derived from input are normalized and confined to approved roots.
 
 ### Files, URLs, and External Calls
@@ -144,7 +144,7 @@ Use these when the deliverable should look like real security work product.
 - Downloaded or generated files are served from safe locations with correct
   content-type and disposition handling.
 - Outbound requests guard against SSRF with protocol restrictions, destination
-  validation, timeouts, and network allowlists where appropriate.
+  valid, timeouts, and network allowlists where appropriate.
 - Redirect targets are validated so attackers cannot bounce users to
   arbitrary destinations.
 - Archive extraction, image processing, and document parsing consider zip
@@ -156,16 +156,16 @@ Use these when the deliverable should look like real security work product.
   script contexts, event handlers, or dynamic navigation targets.
 - Cross-origin access is least-privilege: only required origins, methods,
   headers, and credentials are allowed.
-- Browser-delivered policies such as CSP and related headers are used when the
-  application serves HTML or script-capable content.
+- Browser-delivered policies such as CSP and related headers are used when
+  app serves HTML or script-capable content.
 - Cross-window and real-time messaging validate origin, peer, and message type.
-- Client-side storage is treated as readable by the user and often by injected
+- Client-side storage is treated as readable by user and often by injected
   code; do not store high-value secrets there.
 
 ### Availability and Abuse Resistance
 
 - Request, body, upload, query, and fan-out limits exist for expensive paths.
-- Expensive operations have timeouts, pagination, batching, or backpressure.
+- Expensive ops have timeouts, pagination, batching, or backpressure.
 - Idempotency and replay handling exist where duplicate submissions are risky.
 - Rate limits or quota controls exist for brute-force, spam, scraping, and
   resource exhaustion paths.
@@ -181,7 +181,7 @@ Use these when the deliverable should look like real security work product.
 - Audit trails exist for privileged and integrity-critical actions.
 - Dependencies, containers, base images, and build tooling are reviewed for
   provenance, patch level, and known vulnerabilities.
-- Third-party integrations are scoped narrowly and reviewed as part of the
+- Third-party integrations are scoped narrowly and reviewed as part of
   trust boundary, not assumed safe because they are popular.
 
 ## Finding Format

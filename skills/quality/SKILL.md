@@ -9,11 +9,11 @@ Use skill when reliability = main concern: prevent defects before ship or unders
 
 ## Pick the Mode
 
-| Situation | Read |
+| Situation                               | Read                                          |
 | --------------------------------------- | --------------------------------------------- |
-| write tests before code, drive design | `references/tdd.md` |
-| incident analysis or recurring failures | `references/rca.md` |
-| a fix already failed once | `references/rca.md`, then `references/tdd.md` |
+| write tests before code, drive design   | `references/tdd.md`                           |
+| incident analysis or recurring failures | `references/rca.md`                           |
+| fix already failed once                 | `references/rca.md`, then `references/tdd.md` |
 
 ## Shared Rules
 

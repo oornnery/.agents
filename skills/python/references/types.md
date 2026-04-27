@@ -1,6 +1,6 @@
 # Python Type Safety
 
-Leverage Python type system to catch errors at static analysis time. Type annotations = enforced documentation validated by tooling.
+Leverage Python type system to catch errors at static analysis time. Type annotations = enforced docs validated by tooling.
 
 ## When to Use This Skill
 
@@ -64,14 +64,11 @@ def process_batch(
 class UserRepository:
     def __init__(self, db: Database) -> None:
         self._db = db
-
     async def find_by_id(self, user_id: str) -> User | None:
         """Return User if found, None otherwise."""
         ...
-
     async def find_by_email(self, email: str) -> User | None:
         ...
-
     async def save(self, user: User) -> User:
         """Save and return user with generated ID."""
         ...
@@ -100,15 +97,13 @@ def find_user(user_id: str) -> Optional[User]:
 
 ### Pattern 3: Type Narrowing with Guards
 
-Use conditionals to narrow types for the type checker.
+Use conditionals to narrow types for type checker.
 
 ```python
 def process_user(user_id: str) -> UserData:
     user = find_user(user_id)
-
     if user is None:
         raise UserNotFoundError(f"User {user_id} not found")
-
     # Type checker knows user is User here, not User | None
     return UserData(
         name=user.name,
@@ -134,7 +129,6 @@ E = TypeVar("E", bound=Exception)
 
 class Result(Generic[T, E]):
     """Represents either a success value or an error."""
-
     def __init__(
         self,
         value: T | None = None,
@@ -144,21 +138,17 @@ class Result(Generic[T, E]):
             raise ValueError("Exactly one of value or error must be set")
         self._value = value
         self._error = error
-
     @property
     def is_success(self) -> bool:
         return self._error is None
-
     @property
     def is_failure(self) -> bool:
         return self._error is not None
-
     def unwrap(self) -> T:
         """Get value or raise the error."""
         if self._error is not None:
             raise self._error
         return self._value  # type: ignore[return-value]
-
     def unwrap_or(self, default: T) -> T:
         """Get value or return default."""
         if self._error is not None:
@@ -192,17 +182,14 @@ ID = TypeVar("ID")
 
 class Repository(ABC, Generic[T, ID]):
     """Generic repository interface."""
-
     @abstractmethod
     async def get(self, id: ID) -> T | None:
         """Get entity by ID."""
         ...
-
     @abstractmethod
     async def save(self, entity: T) -> T:
         """Save and return entity."""
         ...
-
     @abstractmethod
     async def delete(self, id: ID) -> bool:
         """Delete entity, return True if existed."""
@@ -210,16 +197,13 @@ class Repository(ABC, Generic[T, ID]):
 
 class UserRepository(Repository[User, str]):
     """Concrete repository for Users with string IDs."""
-
     async def get(self, id: str) -> User | None:
         row = await self._db.fetchrow(
             "SELECT * FROM users WHERE id = $1", id
         )
         return User(**row) if row else None
-
     async def save(self, entity: User) -> User:
         ...
-
     async def delete(self, id: str) -> bool:
         ...
 ```
@@ -260,10 +244,8 @@ from typing import Protocol, runtime_checkable
 @runtime_checkable
 class Serializable(Protocol):
     """Any class that can be serialized to/from dict."""
-
     def to_dict(self) -> dict:
         ...
-
     @classmethod
     def from_dict(cls, data: dict) -> "Serializable":
         ...
@@ -273,10 +255,8 @@ class User:
     def __init__(self, id: str, name: str) -> None:
         self.id = id
         self.name = name
-
     def to_dict(self) -> dict:
         return {"id": self.id, "name": self.name}
-
     @classmethod
     def from_dict(cls, data: dict) -> "User":
         return cls(id=data["id"], name=data["name"])
@@ -326,7 +306,7 @@ class Comparable(Protocol):
 
 Create meaningful type names.
 
-**Note:** The `type Alias = ...` statement syntax (PEP 695) was introduced in **Python 3.12**, not 3.10. For projects targeting earlier versions (including 3.10/3.11), use the `TypeAlias` annotation (PEP 613, available since Python 3.10).
+**Note:** `type Alias = ...` statement syntax (PEP 695) was introduced in **Python 3.12**, not 3.10. For projects targeting earlier versions (including 3.10/3.11), use `TypeAlias` annotation (PEP 613, available since Python 3.10).
 
 ```python
 # Python 3.12+ type statement (PEP 695)
@@ -421,8 +401,8 @@ For existing codebases, enable strict mode per-module using `# mypy: strict` or 
 3. **Run strict type checking** - `mypy --strict` in CI
 4. **Use generics** - Preserve type info in reusable code
 5. **Define protocols** - Structural typing for interfaces
-6. **Narrow types** - Use guards to help the type checker
+6. **Narrow types** - Use guards to help type checker
 7. **Bound type vars** - Restrict generics to meaningful types
 8. **Create type aliases** - Meaningful names for complex types
 9. **Minimize `Any`** - Use specific types or generics. `Any` acceptable for truly dynamic data or untyped third-party code
-10. **Document with types** - Types = enforceable documentation
+10. **Document with types** - Types = enforceable docs

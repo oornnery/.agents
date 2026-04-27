@@ -116,8 +116,8 @@ Beware nested eager loading on large graphs -- can over-fetch.
 ## Bulk Operations
 
 - Use bulk inserts/updates/deletes when row count is high
-- Avoid per-row loops when set-based operation exists
-- Measure transaction size and lock impact before bulk changes in production
+- Avoid per-row loops when set-based op exists
+- Measure transaction size and lock impact before bulk changes in prod
 
 ## Raw SQL
 
@@ -139,7 +139,7 @@ For slow queries:
 
 - Enable SQL logging selectively
 - Capture actual query count
-- Run `explain` or `explain analyze` in safe environment
+- Run `explain` or `explain analyze` in safe env
 - Verify indexes match real filters and sort order
 
 Test:
@@ -155,6 +155,6 @@ Test:
 - [ ] N+1 is prevented on relationship-heavy reads
 - [ ] pagination matches dataset size
 - [ ] indexes support real filters and orderings
-- [ ] bulk operations replace row-by-row loops when needed
+- [ ] bulk ops replace row-by-row loops when needed
 - [ ] raw SQL is parameterized and justified
 - [ ] performance work is based on measurement

@@ -1,5 +1,3 @@
-Can't access script path. Compressing directly per rules:
-
 # Jinja2 Templates
 
 ## Inheritance

@@ -51,7 +51,7 @@ send_email.delay("user@example.com", "Welcome!", "Thanks for signing up")
 
 ### Pattern 1: Return Job ID Immediately
 
-Operations exceeding few seconds — return job ID, process async.
+Ops exceeding few seconds — return job ID, process async.
 
 ```python
 from uuid import uuid4
@@ -79,21 +79,18 @@ class Job:
 async def start_export(request: ExportRequest) -> JobResponse:
     """Start export job and return job ID."""
     job_id = str(uuid4())
-
     # Persist job record
     await jobs_repo.create(Job(
         id=job_id,
         status=JobStatus.PENDING,
         created_at=datetime.utcnow(),
     ))
-
     # Enqueue task for background processing
     await task_queue.enqueue(
         "export_data",
         job_id=job_id,
         params=request.model_dump(),
     )
-
     # Return immediately with job ID
     return JobResponse(
         job_id=job_id,
@@ -148,23 +145,19 @@ Workers may retry on crash/timeout. Design for safe re-execution.
 def process_order(self, order_id: str) -> None:
     """Process order idempotently."""
     order = orders_repo.get(order_id)
-
     # Already processed? Return early
     if order.status == OrderStatus.COMPLETED:
         logger.info("Order already processed", order_id=order_id)
         return
-
     # Already in progress? Check if we should continue
     if order.status == OrderStatus.PROCESSING:
         # Use idempotency key to avoid double-charging
         pass
-
     # Process with idempotency key
     result = payment_provider.charge(
         amount=order.total,
         idempotency_key=f"order-{order_id}",  # Critical!
     )
-
     orders_repo.update(order_id, status=OrderStatus.COMPLETED)
 ```
 
@@ -182,7 +175,6 @@ Persist job state transitions for visibility and debugging.
 ```python
 class JobRepository:
     """Repository for managing job state."""
-
     async def create(self, job: Job) -> Job:
         """Create new job record."""
         await self._db.execute(
@@ -191,7 +183,6 @@ class JobRepository:
             job.id, job.status.value, job.created_at,
         )
         return job
-
     async def update_status(
         self,
         job_id: str,
@@ -200,17 +191,14 @@ class JobRepository:
     ) -> None:
         """Update job status with timestamp."""
         updates = {"status": status.value, **fields}
-
         if status == JobStatus.RUNNING:
             updates["started_at"] = datetime.utcnow()
         elif status in (JobStatus.SUCCEEDED, JobStatus.FAILED):
             updates["completed_at"] = datetime.utcnow()
-
         await self._db.execute(
             "UPDATE jobs SET status = $1, ... WHERE id = $2",
             updates, job_id,
         )
-
         logger.info(
             "Job status updated",
             job_id=job_id,
@@ -249,7 +237,6 @@ def process_webhook(self, webhook_id: str, payload: dict) -> None:
                 error=str(e),
             )
             return
-
         # Exponential backoff retry
         raise self.retry(exc=e, countdown=2 ** self.request.retries * 60)
 ```
@@ -267,10 +254,8 @@ app = FastAPI()
 async def get_job_status(job_id: str) -> JobStatusResponse:
     """Get current status of a background job."""
     job = await jobs_repo.get(job_id)
-
     if job is None:
         raise HTTPException(404, f"Job {job_id} not found")
-
     return JobStatusResponse(
         job_id=job.id,
         status=job.status.value,
@@ -350,7 +335,7 @@ def send_email(to: str, subject: str, body: str) -> None:
 
 ## Best Practices Summary
 
-1. **Return immediately** - Don't block requests for long operations
+1. **Return immediately** - Don't block requests for long ops
 2. **Persist job state** - Enable status polling and debugging
 3. **Make tasks idempotent** - Safe to retry on any failure
 4. **Use idempotency keys** - For external service calls
@@ -358,5 +343,5 @@ def send_email(to: str, subject: str, body: str) -> None:
 6. **Implement DLQ** - Capture permanently failed tasks
 7. **Log transitions** - Track job state changes
 8. **Retry appropriately** - Exponential backoff for transient errors
-9. **Don't retry permanent failures** - Validation errors, invalid credentials
+9. **Don't retry permanent failures** - Valid errors, invalid credentials
 10. **Monitor queue depth** - Alert on backlog growth

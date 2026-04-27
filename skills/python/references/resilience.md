@@ -5,7 +5,7 @@ Build fault-tolerant Python apps handling transient failures, network issues, se
 ## When to Use This Skill
 
 - Adding retry logic to external service calls
-- Implementing timeouts for network operations
+- Implementing timeouts for network ops
 - Building fault-tolerant microservices
 - Handling rate limiting and backpressure
 - Creating infrastructure decorators
@@ -46,7 +46,7 @@ def call_external_service(request: dict) -> dict:
 
 ### Pattern 1: Basic Retry with Tenacity
 
-Use `tenacity` for production-grade retry logic. Simpler cases: built-in retry or lightweight custom implementation.
+Use `tenacity` for prod-grade retry logic. Simpler cases: built-in retry or lightweight custom impl.
 
 ```python
 from tenacity import (
@@ -252,7 +252,6 @@ def traced(name: str | None = None):
     """Add tracing to function calls."""
     def decorator(func: Callable[..., T]) -> Callable[..., T]:
         span_name = name or func.__name__
-
         @wraps(func)
         async def wrapper(*args, **kwargs) -> T:
             logger.info("Operation started", operation=span_name)
@@ -294,15 +293,12 @@ class MetricsClient(Protocol):
 @dataclass
 class UserService:
     """Service with injected infrastructure."""
-
     repository: UserRepository
     logger: Logger
     metrics: MetricsClient
-
     async def get_user(self, user_id: str) -> User:
         self.logger.info("Fetching user", user_id=user_id)
         start = time.perf_counter()
-
         try:
             user = await self.repository.get(user_id)
             self.metrics.increment("user.fetch.success")
@@ -325,7 +321,7 @@ service = UserService(
 
 ### Pattern 9: Fail-Safe Defaults
 
-Degrade gracefully when non-critical operations fail.
+Degrade gracefully when non-critical ops fail.
 
 ```python
 from typing import TypeVar
@@ -366,6 +362,6 @@ async def get_recommendations(user_id: str) -> list[str]:
 5. **Log every retry** - Silent retries hide systemic problems
 6. **Use decorators** - Keep retry logic separate from business logic
 7. **Inject dependencies** - Make infrastructure testable
-8. **Set timeouts everywhere** - Every network call needs a timeout
+8. **Set timeouts everywhere** - Every network call needs timeout
 9. **Fail gracefully** - Return cached/default values for non-critical paths
 10. **Monitor retry rates** - High retry rates indicate underlying issues

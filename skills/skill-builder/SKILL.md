@@ -88,7 +88,7 @@ uv run rumdl check skills/*/SKILL.md skills/*/references/*.md
 
 ## Guardrails
 
-- do not create README or changelog files inside a skill
-- do not make `SKILL.md` a dumping ground for all related knowledge
+- do not create README or changelog files inside skill
+- do not make `SKILL.md` dumping ground for all related knowledge
 - do not create nested reference chains when one level is enough
 - do not split skill into refs unless split improves selection and context use

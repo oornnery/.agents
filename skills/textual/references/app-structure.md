@@ -9,7 +9,6 @@ from textual.widgets import Footer, Header
 
 class MyApp(App):
     CSS_PATH = "app.tcss"
-
     def compose(self) -> ComposeResult:
         yield Header()
         yield Footer()
@@ -48,7 +47,6 @@ from textual.reactive import reactive
 
 class Counter(Widget):
     count = reactive(0)
-
     def watch_count(self, value: int) -> None:
         self.query_one("#value").update(str(value))
 ```
@@ -107,4 +105,4 @@ button = self.query_one("#save", Button)
 buttons = self.query(".action")
 ```
 
-Don't depend on incidental widget ordering when a clearer selector exists.
+Don't depend on incidental widget ordering when clearer selector exists.

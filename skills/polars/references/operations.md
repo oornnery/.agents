@@ -94,7 +94,7 @@ df.with_columns(
 )
 ```
 
-Use instead of join-back patterns for per-row group context.
+Use over join-back patterns for per-row group context.
 
 ## Guardrails
 

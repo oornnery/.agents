@@ -22,7 +22,6 @@ from sqlmodel import Field, SQLModel
 
 class User(SQLModel, table=True):
     __tablename__ = "users"
-
     id: Optional[int] = Field(default=None, primary_key=True)
     username: str = Field(index=True, unique=True, min_length=3, max_length=50)
     email: EmailStr = Field(unique=True)
@@ -31,7 +30,6 @@ class User(SQLModel, table=True):
     is_active: bool = Field(default=True)
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
-
     @field_validator("username")
     @classmethod
     def username_alphanumeric(cls, value: str) -> str:
@@ -134,7 +132,6 @@ from sqlmodel import Field, Relationship, SQLModel
 
 class HeroTeamLink(SQLModel, table=True):
     __tablename__ = "hero_team_link"
-
     hero_id: Optional[int] = Field(default=None, foreign_key="hero.id", primary_key=True)
     team_id: Optional[int] = Field(default=None, foreign_key="team.id", primary_key=True)
     joined_at: datetime = Field(default_factory=datetime.utcnow)
@@ -167,7 +164,6 @@ class User(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     username: str
     manager_id: Optional[int] = Field(default=None, foreign_key="user.id")
-
     manager: Optional["User"] = Relationship(
         back_populates="subordinates",
         sa_relationship_kwargs={"remote_side": "User.id"},
@@ -209,7 +205,7 @@ Be conservative with cascades. Powerful and easy to misuse.
 - prefer composition and explicit fields before polymorphic table layouts
 - if using inheritance, document discriminator, nullability tradeoffs, query behavior clearly
 
-Use inheritance only when persistence model genuinely reflects a stable polymorphic concept.
+Use inheritance only when persistence model genuinely reflects stable polymorphic concept.
 
 ## Composite Keys and Constraints
 

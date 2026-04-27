@@ -1,19 +1,19 @@
 # DDD
 
-Use when problem is business model itself, not just persistence or transport.
+Use when problem is business model itself, not persistence or transport.
 
 ## Core Concepts
 
-| Concept             | Meaning                                              |
-| ------------------- | ---------------------------------------------------- |
-| Entity              | object with identity across state changes            |
-| Value Object        | immutable, defined by attributes not identity         |
-| Aggregate           | consistency boundary with root entity                 |
-| Repository          | persistence boundary for aggregate roots             |
-| Domain Service      | domain behavior not belonging to one entity           |
-| Application Service | orchestration layer around domain behavior           |
-| Domain Event        | immutable fact that something happened               |
-| Bounded Context     | model boundary where words have specific meaning     |
+| Concept         | Meaning                                          |
+| --------------- | ------------------------------------------------ |
+| Entity          | object with identity across state changes        |
+| Value Object    | immutable, defined by attributes not identity    |
+| Aggregate       | consistency boundary with root entity            |
+| Repository      | persistence boundary for aggregate roots         |
+| Domain Service  | domain behavior not belonging to one entity      |
+| App Service     | orchestration layer around domain behavior       |
+| Domain Event    | immutable fact that something happened           |
+| Bounded Context | model boundary where words have specific meaning |
 
 ## Modeling Rules
 
@@ -22,13 +22,13 @@ Use when problem is business model itself, not just persistence or transport.
 - use aggregates as transaction boundaries
 - expose repositories only for aggregate roots
 - publish domain events for important facts; handle side effects outside domain
-- keep application services thin and orchestration-focused
+- keep app services thin and orchestration-focused
 
 ## Entities
 
 - have identity
 - mutate while preserving invariants
-- own behavior, not just fields
+- own behavior, not fields
 
 Use when lifecycle and identity matter.
 
@@ -52,7 +52,7 @@ Rules:
 
 ## Repositories
 
-- defined by domain or application boundary
+- defined by domain or app boundary
 - implemented in infrastructure
 - return domain objects, not ORM models
 - hide persistence details from callers
@@ -65,7 +65,7 @@ Use **domain service** when:
 - involves multiple entities or value objects
 - still pure business behavior
 
-Use **application service** when:
+Use **app service** when:
 
 - orchestrating use case
 - loading and saving aggregates
@@ -94,6 +94,6 @@ Use when:
 
 - anemic domain models with all logic in services
 - shared models across unrelated contexts
-- repositories for every tiny entity instead of aggregate roots
-- application services absorbing business rules
+- repositories for every tiny entity over aggregate roots
+- app services absorbing business rules
 - leaking ORM concerns into domain

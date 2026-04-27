@@ -7,11 +7,9 @@ Use `run_test()` for functional tests.
 ```python
 async def test_status_updates() -> None:
     app = MyApp()
-
     async with app.run_test() as pilot:
         await pilot.press("enter")
         await pilot.pause()
-
         status = pilot.app.query_one("#status")
         assert status.renderable == "Done"
 ```
@@ -28,7 +26,7 @@ testpaths = ["tests"]
 ## Testing Rules
 
 - keep tests `async def`
-- interact through Pilot API when possible
+- interact through Pilot API where possible
 - assert visible state, not only internals
 - pause after interactions that queue updates
 - wait for workers or animations when timing matters
@@ -152,17 +150,19 @@ async with app.run_test(size=(120, 40)) as pilot:
     assert pilot.app.query_one("#sidebar").is_visible
 ```
 
-## Common Pitfalls
+## Complex Control Pitfalls
 
-| pitfall | fix |
-|---------|-----|
-| assertion fails before update | `await pilot.pause()` |
-| worker result not available | `await pilot.app.workers.wait_for_complete()` |
-| animation state varies | `await pilot.wait_for_animation()` |
-| missing `async def` | all test functions must be `async def` |
-| missing `await` | all pilot methods are async |
+| pitfall                       | fix                                           |
+| ----------------------------- | --------------------------------------------- |
+| assertion fails before update | `await pilot.pause()`                         |
+| worker result not available   | `await pilot.app.workers.wait_for_complete()` |
+| animation state varies        | `await pilot.wait_for_animation()`            |
+| missing `async def`           | all test functions must be `async def`        |
+| missing `await`               | all pilot methods are async                   |
+
 assert pilot.app.size.width == 100
-```
+
+```text
 
 ### Widget Messages and Visible State
 

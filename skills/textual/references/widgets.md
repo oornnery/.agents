@@ -41,13 +41,13 @@ Keep table ids and column setup stable if tests depend on them.
 
 ## Containers
 
-| container | layout |
-|-----------|--------|
-| `Vertical` | children stacked top to bottom |
-| `Horizontal` | children side by side |
-| `Grid` | grid layout with `grid-size`, `grid-gutter` |
-| `Container` | generic, layout via CSS |
-| `ScrollableContainer` | container with overflow scroll |
+| container             | layout                                      |
+| --------------------- | ------------------------------------------- |
+| `Vertical`            | children stacked top to bottom              |
+| `Horizontal`          | children side by side                       |
+| `Grid`                | grid layout with `grid-size`, `grid-gutter` |
+| `Container`           | generic, layout via CSS                     |
+| `ScrollableContainer` | container with overflow scroll              |
 
 Choose container matching layout directly, not piling extra wrappers.
 
@@ -76,7 +76,7 @@ Good custom widgets:
 
 Bad custom widgets:
 
-- giant wrapper around half the app
+- giant wrapper around half app
 - thin alias over one built-in widget with no real behavior
 
 See `references/widget-development.md` for detailed patterns.

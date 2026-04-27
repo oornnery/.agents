@@ -8,24 +8,22 @@ from textual.reactive import reactive
 class MyWidget(Static):
     # Basic
     count: reactive[int] = reactive(0)
-
     # init=False: caller initializes in __init__
     status: reactive[str] = reactive("idle", init=False)
-
     # recompose=True: rebuilds compose() when changed
     items: reactive[list[str]] = reactive(list, recompose=True)
-
     # layout=True: triggers relayout when changed
     visible_rows: reactive[int] = reactive(10, layout=True)
 ```
 
 **Options:**
-| param | effect |
-|-------|--------|
-| `init=False` | must set in `__init__` |
+
+| param            | effect                      |
+| ---------------- | --------------------------- |
+| `init=False`     | must set in `__init__`      |
 | `recompose=True` | calls `compose()` on change |
-| `layout=True` | triggers layout pass |
-| `bindings=True` | refreshes footer bindings |
+| `layout=True`    | triggers layout pass        |
+| `bindings=True`  | refreshes footer bindings   |
 
 Always declare with type: `attr: reactive[Type]`.
 
@@ -40,14 +38,15 @@ def watch_status(self, old_value: str, new_value: str) -> None:
 ```
 
 Rules:
+
 - signature: `watch_{attr}(self, old: T, new: T) -> None`
 - called BEFORE re-render
-- revert/clamp here for validation
+- revert/clamp here for valid
 - use for side effects or cascading reactive updates
 
 ## Mutation Rule
 
-Replace the object -- mutations on lists/dicts don't fire watchers:
+Replace object -- mutations on lists/dicts don't fire watchers:
 
 ```python
 # CORRECT: triggers watch_items
@@ -109,15 +108,12 @@ class StatsWidget(Static):
     total: reactive[float] = reactive(0.0)
     loading: reactive[bool] = reactive(False)
     error: reactive[str | None] = reactive(None)
-
     def __init__(self, **kwargs: object) -> None:
         super().__init__(**kwargs)
         self.data = []
-
     def watch_data(self, old: list[DataPoint], new: list[DataPoint]) -> None:
         self.total = sum(p.value for p in new)
         self.error = None
-
     async def load(self) -> None:
         self.loading = True
         try:
@@ -138,12 +134,10 @@ from textual import work
 
 class WorkerWidget(Widget):
     result: reactive[str | None] = reactive(None)
-
     @work
     async def fetch(self) -> None:
         data = await some_async_call()
         self.result = data  # triggers watcher safely from worker thread
-
     def on_mount(self) -> None:
         self.fetch()
 ```
@@ -155,7 +149,6 @@ class WorkerWidget(Widget):
 ```python
 class MyApp(App):
     page: reactive[int] = reactive(0, bindings=True)
-
     def check_action(self, action: str, parameters: tuple) -> bool | None:
         if action == "next" and self.page == MAX:
             return None  # dims footer binding

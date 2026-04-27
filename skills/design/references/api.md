@@ -1,6 +1,6 @@
 # API
 
-Shape HTTP contracts before implementation. Framework-agnostic rules; examples assume Python/FastAPI/Pydantic.
+Shape HTTP contracts before impl. Framework-agnostic rules; examples assume Python/FastAPI/Pydantic.
 
 ## When to Use
 
@@ -23,23 +23,25 @@ Nouns, preferably plural.
 | task     | `/api/tasks`    |
 
 Avoid verb-heavy routes:
+
 - `POST /api/create-project`
 - `GET /api/getUsers`
 
 Prefer:
+
 - `GET /api/projects`
 - `POST /api/projects`
 - `GET /api/projects/{project_id}`
 
 ### HTTP Methods
 
-| Method | Purpose         | Example                     |
-| ------ | --------------- | --------------------------- |
-| GET    | read            | `GET /api/projects`         |
-| POST   | create          | `POST /api/projects`        |
-| PATCH  | partial update  | `PATCH /api/projects/{id}`  |
-| PUT    | full replace    | `PUT /api/projects/{id}`    |
-| DELETE | remove          | `DELETE /api/projects/{id}` |
+| Method | Purpose        | Example                     |
+| ------ | -------------- | --------------------------- |
+| GET    | read           | `GET /api/projects`         |
+| POST   | create         | `POST /api/projects`        |
+| PATCH  | partial update | `PATCH /api/projects/{id}`  |
+| PUT    | full replace   | `PUT /api/projects/{id}`    |
+| DELETE | remove         | `DELETE /api/projects/{id}` |
 
 ### URL Structure
 
@@ -50,11 +52,13 @@ Prefer:
 ```
 
 Rules:
+
 - nesting depth max two levels
-- route names describe resources, not internal implementation
+- route names describe resources, not internal impl
 - path params explicit and stable: `{project_id}`, not `{x}`
 
 Examples:
+
 - `GET /api/projects`
 - `POST /api/projects`
 - `GET /api/projects/{project_id}`
@@ -64,10 +68,10 @@ Examples:
 
 ## Python Translation
 
-- Pydantic models instead of Zod schemas
+- Pydantic models over Zod schemas
 - FastAPI `Annotated` params for `Path`, `Query`, `Header`, `Depends`
 - `response_model` or explicit return types for stable response filtering
-- thin routers; validation/contract logic at API boundary
+- thin routers; valid/contract logic at API boundary
 - domain/persistence details out of route signatures and response types
 
 ## FastAPI Layout
@@ -89,6 +93,7 @@ src/myapp/api/
 ```
 
 Defaults:
+
 - one router module per resource or cohesive sub-resource
 - shared pagination, error, auth dependencies in `dependencies.py` or `responses.py`
 - Pydantic request/response models in `schemas/`
@@ -147,8 +152,9 @@ Problem Details style, optional field errors.
 ```
 
 Rules:
+
 - error shape as stable as success shape
-- field-level issues for validation failures
+- field-level issues for valid failures
 - no stack traces, raw SQL errors, or library internals
 - map internal exceptions to HTTP errors at boundary
 - `Retry-After` on `429` when rate limiting
@@ -222,6 +228,7 @@ class ProjectListOut(BaseModel):
 ```
 
 Rules:
+
 - request models reflect what clients send, not DB rows
 - response models reflect what clients see, not ORM entities
 - `PATCH` models usually have optional fields
@@ -344,6 +351,7 @@ GET /api/projects?sort=-created_at
 ```
 
 Rules:
+
 - sort keys documented and whitelisted
 - one sort param over loosely-defined combinations
 - `-field` or explicit `order=desc`, stay consistent
@@ -355,6 +363,7 @@ GET /api/projects?search=alpha
 ```
 
 Rules:
+
 - predictable search behavior
 - document prefix, substring, exact, or ranked
 - enforce sensible page/result size limits
@@ -390,7 +399,7 @@ GET /api/projects?cursor=opaque-token&limit=20
 
 ## BFF Boundary
 
-Client needs aggregated/reshaped payloads that don't match core resource model? Load [bff.md](bff.md) instead of overloading base API contract.
+Client needs aggregated/reshaped payloads that don't match core resource model? Load [bff.md](bff.md) over overloading base API contract.
 
 ## API Checklist
 

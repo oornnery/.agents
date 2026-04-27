@@ -49,7 +49,6 @@ Keep pagination explicit:
 async def list_all(client: httpx.AsyncClient) -> list[dict]:
     page = 1
     items: list[dict] = []
-
     while True:
         response = await client.get("/items", params={"page": page})
         response.raise_for_status()
@@ -104,7 +103,7 @@ def iter_chunks() -> bytes:
 response = client.post("/upload", content=iter_chunks())
 ```
 
-Keep upload generators focused on bytes production. Do not mix domain logic and transport iteration.
+Keep upload generators focused on bytes prod. Do not mix domain logic and transport iteration.
 
 ## NDJSON or Line Streams
 

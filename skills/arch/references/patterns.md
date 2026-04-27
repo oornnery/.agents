@@ -4,15 +4,15 @@ Use when need pattern, want lightest shape fitting problem.
 
 ## Selection Guide
 
-| Situation | Pattern | Default Shape |
-| --- | --- | --- |
-| decouple domain from persistence | Repository | `Protocol` plus implementation |
-| centralize object creation | Factory | classmethod or function |
-| swap algorithms at runtime | Strategy | `Protocol` or callable |
-| notify multiple consumers of event | Observer / Event Bus | handler registry |
-| wrap cross-cutting behavior | Decorator | Python decorator with `@wraps` |
-| expose simpler subsystem interface | Facade | module-level helper or thin layer |
-| model explicit state transitions | State | enum plus transition methods |
+| Situation                          | Pattern              | Default Shape                     |
+| ---------------------------------- | -------------------- | --------------------------------- |
+| decouple domain from persistence   | Repository           | `Protocol` plus impl              |
+| centralize object creation         | Factory              | classmethod or function           |
+| swap algorithms at runtime         | Strategy             | `Protocol` or callable            |
+| notify multiple consumers of event | Observer / Event Bus | handler registry                  |
+| wrap cross-cutting behavior        | Decorator            | Python decorator with `@wraps`    |
+| expose simpler subsystem interface | Facade               | module-level helper or thin layer |
+| model explicit state transitions   | State                | enum plus transition methods      |
 
 ## Pattern Workflow
 
@@ -33,18 +33,18 @@ Use when business logic should not know about database or storage engine.
 
 ## Factory
 
-Use when object creation has variants or configuration branching.
+Use when object creation has variants or config branching.
 
 - start with function or classmethod
 - avoid abstract factories unless creation problem genuinely large
-- keep creation logic together instead of leaking across call sites
+- keep creation logic together over leaking across call sites
 
 ## Strategy
 
 Use when behavior changes based on policy, provider, or algorithm choice.
 
 - start with protocol or callable
-- inject strategy instead of branching repeatedly in one function
+- inject strategy over branching repeatedly in one function
 - prefer small stable contract over large class hierarchies
 
 ## Observer / Event Bus
@@ -87,7 +87,7 @@ Use when transitions matter more than raw flags.
 Validate seam pattern was supposed to create:
 
 - Repository: test domain-facing contract separately from persistence adapter
-- Strategy: test each implementation against same expected behavior
+- Strategy: test each impl against same expected behavior
 - Decorator: test wrapper preserves wrapped contract
 - State: test valid and invalid transitions explicitly
 - Observer: test ordering, fan-out, and failure handling where it matters
@@ -102,7 +102,7 @@ Validate seam pattern was supposed to create:
 
 ## Pattern Rules
 
-- start with lightest implementation solving problem
+- start with lightest impl solving problem
 - do not introduce pattern only because name sounds correct
 - prefer explicitness over framework-heavy magic
 - if pattern increases indirection without reducing risk or duplication, stop

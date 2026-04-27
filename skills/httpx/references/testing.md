@@ -107,4 +107,4 @@ Keep narrower + slower than unit tests.
 - no tests depending on public internet services
 - no asserting exact internal order of unrelated headers unless contract requires it
 - no hiding network calls in fixtures that make failures hard to trace
-- no over-mock; test adapter contract, not implementation trivia
+- no over-mock; test adapter contract, not impl trivia

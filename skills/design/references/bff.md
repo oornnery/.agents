@@ -21,13 +21,13 @@ BFF is consumer-facing orchestration layer.
 
 - backend services own core business capabilities
 - BFF owns view-oriented aggregation and shaping
-- clients stay simpler because contract matches the screen/flow
-- domain rules stay in the right service; BFF should not become the real application core
+- clients stay simpler because contract matches screen/flow
+- domain rules stay in right service; BFF should not become real app core
 
 ## Design Workflow
 
-1. identify which frontend/flow the BFF serves
-2. list exact data the screen needs
+1. identify which frontend/flow BFF serves
+2. list exact data screen needs
 3. map which services provide each part
 4. define BFF contract around client need, not upstream payloads
 5. keep orchestration explicit: fetch, combine, normalize, return
@@ -36,7 +36,7 @@ BFF is consumer-facing orchestration layer.
 ## Contract Rules
 
 - keep BFF consumer-focused
-- aggregate only what UI actually needs
+- aggregate only what UI needs
 - avoid leaking raw internal service contracts straight through
 - prefer stable response shapes over mirroring every upstream change
 - normalize naming, nullability, and status semantics at boundary
@@ -65,7 +65,7 @@ Avoid routes leaking service structure:
 
 ## Orchestration Patterns
 
-Choose lightest composition shape that solves the need:
+Choose lightest composition shape that solves need:
 
 - simple fan-out: fetch from several services, combine results
 - enrichment: fetch primary data, attach secondary context
@@ -77,8 +77,8 @@ Keep orchestration explicit and easy to trace. Hidden magic makes BFF failures h
 ## Auth and Trust Boundaries
 
 - BFF must preserve auth and authorization guarantees
-- never widen access just because BFF can see multiple services
-- forward only identity, claims, and headers actually needed
+- never widen access because BFF can see multiple services
+- forward only identity, claims, and headers needed
 - keep service-to-service trust explicit
 - redact or drop fields client should not see, even if upstream returns them
 
@@ -87,13 +87,13 @@ Keep orchestration explicit and easy to trace. Hidden magic makes BFF failures h
 - translate noisy upstream failures into client-appropriate error contract
 - preserve enough detail for debugging without leaking internals
 - define partial-failure behavior explicitly
-- when one section can degrade gracefully, return that state intentionally instead of failing whole screen by accident
+- when one section can degrade gracefully, return that state intentionally over failing whole screen by accident
 - timeouts/retries should reflect user-facing latency budgets, not backend optimism
 
 ## Performance and Caching
 
 - measure fan-out cost before adding more calls
-- cache only where read pattern is actually repeated
+- cache only where read pattern is repeated
 - prefer batching or backend aggregation over many serial calls
 - keep timeout budgets explicit per upstream dependency
 - avoid turning BFF into N+1 factory for client convenience

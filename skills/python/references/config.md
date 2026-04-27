@@ -1,6 +1,6 @@
 # Python Configuration Management
 
-Externalize config from code via env vars + typed settings. Same code runs any environment.
+Externalize config from code via env vars + typed settings. Same code runs any env.
 
 ## When to Use This Skill
 
@@ -8,8 +8,8 @@ Externalize config from code via env vars + typed settings. Same code runs any e
 - Hardcoded values → env vars migration
 - pydantic-settings typed config
 - Secrets/sensitive value management
-- Environment-specific settings (dev/staging/prod)
-- Startup config validation
+- Env-specific settings (dev/staging/prod)
+- Startup config valid
 
 ## Core Concepts
 
@@ -56,23 +56,18 @@ import sys
 
 class Settings(BaseSettings):
     """Application configuration loaded from environment variables."""
-
     # Database
     db_host: str = Field(alias="DB_HOST")
     db_port: int = Field(default=5432, alias="DB_PORT")
     db_name: str = Field(alias="DB_NAME")
     db_user: str = Field(alias="DB_USER")
     db_password: str = Field(alias="DB_PASSWORD")
-
     # Redis
     redis_url: str = Field(default="redis://localhost:6379", alias="REDIS_URL")
-
     # API Keys
     api_secret_key: str = Field(alias="API_SECRET_KEY")
-
     # Feature flags
     enable_new_feature: bool = Field(default=False, alias="ENABLE_NEW_FEATURE")
-
     model_config = {
         "env_file": ".env",
         "env_file_encoding": "utf-8",
@@ -112,7 +107,6 @@ class Settings(BaseSettings):
     # Required - no default means it must be set
     api_key: str = Field(alias="API_KEY")
     database_url: str = Field(alias="DATABASE_URL")
-
     # Optional with defaults
     log_level: str = Field(default="INFO", alias="LOG_LEVEL")
 
@@ -140,14 +134,11 @@ class Settings(BaseSettings):
     # Has local default, but prod will override
     db_host: str = Field(default="localhost", alias="DB_HOST")
     db_port: int = Field(default=5432, alias="DB_PORT")
-
     # Always required - no default for secrets
     db_password: str = Field(alias="DB_PASSWORD")
     api_secret_key: str = Field(alias="API_SECRET_KEY")
-
     # Development convenience
     debug: bool = Field(default=False, alias="DEBUG")
-
     model_config = {"env_file": ".env"}
 ```
 
@@ -201,13 +192,10 @@ from pydantic import Field, field_validator
 class Settings(BaseSettings):
     # Automatically converts "true", "1", "yes" to True
     debug: bool = False
-
     # Automatically converts string to int
     max_connections: int = 100
-
     # Parse comma-separated string to list
     allowed_hosts: list[str] = Field(default_factory=list)
-
     @field_validator("allowed_hosts", mode="before")
     @classmethod
     def parse_allowed_hosts(cls, v: str | list[str]) -> list[str]:
@@ -243,15 +231,12 @@ class Settings(BaseSettings):
         default=Environment.LOCAL,
         alias="ENVIRONMENT",
     )
-
     # Settings that vary by environment
     log_level: str = Field(default="DEBUG", alias="LOG_LEVEL")
-
     @computed_field
     @property
     def is_production(self) -> bool:
         return self.environment == Environment.PRODUCTION
-
     @computed_field
     @property
     def is_local(self) -> bool:
@@ -287,7 +272,6 @@ class Settings(BaseSettings):
     database: DatabaseSettings
     redis: RedisSettings
     debug: bool = False
-
     model_config = {
         "env_nested_delimiter": "__",
         "env_file": ".env",
@@ -317,7 +301,6 @@ from pathlib import Path
 class Settings(BaseSettings):
     # Read from environment variable or file
     db_password: str = Field(alias="DB_PASSWORD")
-
     model_config = {
         "secrets_dir": "/run/secrets",  # Docker secrets location
     }
@@ -327,7 +310,7 @@ Pydantic looks for `/run/secrets/db_password` if env var not set.
 
 ### Pattern 9: Configuration Validation
 
-Custom validation for complex requirements.
+Custom valid for complex requirements.
 
 ```python
 from pydantic_settings import BaseSettings
@@ -338,7 +321,6 @@ class Settings(BaseSettings):
     db_port: int = Field(alias="DB_PORT")
     read_replica_host: str | None = Field(default=None, alias="READ_REPLICA_HOST")
     read_replica_port: int = Field(default=5432, alias="READ_REPLICA_PORT")
-
     @model_validator(mode="after")
     def validate_replica_settings(self):
         if self.read_replica_host and self.read_replica_port == self.db_port:
@@ -352,9 +334,9 @@ class Settings(BaseSettings):
 ## Best Practices Summary
 
 1. **Never hardcode config** - All env-specific values from env vars
-2. **Use typed settings** - Pydantic-settings with validation
+2. **Use typed settings** - Pydantic-settings with valid
 3. **Fail fast** - Crash on missing required config at startup
-4. **Provide dev defaults** - Make local development easy
+4. **Provide dev defaults** - Make local dev easy
 5. **Never commit secrets** - Use `.env` files (gitignored) or secret managers
 6. **Namespace variables** - `DB_HOST`, `REDIS_URL` for clarity
 7. **Import settings singleton** - Don't call `os.getenv()` throughout code

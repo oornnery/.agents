@@ -96,7 +96,7 @@ For drawers/side panels:
 
 - visually distinct open/closed states
 - clear dismissal behavior
-- stable content area when possible
+- stable content area where possible
 
 ## Guardrails
 
