@@ -40,22 +40,22 @@ packages/config/src
 ## Route Map Template
 
 ```md
-| Route | Type | Purpose | Data source | Auth |
-| --- | --- | --- | --- | --- |
-| `/` | public | homepage | static/loader | no |
-| `/services` | public | service list | loader/db | no |
-| `/book` | public | create appointment | action/api | no |
-| `/admin` | private | dashboard | api/db | yes |
+| Route       | Type    | Purpose            | Data source   | Auth |
+| ----------- | ------- | ------------------ | ------------- | ---- |
+| `/`         | public  | homepage           | static/loader | no   |
+| `/services` | public  | service list       | loader/db     | no   |
+| `/book`     | public  | create appointment | action/api    | no   |
+| `/admin`    | private | dashboard          | api/db        | yes  |
 ```
 
 ## Data Model Template
 
 ```md
-| Entity | Purpose | Main fields | Notes |
-| --- | --- | --- | --- |
-| Customer | contact/person | name, phone, email | minimize data |
+| Entity      | Purpose           | Main fields             | Notes              |
+| ----------- | ----------------- | ----------------------- | ------------------ |
+| Customer    | contact/person    | name, phone, email      | minimize data      |
 | Appointment | scheduled service | serviceId, date, status | no medical records |
-| Order | customer order | total, status, channel | payment optional |
+| Order       | customer order    | total, status, channel  | payment optional   |
 ```
 
 ## API Rules

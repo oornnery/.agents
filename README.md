@@ -1,11 +1,11 @@
-# skills
+# agents
 
-Custom skills and agent knowledge base. Use as `.agents` submodule; layer base instructions, variants, commands, skills, hooks, and upstream lockfile.
+Custom agents, skills, commands, and knowledge base. Use as `.agents` submodule; layer base instructions, variants, commands, skills, hooks, and upstream lockfile.
 
 ## Install
 
 ```bash
-git submodule add https://github.com/oornnery/skills .agents
+git submodule add https://github.com/oornnery/agents .agents
 git submodule update --init --recursive
 git submodule update --remote
 ```
@@ -47,8 +47,8 @@ git submodule update --remote
 Install local skill:
 
 ```bash
-npx skills add "https://raw.githubusercontent.com/oornnery/skills/master/skills/python/SKILL.md" -y
-npx skills add "https://github.com/oornnery/skills" --skill python -y
+npx skills add "https://raw.githubusercontent.com/oornnery/agents/master/skills/python/SKILL.md" -y
+npx skills add "https://github.com/oornnery/agents" --skill python -y
 ```
 
 Swap `python` for any folder under `skills/`.

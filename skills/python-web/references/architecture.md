@@ -46,24 +46,24 @@ Collapse modules for simple projects.
 ## Route Map Template
 
 ```md
-| Route | Method | Purpose | Template/Response | Auth |
-| --- | --- | --- | --- | --- |
-| `/` | GET | homepage | `pages/home.html` | no |
-| `/services` | GET | service list | `pages/services.html` | no |
-| `/contact` | GET/POST | lead form | page/partial | no |
-| `/book` | GET/POST | create appointment | page/partial | no |
-| `/admin` | GET | dashboard | `admin/dashboard.html` | yes |
+| Route       | Method   | Purpose            | Template/Response      | Auth |
+| ----------- | -------- | ------------------ | ---------------------- | ---- |
+| `/`         | GET      | homepage           | `pages/home.html`      | no   |
+| `/services` | GET      | service list       | `pages/services.html`  | no   |
+| `/contact`  | GET/POST | lead form          | page/partial           | no   |
+| `/book`     | GET/POST | create appointment | page/partial           | no   |
+| `/admin`    | GET      | dashboard          | `admin/dashboard.html` | yes  |
 ```
 
 ## Data Model Template
 
 ```md
-| Entity | Purpose | Main fields | Notes |
-| --- | --- | --- | --- |
-| Lead | interested contact | name, phone, message, source | minimal personal data |
-| Customer | contact/person | name, phone, email | minimize data |
-| Appointment | scheduled service | service_id, date, status | no medical records |
-| Order | customer order | total, status, channel | payment optional |
+| Entity      | Purpose            | Main fields                  | Notes                 |
+| ----------- | ------------------ | ---------------------------- | --------------------- |
+| Lead        | interested contact | name, phone, message, source | minimal personal data |
+| Customer    | contact/person     | name, phone, email           | minimize data         |
+| Appointment | scheduled service  | service_id, date, status     | no medical records    |
+| Order       | customer order     | total, status, channel       | payment optional      |
 ```
 
 ## SQLModel Baseline
