@@ -5,20 +5,20 @@
 <!--
 Fullstack overlay for server-rendered Python web apps.
 Use for FastAPI backends that render Jinja2 templates, use htmx for HTML-over-
-the-wire interactions, and use Alpine.js only for small client-side behavior.
+-wire interactions, and use Alpine.js only for small client-side behavior.
 -->
 
 ## Project Description
 
 <!-- Brief description of what this project does and why -->
-<!-- Include the primary user flows and the highest-risk integration points -->
+<!-- Include primary user flows and highest-risk integration points -->
 
 ## Stack
 
 ### Backend
 
 - **Framework**: FastAPI
-- **Validation**: Pydantic
+- **Valid**: Pydantic
 - **HTTP Client**: HTTPX
 - **Database**: PostgreSQL + SQLModel
 <!-- - **Cache**: Redis -->
@@ -109,7 +109,7 @@ src/myapp/
 - loading, empty, error, success states explicit in rendered HTML
 - prefer htmx-driven HTML responses over JSON + custom client rendering for normal UI flows
 - Alpine behavior local + small; state surviving navigation or shared across screens moves back to server or explicit API
-- accessibility, focus handling, progressive enhancement part of default implementation
+- accessibility, focus handling, progressive enhancement part of default impl
 
 ## Shared Contract Rules
 
@@ -122,8 +122,8 @@ src/myapp/
 
 ## Integration Rules
 
-<!-- Document how the sides fit together -->
-<!-- - API base URL and environment switching -->
+<!-- Document how sides fit together -->
+<!-- - API base URL and env switching -->
 <!-- - auth token or cookie flow -->
 <!-- - CSRF token handling for form and htmx posts -->
 <!-- - file upload/download path -->
@@ -155,7 +155,7 @@ src/myapp/
 
 ### Verification
 
-- [ ] backend validation passes
+- [ ] backend valid passes
 - [ ] page + fragment rendering paths pass
 - [ ] critical end-to-end flows pass
 - [ ] failure + recovery paths exercised
@@ -166,13 +166,13 @@ src/myapp/
 
 <!-- - API contracts -->
 <!-- - integration with database and external services -->
-<!-- - permission and validation boundaries -->
+<!-- - permission and valid boundaries -->
 
 ### Frontend
 
 <!-- - page rendering and partial rendering -->
 <!-- - htmx request/response behavior -->
-<!-- - form validation and submission -->
+<!-- - form valid and submission -->
 <!-- - accessibility and responsive behavior -->
 
 ### End-to-End

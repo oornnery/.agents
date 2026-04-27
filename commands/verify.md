@@ -26,17 +26,17 @@ Read diff, classify change:
 - bug fix
 - refactor
 - CLI tool
-- configuration
+- config
 - dependencies
 
 Load only relevant skills for surface:
 
-- `skills/python/SKILL.md` for Python code, typing, validation commands, runtime behavior
+- `skills/python/SKILL.md` for Python code, typing, valid commands, runtime behavior
 - `skills/design/SKILL.md` for API, UI, BFF contracts
 - `skills/security/SKILL.md` for auth, trust boundaries, abuse paths, exposure risk
 - `skills/quality/SKILL.md` when regression thinking or RCA should shape verification
 - `skills/cicd/SKILL.md` for GitHub Actions workflow verification
-- `skills/docs/SKILL.md` for documentation-only changes
+- `skills/docs/SKILL.md` for docs-only changes
 
 ### Phase 2: Run the baseline validation suite
 
@@ -80,14 +80,14 @@ Try break change with:
 
 - boundary values: empty, null, max, negative, unicode, long input
 - concurrency: simultaneous calls, shared state, locking, transaction boundaries
-- idempotency: repeat operation, retry request, double-submit
-- state transitions: invalid orderings, partial state, missing validation
+- idempotency: repeat op, retry request, double-submit
+- state transitions: invalid orderings, partial state, missing valid
 
 ### Phase 5: Review security and unintended drift
 
 Check for:
 
-- missing or weakened validation at boundaries
+- missing or weakened valid at boundaries
 - auth, permission, or trust-boundary regressions
 - unexpected file changes or generated churn in diff
 - docs or workflow drift if change touched commands, skills, hooks, or CI

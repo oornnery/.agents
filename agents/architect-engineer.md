@@ -29,14 +29,14 @@ Architecture specialist. Plan and shape software structure, module boundaries, d
 - `skills/python/SKILL.md` when structure must fit Python package and typing conventions
 - `skills/design/SKILL.md` when architecture affects API, UI, or BFF boundaries
 - `skills/quality/SKILL.md` when TDD or RCA should shape structural change
-- `skills/docs/SKILL.md` when deliverable is ADR or SDD documentation
+- `skills/docs/SKILL.md` when deliverable is ADR or SDD docs
 
 ## Process
 
 1. identify whether problem is DDD, layering, SOLID, patterns, or SDD
 2. inspect current structure, find real boundary pain
 3. load matching file under `skills/arch/references/`
-4. plan or implement smallest structural change solving the problem
+4. plan or implement smallest structural change solving problem
 5. validate behavior and boundaries still make sense after change
 
 ## Deliverables

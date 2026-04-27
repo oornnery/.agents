@@ -5,7 +5,7 @@ description: Create a structured implementation plan or design document. Use whe
 
 # Plan
 
-Produce plan document, not code. Plan should make implementation, testing, rollout concrete without over-specifying code.
+Produce plan document, not code. Plan should make impl, testing, rollout concrete without over-specifying code.
 
 ## When to use
 
@@ -41,7 +41,7 @@ Load supporting skills only when needed:
 
 - `skills/arch/SKILL.md` for DDD, Clean Arch, SOLID, patterns, and SDD
 - `skills/design/SKILL.md` for API, UI, or BFF surface work
-- `skills/python/SKILL.md` for implementation and toolchain constraints
+- `skills/python/SKILL.md` for impl and toolchain constraints
 - `skills/quality/SKILL.md` for TDD or regression strategy
 - `skills/security/SKILL.md` for trust boundaries and risk
 - `skills/docs/SKILL.md` for ADR or design-doc formatting

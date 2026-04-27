@@ -27,7 +27,7 @@ Load relevant skills:
 
 ### 2. Choose narrow refactor target
 
-One maintainability problem at a time:
+One maintainability problem at time:
 
 - duplicated logic
 - unclear module boundaries
@@ -38,7 +38,7 @@ One maintainability problem at a time:
 
 ### 3. Refactor in small steps
 
-- one logical change at a time
+- one logical change at time
 - validate after each meaningful step
 - preserve public behavior unless explicitly asked
 - keep style churn out of diff
@@ -56,7 +56,7 @@ Summarize:
 
 - preserve external behavior
 - no sneaked feature work
-- don't rewrite stable code just because old
+- don't rewrite stable code because old
 - don't mix broad renames with structural changes unless required
 - if correctness or security bug found requiring behavioral change, stop and surface separately -- don't fold into refactor
 

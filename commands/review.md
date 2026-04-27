@@ -36,12 +36,12 @@ Use matching local skills:
 - `skills/quality/SKILL.md` for missing tests or RCA concerns
 - `skills/security/SKILL.md` for auth, trust boundaries, injection, or secrets
 - `skills/cicd/SKILL.md` for GitHub Actions workflow changes
-- `skills/docs/SKILL.md` for Markdown and documentation work
+- `skills/docs/SKILL.md` for Markdown and docs work
 
 ### 3. Review by concern
 
 - correctness: edge cases, error paths, race conditions
-- security: validation, auth, secrets, injection, data exposure
+- security: valid, auth, secrets, injection, data exposure
 - performance: N+1s, unbounded loops, blocking in async, wasteful queries
 - maintainability: SRP, dead code, magic values, unclear comments
 - convention adherence: naming, style, project patterns
@@ -83,7 +83,7 @@ Each finding include:
 
 - review only; do not edit code
 - skip nitpicks already enforced by tooling
-- skip generated files when possible
+- skip generated files where possible
 - focus on actionable findings
 
 ## Optional routing

@@ -5,7 +5,7 @@ description: Fix failing validation incrementally with the smallest safe diff. U
 
 # Build Fix
 
-Fix broken validation one surface at time. Minimal safe diffs, fast feedback per fix.
+Fix broken valid one surface at time. Minimal safe diffs, fast feedback per fix.
 
 ## Skills to use
 
@@ -55,7 +55,7 @@ Prefer this order:
 4. types
 5. tests
 
-Within a check, fix one file or one tightly related error group at a time.
+Within check, fix one file or one tightly related error group at time.
 
 ### 4. Re-run the same failing check after each fix
 
@@ -63,12 +63,12 @@ Do not jump to full suite after every tiny change. Confirm immediate failure gon
 
 ### 5. Stop when the problem is no longer a build fix
 
-Escalate instead of forcing when:
+Escalate over forcing when:
 
 - fix requires dependency install or lockfile changes
 - fix requires architectural redesign
 - same error survives multiple focused attempts
-- change would alter intended behavior instead of restoring validation
+- change would alter intended behavior over restoring valid
 
 ## Output
 
@@ -78,11 +78,11 @@ Report:
 - files changed
 - failures fixed
 - failures remaining
-- whether full validation was re-run
+- whether full valid was re-run
 
 ## Constraints
 
 - prefer minimal diffs over cleanup
 - do not mix bug fixes with opportunistic refactors
 - do not suppress failing checks to look green
-- do not claim success without rerunning the relevant command
+- do not claim success without rerunning relevant command

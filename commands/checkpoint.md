@@ -5,13 +5,13 @@ description: Record or compare known-good state during implementation. Use befor
 
 # Checkpoint
 
-Capture, compare known-good states during implementation.
+Capture, compare known-good states during impl.
 
 ## Operations
 
 ### Create
 
-Record named checkpoint after running relevant validation suite.
+Record named checkpoint after running relevant valid suite.
 
 Suggested local format:
 
@@ -41,19 +41,19 @@ Record:
 - current short SHA
 - current branch
 - timestamp
-- validation status: `green` or `yellow`
+- valid status: `green` or `yellow`
 - optional note explaining why not green
 
-Green checkpoint requires passing validation for changed surface.
+Green checkpoint requires passing valid for changed surface.
 
 ### Verify against a checkpoint
 
 Compare current state to previous checkpoint:
 
 1. pick checkpoint SHA from `.checkpoints/log.jsonl`
-2. rerun relevant validation suite
+2. rerun relevant valid suite
 3. inspect `git diff <checkpoint-sha>..HEAD --stat`
-4. summarize what changed, whether validation still holds
+4. summarize what changed, whether valid still holds
 
 ### List
 
@@ -73,9 +73,9 @@ jq -r '[.name, .sha, .branch, .status, .date] | @tsv' .checkpoints/log.jsonl
 ## Constraints
 
 - checkpoint means "known validated state", not "feature complete"
-- if validation not green, mark yellow and explain why
+- if valid not green, mark yellow and explain why
 - do not treat stale checkpoints as proof current tree is healthy
-- do not create checkpoint without recording what was actually validated
+- do not create checkpoint without recording what was validated
 
 ## Related
 

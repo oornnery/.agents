@@ -5,12 +5,12 @@
 <!--
 Python library overlay.
 Use for packages published internally or externally where public API stability,
-packaging, versioning, and usage documentation need stronger emphasis.
+packaging, versioning, and usage docs need stronger emphasis.
 -->
 
 ## Project Description
 
-<!-- Brief description of the library, target users, and supported use cases -->
+<!-- Brief description of library, target users, and supported use cases -->
 
 ## Stack
 
@@ -113,7 +113,7 @@ tests/
 
 ## Environment Variables
 
-<!-- Include only if the library genuinely depends on env-driven behavior -->
+<!-- Include only if library genuinely depends on env-driven behavior -->
 
 ## Project-Specific Guardrails
 

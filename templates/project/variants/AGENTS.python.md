@@ -5,7 +5,7 @@
 <!--
 Python project overlay.
 Use for Python apps, services, packages, internal tools needing
-project-specific stack, commands, layout, validation entrypoints.
+project-specific stack, commands, layout, valid entrypoints.
 -->
 
 ## Project Description
@@ -19,7 +19,7 @@ project-specific stack, commands, layout, validation entrypoints.
 - **Lint and Format**: Ruff
 - **Type Check**: ty
 - **Tests**: pytest
-- **Validation**: Pydantic
+- **Valid**: Pydantic
 - **HTTP Client**: HTTPX
 <!-- - **Persistence**: SQLModel / SQLAlchemy / PostgreSQL -->
 
@@ -91,14 +91,14 @@ tests/
 ## Preferred Libraries
 
 - `Pydantic` for validated external data, typed settings, explicit contracts
-- `HTTPX` for sync/async HTTP instead of older clients
+- `HTTPX` for sync/async HTTP over older clients
 - `Parsel` for HTML/XML extraction
 - `Polars` for dataframe-style analytics or tabular data processing
 - `SQLModel` for typed SQLAlchemy-based models and schema-like persistence ergonomics
 
 ## Toolchain and Package Rules
 
-- `uv` as single package/environment workflow
+- `uv` as single package/env workflow
 - `uv add` for runtime deps, `uv add --dev` for dev deps
 - `uv run` for project commands, `uvx` for one-off tools outside project
 - `pyproject.toml` and `uv.lock` = source of truth for installs
@@ -170,7 +170,7 @@ Promote to real project once it grows multiple modules, commands, or shared logi
 ## Validation, Error, and Design Rules
 
 - validate external input at boundaries only, pass typed values inward
-- validation, parsing, normalization close to edge
+- valid, parsing, normalization close to edge
 - raise exceptions matching real failure, helping caller react
 - partial failure behavior explicit in batch, retry, streaming flows
 - composition over inheritance-heavy designs
@@ -207,18 +207,18 @@ Promote to real project once it grows multiple modules, commands, or shared logi
 ## Python Review Focus
 
 - hidden IO inside reusable logic
-- weak or missing boundary validation
+- weak or missing boundary valid
 - ORM, transport, framework types leaking into shared code
 - uncontained `Any`, unchecked casts, type-eroding helpers
 - retries, timeouts, cleanup, partial failure hidden in business code
-- tests overfitting implementation details instead of behavior
+- tests overfitting impl details over behavior
 
 ## Common Build Fixes
 
 | Tool        | Error Pattern             | Fix                                  |
 | ----------- | ------------------------- | ------------------------------------ |
 | ruff format | file would be reformatted | `uv run ruff format <file>`          |
-| ruff check  | import unused             | remove the import                    |
+| ruff check  | import unused             | remove import                        |
 | ruff check  | missing type annotation   | add annotation                       |
 | ty          | incompatible type         | fix type or add cast                 |
 | ty          | module not found          | add dependency or fix import path    |
@@ -228,25 +228,25 @@ Promote to real project once it grows multiple modules, commands, or shared logi
 
 ## Common Debug Patterns
 
-| Symptom                 | Check                                      |
-| ----------------------- | ------------------------------------------ |
-| `TypeError`             | wrong type passed; check function signature|
-| `AttributeError`        | missing attribute; check object type       |
-| `ImportError`           | missing dependency or circular import      |
-| `KeyError`              | missing dict key; check input data shape   |
-| `TimeoutError`          | slow I/O or infinite loop                  |
-| validation failure      | model or schema mismatch; check payload    |
-| flaky test              | shared state, timing, or ordering issue    |
-| works locally, fails CI | env difference: deps, Python version, or OS|
+| Symptom                 | Check                                       |
+| ----------------------- | ------------------------------------------- |
+| `TypeError`             | wrong type passed; check function signature |
+| `AttributeError`        | missing attribute; check object type        |
+| `ImportError`           | missing dependency or circular import       |
+| `KeyError`              | missing dict key; check input data shape    |
+| `TimeoutError`          | slow I/O or infinite loop                   |
+| valid failure           | model or schema mismatch; check payload     |
+| flaky test              | shared state, timing, or ordering issue     |
+| works locally, fails CI | env difference: deps, Python version, or OS |
 
 ## When the Project Includes FastAPI
 
 - `Annotated` for request parameters and dependencies
 - routes thin, orchestration in `services/` or `core/`
 - explicit return types or `response_model` for public handlers
-- `def` instead of `async def` when internals block
+- `def` over `async def` when internals block
 - no blocking file, database, or network work inside async handlers
-- auth, validation, uploads, callbacks, error shapes explicit at edge
+- auth, valid, uploads, callbacks, error shapes explicit at edge
 
 ## Python Checklist
 
@@ -254,7 +254,7 @@ Promote to real project once it grows multiple modules, commands, or shared logi
 
 - [ ] `pyproject.toml` is source of truth
 - [ ] dependencies and dev dependencies explicit
-- [ ] validation entrypoints clear
+- [ ] valid entrypoints clear
 - [ ] config and secrets stay out of source code
 
 ### Code Structure
@@ -275,7 +275,7 @@ Promote to real project once it grows multiple modules, commands, or shared logi
 
 ### Correctness and Safety
 
-- [ ] boundary validation explicit
+- [ ] boundary valid explicit
 - [ ] file paths and external input validated
 - [ ] parameterized queries used
 - [ ] retries, timeouts, cleanup behavior explicit
@@ -293,7 +293,7 @@ Promote to real project once it grows multiple modules, commands, or shared logi
 ## Testing Focus
 
 <!-- - business rules -->
-<!-- - validation and error paths -->
+<!-- - valid and error paths -->
 <!-- - external integration boundaries -->
 <!-- - regression tests for known failure modes -->
 

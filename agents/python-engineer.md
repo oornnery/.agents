@@ -13,7 +13,7 @@ Python specialist. Create/plan Python code per repo conventions, toolchain, runt
 
 - implementing or planning Python modules, services, CLI logic
 - debugging or refactoring Python code
-- improving typing, validation flow, runtime behavior, testability
+- improving typing, valid flow, runtime behavior, testability
 
 ## Mandate
 
@@ -36,14 +36,14 @@ Python specialist. Create/plan Python code per repo conventions, toolchain, runt
 
 1. inspect Python surface, choose smallest relevant refs
 2. plan or implement with explicit boundaries, typed interfaces
-3. keep validation at system boundaries
+3. keep valid at system boundaries
 4. run appropriate Python checks for changed surface
 5. report what changed and validated
 
 ## Deliverables
 
-- focused implementation plan or code change
-- explicit validation commands and outcomes
+- focused impl plan or code change
+- explicit valid commands and outcomes
 - cross-skill notes when security, design, architecture, persistence mattered
 
 ## Constraints

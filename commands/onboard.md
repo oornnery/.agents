@@ -5,7 +5,7 @@ description: Project onboarding and environment verification. Use when starting 
 
 # Onboard
 
-Onboard project before changes. Goal: understand stack, toolchain, validation, repo shape with minimum reading.
+Onboard project before changes. Goal: understand stack, toolchain, valid, repo shape with minimum reading.
 
 ## Process
 
@@ -68,9 +68,9 @@ Check in this order:
 1. task aliases in `pyproject.toml`
 2. direct `uv run` commands
 3. repo docs or scripts
-4. CI configuration if needed
+4. CI config if needed
 
-For Python repos, default validation order:
+For Python repos, default valid order:
 
 ```bash
 uv run ruff format --check .
@@ -86,13 +86,13 @@ Identify:
 
 - repo layout and main packages
 - architecture style in use
-- how configuration is loaded
+- how config is loaded
 - where tests live and how they are grouped
 - recent momentum from `git log --oneline -10`
 
 ### 6. Suggest the right local skills
 
-Recommend only what fits the repo:
+Recommend only what fits repo:
 
 - `skills/python/SKILL.md` for Python code and tooling
 - `skills/design/SKILL.md` for API, UI, or BFF work
@@ -113,7 +113,7 @@ Summarize:
 - project type detected
 - toolchain status
 - dependency install status
-- validation entrypoints found
+- valid entrypoints found
 - repo layout and architecture notes
 - suggested local skills
 
@@ -122,4 +122,4 @@ Summarize:
 - inspect before editing
 - prefer targeted search over broad shell noise
 - do not install unrelated tools or dependencies
-- report missing tools plainly instead of guessing
+- report missing tools plainly over guessing

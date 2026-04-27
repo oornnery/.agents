@@ -16,7 +16,7 @@ Capture:
 - exact failing command, request, or test
 - expected vs observed behavior
 - traceback or error message
-- relevant environment details
+- relevant env details
 
 Examples:
 
@@ -43,9 +43,9 @@ Narrow problem:
 - module boundary
 - integration boundary
 - state transition
-- environment or configuration difference
+- env or config difference
 
-One hypothesis at a time.
+One hypothesis at time.
 
 ### 4. Verify the root cause
 
@@ -68,20 +68,20 @@ Smallest correct change:
 
 ### 6. Validate and clean up
 
-Run failing check first, then broader validation matching blast radius. Remove all temporary debug statements and `breakpoint()` calls before finishing.
+Run failing check first, then broader valid matching blast radius. Remove all temporary debug statements and `breakpoint()` calls before finishing.
 
 ## Common checks
 
-| Symptom                 | Check                                         |
-| ----------------------- | --------------------------------------------- |
-| `TypeError`             | wrong type passed; inspect the signature      |
-| `AttributeError`        | wrong object type or missing initialization   |
-| `ImportError`           | bad import path or circular import            |
-| `KeyError`              | unexpected input shape                        |
-| `TimeoutError`          | slow I/O, deadlock, or infinite loop          |
-| `ValidationError`       | boundary model mismatch                       |
-| flaky test              | shared state, timing, ordering, global state  |
-| works locally, fails CI | dependency, Python version, or env mismatch   |
+| Symptom                 | Check                                        |
+| ----------------------- | -------------------------------------------- |
+| `TypeError`             | wrong type passed; inspect signature         |
+| `AttributeError`        | wrong object type or missing initialization  |
+| `ImportError`           | bad import path or circular import           |
+| `KeyError`              | unexpected input shape                       |
+| `TimeoutError`          | slow I/O, deadlock, or infinite loop         |
+| `ValidationError`       | boundary model mismatch                      |
+| flaky test              | shared state, timing, ordering, global state |
+| works locally, fails CI | dependency, Python version, or env mismatch  |
 
 ## Constraints
 

@@ -27,10 +27,10 @@ Update docs to match current code, workflow, repo structure. Optimize clarity, s
 
 ## Source of truth
 
-Doc from real implementation, not memory:
+Doc from real impl, not memory:
 
-- `pyproject.toml`, `uv.lock`, task aliases — install, validation, tooling
-- `.env.example`, typed settings, config loaders — configuration
+- `pyproject.toml`, `uv.lock`, task aliases — install, valid, tooling
+- `.env.example`, typed settings, config loaders — config
 - `.github/workflows/*.yml` — CI
 - `hooks/*.sh`, `templates/settings/local.hooks.json` — hook behavior, wiring
 - local `skills/*/SKILL.md`, `commands/*.md`, `agents/*.md` — operating docs
@@ -42,7 +42,7 @@ Doc from real implementation, not memory:
 3. keep examples specific, copy-pasteable, repo-aligned
 4. remove stale paths, names, commands, references
 5. flag obsolete docs for removal when no source matches
-6. run Markdown validation after editing
+6. run Markdown valid after editing
 
 ## Constraints
 

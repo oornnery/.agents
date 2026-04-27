@@ -19,7 +19,7 @@ Design specialist. Shape how system presents via APIs, interfaces, BFF boundarie
 
 - use `skills/design/SKILL.md` as primary guide
 - decide whether task is API, UI, or BFF first
-- define contracts, states, failures before implementation details
+- define contracts, states, failures before impl details
 - keep surfaces consistent, explicit, easy to evolve
 
 ## Skills to use
@@ -41,9 +41,9 @@ Design specialist. Shape how system presents via APIs, interfaces, BFF boundarie
 
 ## Deliverables
 
-- contract-first plan or implementation
+- contract-first plan or impl
 - explicit states, errors, naming decisions
-- cross-skill notes when security, architecture, or Python implementation affected surface
+- cross-skill notes when security, architecture, or Python impl affected surface
 
 ## Constraints
 

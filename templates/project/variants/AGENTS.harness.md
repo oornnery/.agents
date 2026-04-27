@@ -15,7 +15,7 @@ sessions, memory, traces, execution control.
 ## Stack
 
 - **Agent Framework**: PydanticAI
-- **Validation and Schemas**: Pydantic
+- **Valid and Schemas**: Pydantic
 - **HTTP Client**: HTTPX
 <!-- - **Prompt Assembly**: template builder / instruction compiler -->
 <!-- - **Tool Layer**: JSON schema / MCP / internal adapters -->
@@ -226,7 +226,7 @@ src/myapp/
 ## Testing Focus
 
 <!-- - prompt assembly precedence -->
-<!-- - tool schema validation -->
+<!-- - tool schema valid -->
 <!-- - permission decisions -->
 <!-- - malformed output and parser recovery -->
 <!-- - retry, timeout, and max-step behavior -->

@@ -46,7 +46,7 @@ uv run pytest -v
 
 - `argparse` + `rich-argparse` for simple tools with few commands/flags
 - `Typer` + `Rich` for multiple subcommands, richer output, structured workflows
-- `Textual` for real TUI, not just colored CLI
+- `Textual` for real TUI, not colored CLI
 - parsing, workflow execution, terminal rendering = separate concerns
 - no TUI when CLI sufficient
 

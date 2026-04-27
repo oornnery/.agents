@@ -9,12 +9,12 @@ Python HTTP services — request handling, schema design, runtime behavior on to
 
 ## Project Description
 
-<!-- Brief description of the API, its clients, and its critical trust boundaries -->
+<!-- Brief description of API, its clients, and its critical trust boundaries -->
 
 ## Stack
 
 - **Framework**: FastAPI
-- **Validation**: Pydantic
+- **Valid**: Pydantic
 - **HTTP Client**: HTTPX
 - **Preferred Persistence**: SQLModel
 <!-- - **Persistence**: SQLModel / SQLAlchemy -->
@@ -44,7 +44,7 @@ uv run pytest -v
 - routes thin, orchestration in `services/` or `core/`
 - explicit return types or `response_model` for public handlers
 - prefer `def` over `async def` when blocking
-- request validation, auth, permission checks explicit at edge
+- request valid, auth, permission checks explicit at edge
 - no ORM/persistence shapes in API responses
 
 ## Preferred Libraries
@@ -85,7 +85,7 @@ src/myapp/
 ## Error and Contract Rules
 
 - consistent status codes + response shapes
-- validation errors, auth failures, business conflicts distinguishable
+- valid errors, auth failures, business conflicts distinguishable
 - document pagination, filtering, sorting when relevant
 - file uploads, webhooks, external callbacks = high-risk
 

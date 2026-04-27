@@ -36,7 +36,7 @@ Choose one:
 
 - existing skill ref
 - new focused skill
-- command or agent doc if really procedural
+- command or agent doc if procedural
 
 No duplicate ideas across multiple places.
 
