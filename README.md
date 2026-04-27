@@ -12,16 +12,16 @@ git submodule update --remote
 
 ## Layout
 
-| Path                                        | Purpose                                               |
-| ------------------------------------------- | ----------------------------------------------------- |
-| `templates/project/variants/AGENTS.base.md` | generic base agent instructions                       |
-| `templates/project/variants/AGENTS.*.md`    | project/stack overlays                                |
-| `commands/`                                 | workflow entrypoints                                  |
-| `agents/`                                   | Python/design/architecture/security personas          |
-| `skills/`                                   | local domain skills, loaded on demand                 |
-| `hooks/`                                    | RTK rewrite, safety gates, autofix, lifecycle helpers |
-| `templates/`                                | project, stack, CI, and settings templates            |
-| `skills-lock.json`                          | upstream skill reinstall lockfile                     |
+| Path                                        | Purpose                                                |
+| ------------------------------------------- | ------------------------------------------------------ |
+| `templates/project/variants/AGENTS.base.md` | generic base agent instructions                        |
+| `templates/project/variants/AGENTS.*.md`    | project/stack overlays                                 |
+| `commands/`                                 | workflow entrypoints                                   |
+| `agents/`                                   | Python/design/architecture/security/web personas       |
+| `skills/`                                   | local domain skills, loaded on demand                  |
+| `hooks/`                                    | RTK rewrite, safety gates, autofix, lifecycle helpers  |
+| `templates/`                                | project, stack, CI, and settings templates             |
+| `skills-lock.json`                          | upstream skill reinstall lockfile                      |
 
 ## Commands
 
@@ -42,7 +42,7 @@ git submodule update --remote
 
 ## Local Skills
 
-`arch`, `building-agents`, `cicd`, `design`, `docs`, `git`, `hooks`, `htmx`, `httpx`, `jinja2`, `polars`, `python`, `quality`, `rich`, `rtk`, `security`, `skill-builder`, `sqlmodel`, `textual`.
+`arch`, `building-agents`, `cicd`, `design`, `docs`, `git`, `hooks`, `htmx`, `httpx`, `jinja2`, `polars`, `python`, `python-web`, `quality`, `rich`, `rtk`, `security`, `skill-builder`, `sqlmodel`, `textual`, `typescript-web`.
 
 Install local skill:
 
