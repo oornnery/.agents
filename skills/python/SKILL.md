@@ -64,8 +64,12 @@ Validation discovery order:
 - `uv`
 - `ruff`
 - `ty`
+- `pyright`
 - `pytest`
 - `rumdl`
+- `taskipy`
+- `pre-commit`
+- `bandit`
 - `rtk`
 
 ## Validation
@@ -75,6 +79,7 @@ uv run ruff format --check .
 uv run ruff check .
 uv run rumdl check .
 uv run ty check
+uv run pyright
 uv run pytest -v
 ```
 
@@ -83,17 +88,25 @@ Prefer task aliases when repo defines them:
 ```bash
 uv run task lint
 uv run task fmt
+uv run task type
 uv run task test
 uv run task test-cov
+uv run task sec
 ```
 
 Verify tools:
 
 ```bash
 uv --version
-ruff --version
-ty --version
 python --version
+uv run ruff --version
+uv run ty --version
+uv run pyright --version
+uv run pytest --version
+uv run rumdl --version
+uv run task --version
+uv run pre-commit --version
+uv run bandit --version
 ```
 
 Install deps:
@@ -131,14 +144,16 @@ Order:
 5. tests
 
 After each fix, rerun failing check. Stop/report if fix needs architecture change.
+Run `uv run task sec` for explicit security review; do not treat it as part of the default quick check unless the repo opts in.
 
 Common fixes:
 
-| Tool   | Signal                   | Fix                                  |
-| ------ | ------------------------ | ------------------------------------ |
-| ruff   | formatting/import/style  | format or remove/fix code            |
-| ty     | type/import mismatch     | fix type, import path, or dependency |
-| pytest | assertion/import/fixture | fix logic, path, or fixture          |
+| Tool    | Signal                   | Fix                                  |
+| ------- | ------------------------ | ------------------------------------ |
+| ruff    | formatting/import/style  | format or remove/fix code            |
+| ty      | type/import mismatch     | fix type, import path, or dependency |
+| pyright | type/import mismatch     | fix type, import path, or dependency |
+| pytest  | assertion/import/fixture | fix logic, path, or fixture          |
 
 ## Debug
 

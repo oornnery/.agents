@@ -17,7 +17,7 @@ project-specific stack, commands, layout, valid entrypoints.
 - **Python**: 3.12+
 - **Package Manager**: uv
 - **Lint and Format**: Ruff
-- **Type Check**: ty
+- **Type Check**: ty + pyright
 - **Tests**: pytest
 - **Valid**: Pydantic
 - **HTTP Client**: HTTPX
@@ -29,6 +29,7 @@ project-specific stack, commands, layout, valid entrypoints.
 uv sync                          # Install dependencies
 uv run python -m myapp           # Start the app entrypoint
 uv run task check                # Run full validation
+uv run task sec                  # Run explicit Bandit security scan
 uv run pytest -v                 # Run the test suite
 ```
 
@@ -39,6 +40,7 @@ uv run ruff format --check .
 uv run ruff check .
 uv run rumdl check .
 uv run ty check src
+uv run pyright
 uv run pytest -v
 ```
 
@@ -56,9 +58,15 @@ Prefer task aliases when they map cleanly to real commands.
 
 ```bash
 uv --version
-ruff --version
-ty --version
 python --version
+uv run ruff --version
+uv run ty --version
+uv run pyright --version
+uv run pytest --version
+uv run rumdl --version
+uv run task --version
+uv run pre-commit --version
+uv run bandit --version
 ```
 
 ## Layout
@@ -103,6 +111,8 @@ tests/
 - `uv run` for project commands, `uvx` for one-off tools outside project
 - `pyproject.toml` and `uv.lock` = source of truth for installs
 - task aliases only when readable and map cleanly to real commands
+- `pre-commit` may be installed for local guardrails but should not be required for every agent command
+- `bandit` runs as explicit security review via `task sec`, not as default `task check`
 - packaging metadata, entrypoints, dep groups explicit when shipping library or CLI
 
 ## UV Inline Scripts
@@ -271,6 +281,7 @@ Promote to real project once it grows multiple modules, commands, or shared logi
 - [ ] `ruff check`
 - [ ] `rumdl check`
 - [ ] `ty check`
+- [ ] `pyright`
 - [ ] `pytest`
 
 ### Correctness and Safety

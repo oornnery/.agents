@@ -14,7 +14,9 @@ build-backend = "hatchling.build"
 
 [dependency-groups]
 dev = [
+    "bandit>=1.8",
     "pre-commit>=4.0",
+    "pyright>=1.1",
     "ruff>=0.11",
     "rumdl>=0.1.72",
     "taskipy>=1.14",
@@ -48,6 +50,12 @@ docstring-code-format = true
 [tool.ty.rules]
 all = "error"
 
+[tool.pyright]
+pythonVersion = "3.12"
+typeCheckingMode = "strict"
+include = ["src"]
+exclude = ["build", "dist", ".venv"]
+
 [tool.pytest.ini_options]
 minversion = "8.0"
 testpaths = ["tests"]
@@ -57,7 +65,9 @@ addopts = ["-v", "--tb=short"]
 
 [tool.taskipy.tasks]
 fmt = "ruff format ."
-lint = "ruff check . --fix && ty check src"
+lint = "ruff check . --fix"
+type = "ty check src && pyright"
 test = "pytest -v"
 mdlint = "rumdl check ."
-check = "task fmt && task lint && task mdlint && task test"
+sec = "bandit -r src"
+check = "task fmt && task lint && task type && task mdlint && task test"

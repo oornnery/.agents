@@ -16,4 +16,5 @@ jobs:
       - run: uv run ruff check .
       - run: uv run rumdl check .
       - run: uv run ty check
+      - run: uv run pyright
       - run: uv run pytest -v --cov=src --cov-report=term-missing

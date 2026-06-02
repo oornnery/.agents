@@ -13,7 +13,9 @@ build-backend = "hatchling.build"
 [dependency-groups]
 # Development tooling used by the default validation flow.
 dev = [
+    "bandit>=1.8",
     "pre-commit>=4.0",
+    "pyright>=1.1",
     "ruff>=0.11",
     "rumdl>=0.1.72",
     "taskipy>=1.14",
@@ -77,6 +79,12 @@ docstring-code-format = true # format Python examples inside docstrings
 [tool.ty.rules]
 all = "error"
 
+[tool.pyright]
+pythonVersion = "3.12"
+typeCheckingMode = "strict"
+include = ["src"]
+exclude = ["build", "dist", ".venv"]
+
 [tool.ty.src]
 exclude = ["build", "dist", ".venv", "tests/fixtures/**", "examples/"]
 
@@ -112,7 +120,8 @@ skip_covered = false
 fmt = "ruff format ."
 
 # Lint and type-check the source tree explicitly.
-lint = "ruff check . --fix && ty check src"
+lint = "ruff check . --fix"
+type = "ty check src && pyright"
 
 # Keep the default test task simple and visible.
 test = "pytest -v"
@@ -120,6 +129,7 @@ test = "pytest -v"
 # Markdown quality gates.
 mdlint = "rumdl check ."
 mdfmt = "rumdl fmt ."
+sec = "bandit -r src"
 
 # Full local validation flow.
-check = "task fmt && task lint && task mdlint && task test"
+check = "task fmt && task lint && task type && task mdlint && task test"

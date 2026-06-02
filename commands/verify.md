@@ -47,6 +47,7 @@ uv run ruff format --check .
 uv run ruff check .
 uv run rumdl check .
 uv run ty check
+uv run pyright
 uv run pytest -v
 ```
 
@@ -59,6 +60,13 @@ Other surfaces, run closest equivalent first:
 - mixed changes: baseline suite plus surface-specific command
 
 If baseline validation fails, record before moving on.
+For security-sensitive Python changes, also run the explicit security task when present:
+
+```bash
+uv run task sec
+```
+
+Bandit findings require triage; do not hide them by folding Bandit into unrelated checks.
 
 ### Phase 3: Check changed behaviors directly
 

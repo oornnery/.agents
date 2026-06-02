@@ -31,9 +31,15 @@ Python:
 
 ```bash
 uv --version
-ruff --version
-ty --version
 python --version
+uv run ruff --version
+uv run ty --version
+uv run pyright --version
+uv run pytest --version
+uv run rumdl --version
+uv run task --version
+uv run pre-commit --version
+uv run bandit --version
 ```
 
 Frontend:
@@ -77,7 +83,14 @@ uv run ruff format --check .
 uv run ruff check .
 uv run rumdl check .
 uv run ty check
+uv run pyright
 uv run pytest -v
+```
+
+Security review is explicit, not part of the default validation order:
+
+```bash
+uv run task sec
 ```
 
 ### 5. Map the project before editing
