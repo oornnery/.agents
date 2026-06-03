@@ -1,6 +1,18 @@
 {
   "version": 1,
   "skills": {
+    "alert-manager": {
+      "source": "aaron-he-zhu/seo-geo-claude-skills",
+      "sourceType": "github",
+      "skillPath": "monitor/alert-manager/SKILL.md",
+      "computedHash": "45b494a4d25cffa8b0349d29e03bdeb5c3254503add1f06b3ed8f29e441c5e74"
+    },
+    "backlink-analyzer": {
+      "source": "aaron-he-zhu/seo-geo-claude-skills",
+      "sourceType": "github",
+      "skillPath": "monitor/backlink-analyzer/SKILL.md",
+      "computedHash": "856f848b53af09acaefceab15d90f597e0a99f3f7e944af4426ca68739cfce84"
+    },
     "backprop": {
       "source": "JuliusBrussee/cavekit",
       "sourceType": "github",
@@ -46,30 +58,369 @@
       "sourceType": "github",
       "computedHash": "9318e8cf08cbb3be90cb1970d4cfa225f18645f5775d83e2bce83c2dc813220a"
     },
+    "competitor-analysis": {
+      "source": "aaron-he-zhu/seo-geo-claude-skills",
+      "sourceType": "github",
+      "skillPath": "research/competitor-analysis/SKILL.md",
+      "computedHash": "f7970cf8361aa8be8b1fc2853b0ae67a5906a7598904ba8cfe14258c2fd6ed7c"
+    },
     "compress": {
       "source": "JuliusBrussee/caveman",
       "sourceType": "github",
       "computedHash": "05c97bc3120108acd0b80bdef7fb4fa7c224ba83c8d384ccbc97f92e8a065918"
+    },
+    "content-gap-analysis": {
+      "source": "aaron-he-zhu/seo-geo-claude-skills",
+      "sourceType": "github",
+      "skillPath": "research/content-gap-analysis/SKILL.md",
+      "computedHash": "05ae4961898988680f0529e67171befbe8c51d025c47aa066d005fe79f868da5"
+    },
+    "content-quality-auditor": {
+      "source": "aaron-he-zhu/seo-geo-claude-skills",
+      "sourceType": "github",
+      "skillPath": "cross-cutting/content-quality-auditor/SKILL.md",
+      "computedHash": "9d6c9fa8ca86a78455adfc2869ebc9d1c05450c609321f022c9acca201ae5d40"
+    },
+    "content-refresher": {
+      "source": "aaron-he-zhu/seo-geo-claude-skills",
+      "sourceType": "github",
+      "skillPath": "optimize/content-refresher/SKILL.md",
+      "computedHash": "0140098d26838d9cb9a5d43f623cb70417e01073df37e592ffc74e274c740221"
+    },
+    "domain-authority-auditor": {
+      "source": "aaron-he-zhu/seo-geo-claude-skills",
+      "sourceType": "github",
+      "skillPath": "cross-cutting/domain-authority-auditor/SKILL.md",
+      "computedHash": "f992589018e6f6a1bfe449986b1236d3b20fd5cd5ac86cdf820817bec05108e7"
+    },
+    "entity-optimizer": {
+      "source": "aaron-he-zhu/seo-geo-claude-skills",
+      "sourceType": "github",
+      "skillPath": "cross-cutting/entity-optimizer/SKILL.md",
+      "computedHash": "c61cd07f6847d78f224e72db5901e6e790457e9e87f2b293f62881f6240e7001"
     },
     "fastapi": {
       "source": "fastapi/fastapi",
       "sourceType": "github",
       "computedHash": "ee23d5285caf055cf164ff45dd34888d381143564666baacab8aa786f22e413a"
     },
-    "jx-components": {
-      "source": "jpsca/jx",
+    "geo-content-optimizer": {
+      "source": "aaron-he-zhu/seo-geo-claude-skills",
       "sourceType": "github",
-      "computedHash": "79319e8cfe320f9591244458da4b81c4133fa00a4f5986b97519f03b34771017"
+      "skillPath": "build/geo-content-optimizer/SKILL.md",
+      "computedHash": "fc80202b224858ae62cc3bf90030ef9d458ecea8a76f82fe96b6c39e4cb112be"
     },
-    "solidjs-patterns": {
-      "source": "different-ai/openwork",
+    "hallmark": {
+      "source": "Nutlope/hallmark",
       "sourceType": "github",
-      "computedHash": "36b8b60c8d67ee2c94edaeca24d2c182369c8bec1cce3289db428d1f029d3949"
+      "skillPath": "skills/hallmark/SKILL.md",
+      "computedHash": "099306f12b9980eb6196a441af8290412d2cb8884b09c675672e3ffbb268b3c7"
     },
-    "tailwind-design-system": {
-      "source": "wshobson/agents",
+    "impeccable": {
+      "source": "pbakaus/impeccable",
       "sourceType": "github",
-      "computedHash": "988d80e52c67c3692d43cc963b6a048a239895e88b272b061de55370d0f8efc3"
+      "skillPath": ".agents/skills/impeccable/SKILL.md",
+      "computedHash": "16180e7175cb29ef050926233b8514d7323294156890e1f1b17024ba8d9dab71"
+    },
+    "internal-linking-optimizer": {
+      "source": "aaron-he-zhu/seo-geo-claude-skills",
+      "sourceType": "github",
+      "skillPath": "optimize/internal-linking-optimizer/SKILL.md",
+      "computedHash": "5749f1d53c7ea8fa518a7e217b880ab531a6cd9a7342abb6eb30c61625772a51"
+    },
+    "keyword-research": {
+      "source": "aaron-he-zhu/seo-geo-claude-skills",
+      "sourceType": "github",
+      "skillPath": "research/keyword-research/SKILL.md",
+      "computedHash": "fbef3157e4244cb9dd89cada2d3eeab263c01c27dbe6131f0f1441f287bf025f"
+    },
+    "memory-management": {
+      "source": "aaron-he-zhu/seo-geo-claude-skills",
+      "sourceType": "github",
+      "skillPath": "cross-cutting/memory-management/SKILL.md",
+      "computedHash": "a9a024b4bff62566a58ea9fa146326c7f17f1b9633517638ea82755d21cff102"
+    },
+    "meta-tags-optimizer": {
+      "source": "aaron-he-zhu/seo-geo-claude-skills",
+      "sourceType": "github",
+      "skillPath": "build/meta-tags-optimizer/SKILL.md",
+      "computedHash": "a750da053a13930e6506892fd338da6a863a75da7ca0aa292ec4ae9de5784d33"
+    },
+    "on-page-seo-auditor": {
+      "source": "aaron-he-zhu/seo-geo-claude-skills",
+      "sourceType": "github",
+      "skillPath": "optimize/on-page-seo-auditor/SKILL.md",
+      "computedHash": "84ae9202c97e732fb964372ab7fcc5d544944a597b3e802a838c0f24b62894c2"
+    },
+    "performance-reporter": {
+      "source": "aaron-he-zhu/seo-geo-claude-skills",
+      "sourceType": "github",
+      "skillPath": "monitor/performance-reporter/SKILL.md",
+      "computedHash": "001b769945393ed9acd3edbb6be29f58b9de898d188639957742ddd101400c40"
+    },
+    "rank-tracker": {
+      "source": "aaron-he-zhu/seo-geo-claude-skills",
+      "sourceType": "github",
+      "skillPath": "monitor/rank-tracker/SKILL.md",
+      "computedHash": "94eb043355df6d772a79fc26d1f7e5654f40483d04ad687f45947b7f88656583"
+    },
+    "schema-markup-generator": {
+      "source": "aaron-he-zhu/seo-geo-claude-skills",
+      "sourceType": "github",
+      "skillPath": "build/schema-markup-generator/SKILL.md",
+      "computedHash": "a333a166dd785926b6ab8774f34fce6f95c72def10f36fc5bae67edc7ca4c35b"
+    },
+    "seo-content-writer": {
+      "source": "aaron-he-zhu/seo-geo-claude-skills",
+      "sourceType": "github",
+      "skillPath": "build/seo-content-writer/SKILL.md",
+      "computedHash": "e27ba76a7223fdec000ec811dce801ad9aec395ad7fbefbc3ce558474f8a6eff"
+    },
+    "serp-analysis": {
+      "source": "aaron-he-zhu/seo-geo-claude-skills",
+      "sourceType": "github",
+      "skillPath": "research/serp-analysis/SKILL.md",
+      "computedHash": "a74d764c71a3e4a1d64bce0a0e3d990d10af9983b87d1e6ff93db59abecd2e22"
+    },
+    "technical-seo-checker": {
+      "source": "aaron-he-zhu/seo-geo-claude-skills",
+      "sourceType": "github",
+      "skillPath": "optimize/technical-seo-checker/SKILL.md",
+      "computedHash": "8faf76541ab005e6d9dabe98111dd058c84eac9138530d38d5df6ebba17c6099"
+    },
+    "thinking-archetypes": {
+      "source": "tjboudreaux/cc-thinking-skills",
+      "sourceType": "github",
+      "skillPath": "skills/thinking-archetypes/SKILL.md",
+      "computedHash": "ccddd451696afb0e4443beb8ba0da64e0a4146e48dbe520896723d7dbc147576"
+    },
+    "thinking-bayesian": {
+      "source": "tjboudreaux/cc-thinking-skills",
+      "sourceType": "github",
+      "skillPath": "skills/thinking-bayesian/SKILL.md",
+      "computedHash": "ff9ffd0a03d23f5a5cb63a6c03b08e7fc711c90b8d73f736b23b330dd8cfe82c"
+    },
+    "thinking-bounded-rationality": {
+      "source": "tjboudreaux/cc-thinking-skills",
+      "sourceType": "github",
+      "skillPath": "skills/thinking-bounded-rationality/SKILL.md",
+      "computedHash": "3d5c54d1e72c6d8db43329e8ad1b05c65c82ab197a68621a56951f560dd4d557"
+    },
+    "thinking-circle-of-competence": {
+      "source": "tjboudreaux/cc-thinking-skills",
+      "sourceType": "github",
+      "skillPath": "skills/thinking-circle-of-competence/SKILL.md",
+      "computedHash": "22dc2184a19f770dffd516fe646ade0eb588c91d6d974615881b426ea108eb44"
+    },
+    "thinking-cynefin": {
+      "source": "tjboudreaux/cc-thinking-skills",
+      "sourceType": "github",
+      "skillPath": "skills/thinking-cynefin/SKILL.md",
+      "computedHash": "f0bbe7dd4a2239783d61bea92224f00441bb6b00296efe31fbbc6153e9c6d9b3"
+    },
+    "thinking-debiasing": {
+      "source": "tjboudreaux/cc-thinking-skills",
+      "sourceType": "github",
+      "skillPath": "skills/thinking-debiasing/SKILL.md",
+      "computedHash": "77f078b4bbd157ff0944183b6866ecbe34c1a0d8a80a4a51990f4a7dbb8dedc7"
+    },
+    "thinking-dual-process": {
+      "source": "tjboudreaux/cc-thinking-skills",
+      "sourceType": "github",
+      "skillPath": "skills/thinking-dual-process/SKILL.md",
+      "computedHash": "604374d5ae80482f2b05ecddc723c936309bab6981353c7dd53cecb7fec5b8f5"
+    },
+    "thinking-effectuation": {
+      "source": "tjboudreaux/cc-thinking-skills",
+      "sourceType": "github",
+      "skillPath": "skills/thinking-effectuation/SKILL.md",
+      "computedHash": "d0e3bab7af81fff06867f59d293026f351410d0888118ee9be85eec60c311de5"
+    },
+    "thinking-feedback-loops": {
+      "source": "tjboudreaux/cc-thinking-skills",
+      "sourceType": "github",
+      "skillPath": "skills/thinking-feedback-loops/SKILL.md",
+      "computedHash": "e51fba5dbf8611cc272994e5b9264a1fc82fe02d7ee7e6130d237e4f26f0e862"
+    },
+    "thinking-fermi-estimation": {
+      "source": "tjboudreaux/cc-thinking-skills",
+      "sourceType": "github",
+      "skillPath": "skills/thinking-fermi-estimation/SKILL.md",
+      "computedHash": "36ba2edf111c9634e67cc9ee6024ebece11ae44e855ff8dcf86383936c1728bd"
+    },
+    "thinking-first-principles": {
+      "source": "tjboudreaux/cc-thinking-skills",
+      "sourceType": "github",
+      "skillPath": "skills/thinking-first-principles/SKILL.md",
+      "computedHash": "fb5266b3f72a183a74ae29fea12cb3f50af954ef9204d27cfabd9c81a8b04d83"
+    },
+    "thinking-five-whys-plus": {
+      "source": "tjboudreaux/cc-thinking-skills",
+      "sourceType": "github",
+      "skillPath": "skills/thinking-five-whys-plus/SKILL.md",
+      "computedHash": "444b3b4cbf9e132335baa72cfadf525a2d88078337eba0e83f0162eb8f81bf66"
+    },
+    "thinking-inversion": {
+      "source": "tjboudreaux/cc-thinking-skills",
+      "sourceType": "github",
+      "skillPath": "skills/thinking-inversion/SKILL.md",
+      "computedHash": "e7341d9edaad38e7b7a41f1edceb00b1f0df9ca4077e1f276a28a1bd497fa77a"
+    },
+    "thinking-jobs-to-be-done": {
+      "source": "tjboudreaux/cc-thinking-skills",
+      "sourceType": "github",
+      "skillPath": "skills/thinking-jobs-to-be-done/SKILL.md",
+      "computedHash": "8044af7c932d785661d0a8e5b6288fe07f371e4465bfc3f108a18ac2d9992d5c"
+    },
+    "thinking-kepner-tregoe": {
+      "source": "tjboudreaux/cc-thinking-skills",
+      "sourceType": "github",
+      "skillPath": "skills/thinking-kepner-tregoe/SKILL.md",
+      "computedHash": "c758c0503f074e921026e0477957dc4c451a538dbb16817a1393961cce27a56a"
+    },
+    "thinking-leverage-points": {
+      "source": "tjboudreaux/cc-thinking-skills",
+      "sourceType": "github",
+      "skillPath": "skills/thinking-leverage-points/SKILL.md",
+      "computedHash": "3169a35bcca9a1ebd95c96236d3e04b9bd8d59c2bcb0510b89e4dbb8dd349fb7"
+    },
+    "thinking-lindy-effect": {
+      "source": "tjboudreaux/cc-thinking-skills",
+      "sourceType": "github",
+      "skillPath": "skills/thinking-lindy-effect/SKILL.md",
+      "computedHash": "4cd18c8f071f0fb3b1da6bf9f01d9f3d732841b1fcf0f4e20ece0d1e82f63645"
+    },
+    "thinking-map-territory": {
+      "source": "tjboudreaux/cc-thinking-skills",
+      "sourceType": "github",
+      "skillPath": "skills/thinking-map-territory/SKILL.md",
+      "computedHash": "d6fd20aecb0244df859f0597d3bc62422737c56aa76b41e317473263776eec41"
+    },
+    "thinking-margin-of-safety": {
+      "source": "tjboudreaux/cc-thinking-skills",
+      "sourceType": "github",
+      "skillPath": "skills/thinking-margin-of-safety/SKILL.md",
+      "computedHash": "52ba2aa60659a7850e589fb8bc754cd05c4b47a64f56fc80a21f8cb90bde6d70"
+    },
+    "thinking-model-combination": {
+      "source": "tjboudreaux/cc-thinking-skills",
+      "sourceType": "github",
+      "skillPath": "skills/thinking-model-combination/SKILL.md",
+      "computedHash": "5c101e07c5054a4fa99b7d8eb39134c96a3fa89dd0898edccc9c54741cab288a"
+    },
+    "thinking-model-router": {
+      "source": "tjboudreaux/cc-thinking-skills",
+      "sourceType": "github",
+      "skillPath": "skills/thinking-model-router/SKILL.md",
+      "computedHash": "79e0af38f593abf4a23f27c3cb1a4149541fc34dd63e1bdd4c0efffac5a4a9f5"
+    },
+    "thinking-model-selection": {
+      "source": "tjboudreaux/cc-thinking-skills",
+      "sourceType": "github",
+      "skillPath": "skills/thinking-model-selection/SKILL.md",
+      "computedHash": "234e5134848180bf49cb0f007304f93e876f9cafe0ae0c3e1003757cb63fd06d"
+    },
+    "thinking-occams-razor": {
+      "source": "tjboudreaux/cc-thinking-skills",
+      "sourceType": "github",
+      "skillPath": "skills/thinking-occams-razor/SKILL.md",
+      "computedHash": "b807375d1dbecb32c9916875355bf4394b3e7550767c12b7ac6ac814a0b1577d"
+    },
+    "thinking-ooda": {
+      "source": "tjboudreaux/cc-thinking-skills",
+      "sourceType": "github",
+      "skillPath": "skills/thinking-ooda/SKILL.md",
+      "computedHash": "d58acd0abb8a224f3806af4c97f7ab263b80fd056e20641de17ade57c4fe5098"
+    },
+    "thinking-opportunity-cost": {
+      "source": "tjboudreaux/cc-thinking-skills",
+      "sourceType": "github",
+      "skillPath": "skills/thinking-opportunity-cost/SKILL.md",
+      "computedHash": "cc04adc027327f2192060de3e1706640893a4c05aaffc1f57bbcb774342214cf"
+    },
+    "thinking-pre-mortem": {
+      "source": "tjboudreaux/cc-thinking-skills",
+      "sourceType": "github",
+      "skillPath": "skills/thinking-pre-mortem/SKILL.md",
+      "computedHash": "eaddd4d7d6765f2ff6f56936671784a2c73a7b7443afd7c1911e680517c13e5b"
+    },
+    "thinking-probabilistic": {
+      "source": "tjboudreaux/cc-thinking-skills",
+      "sourceType": "github",
+      "skillPath": "skills/thinking-probabilistic/SKILL.md",
+      "computedHash": "aca66411bc44747a49c5f34c4f68146bb2c2f298456ecdebcd0a97aaeff7ec2d"
+    },
+    "thinking-red-team": {
+      "source": "tjboudreaux/cc-thinking-skills",
+      "sourceType": "github",
+      "skillPath": "skills/thinking-red-team/SKILL.md",
+      "computedHash": "637fe2ebd22135bb3217c1b9c7a2ac8e56696ab02f6c6600d3a4b2c2021109a4"
+    },
+    "thinking-regret-minimization": {
+      "source": "tjboudreaux/cc-thinking-skills",
+      "sourceType": "github",
+      "skillPath": "skills/thinking-regret-minimization/SKILL.md",
+      "computedHash": "41900a2e6ea8ab72cc26c3c770f51fdd5502753175565bcfd227bfb6831963a7"
+    },
+    "thinking-reversibility": {
+      "source": "tjboudreaux/cc-thinking-skills",
+      "sourceType": "github",
+      "skillPath": "skills/thinking-reversibility/SKILL.md",
+      "computedHash": "aa081e72166822dc69a15c9facfc5a07e04f143261e6947725cf7aafcdd30597"
+    },
+    "thinking-scientific-method": {
+      "source": "tjboudreaux/cc-thinking-skills",
+      "sourceType": "github",
+      "skillPath": "skills/thinking-scientific-method/SKILL.md",
+      "computedHash": "996d31a3a307b2dd7c93e9eb6b118ab4424c97b863738b45165a31839644eb2f"
+    },
+    "thinking-second-order": {
+      "source": "tjboudreaux/cc-thinking-skills",
+      "sourceType": "github",
+      "skillPath": "skills/thinking-second-order/SKILL.md",
+      "computedHash": "f77ce34147f3a9a55e08073216801f9fa6d120989cd763608f722f1e7295b44d"
+    },
+    "thinking-socratic": {
+      "source": "tjboudreaux/cc-thinking-skills",
+      "sourceType": "github",
+      "skillPath": "skills/thinking-socratic/SKILL.md",
+      "computedHash": "31e2310d7b40e202e951c53be9ef8ea5323bd337a8ca0e016d1221e28b8971a8"
+    },
+    "thinking-steel-manning": {
+      "source": "tjboudreaux/cc-thinking-skills",
+      "sourceType": "github",
+      "skillPath": "skills/thinking-steel-manning/SKILL.md",
+      "computedHash": "3790fcaca55b14a14d62437bd9b3ea93bdec74c7822c81f74391a79519f19a8e"
+    },
+    "thinking-systems": {
+      "source": "tjboudreaux/cc-thinking-skills",
+      "sourceType": "github",
+      "skillPath": "skills/thinking-systems/SKILL.md",
+      "computedHash": "ec3f8929e9fae083418406727d5955906c1fc7abb1fa4a762094f7f53033d36d"
+    },
+    "thinking-theory-of-constraints": {
+      "source": "tjboudreaux/cc-thinking-skills",
+      "sourceType": "github",
+      "skillPath": "skills/thinking-theory-of-constraints/SKILL.md",
+      "computedHash": "38cc092afc67573aaf02a82302e8955f35ef3eb7fb9f72ba6db66888c22056e4"
+    },
+    "thinking-thought-experiment": {
+      "source": "tjboudreaux/cc-thinking-skills",
+      "sourceType": "github",
+      "skillPath": "skills/thinking-thought-experiment/SKILL.md",
+      "computedHash": "474df1a6ba157e19039b76a5d0c73aa2c716597609fa8541d62997219c46ba6e"
+    },
+    "thinking-triz": {
+      "source": "tjboudreaux/cc-thinking-skills",
+      "sourceType": "github",
+      "skillPath": "skills/thinking-triz/SKILL.md",
+      "computedHash": "c59d5b6448a9ec308ce284dd30039cb51491860cfd34a57eecfb871cbef24153"
+    },
+    "thinking-via-negativa": {
+      "source": "tjboudreaux/cc-thinking-skills",
+      "sourceType": "github",
+      "skillPath": "skills/thinking-via-negativa/SKILL.md",
+      "computedHash": "9f54f0a9d0fd78fef1d5e3ef66be4d2673b37c80155386841209f4647794ade5"
     }
   }
 }
