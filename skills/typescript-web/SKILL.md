@@ -21,7 +21,7 @@ Do not use Python implementation patterns. Borrow architecture/design/quality/se
 
 Covers:
 
-- public-data discovery, brief, scope, SDD-lite, route map, data model, API/contracts
+- public-data discovery, brief, scope, project state, route map, data model, API/contracts
 - React Router Framework Mode, Vite, Hono, Zod, Drizzle, SQLite/Supabase
 - responsive UI, accessibility, tests, deployment readiness
 
@@ -74,11 +74,13 @@ Pick one primary profile; list secondary modules separately.
 1. Inspect repo: package manager, scripts, TS config, routing, DB, tests. Reuse conventions.
 2. Build `Business Brief` if business context matters: confirmed facts, user facts, assumptions, unknowns, goals.
 3. Choose profile/package; define MVP, phase 2, out of scope.
-4. Produce/update SDD-lite before nontrivial code:
-   - `docs/business-brief.md`
-   - `docs/SPEC.md`
-   - `docs/ARCHITECTURE.md`
-   - `docs/DELIVERY_PLAN.md`
+4. Produce/update project state before nontrivial code:
+   - `SPEC.md`
+   - `DESIGN.md`
+   - `TODO.md`
+   - `.spec/state.md`
+   - `.spec/handoff.md`
+   - `.mem/open-loops.md`
 5. Define route map, flows, entities/tables, Zod contracts, auth/deployment assumptions, acceptance criteria.
 6. Implement one vertical slice first: contract -> schema/migration -> loader/action or Hono route -> UI -> tests -> docs.
 7. Validate with repo scripts; prefer `pnpm typecheck`, `pnpm test`, `pnpm build`, `pnpm exec playwright test`.
@@ -112,6 +114,6 @@ Keep business rules testable; IO/framework/provider code stays at edges.
 
 ## Output
 
-Planning responses include: summary, package/profile, MVP, phase 2, out of scope, route map, data model, architecture, checklist, risks/questions.
+Planning responses include: summary, package/profile, MVP, phase 2, out of scope, route map, data model, architecture, checklist, risks/questions, and state files updated.
 
-Implementation responses include: files changed, behavior added, validation run, assumptions/remaining confirmations.
+Implementation responses include: files changed, behavior added, validation run, assumptions/remaining confirmations, and state updates when decisions or next steps changed.

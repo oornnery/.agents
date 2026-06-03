@@ -62,6 +62,10 @@
           {
             "type": "command",
             "command": "./hooks/stop-reminders.sh"
+          },
+          {
+            "type": "command",
+            "command": "./hooks/project-state-reminder.sh"
           }
         ]
       }

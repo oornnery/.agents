@@ -32,7 +32,7 @@ npx skills add "https://github.com/oornnery/agents" --skill python "${SKILL_AGEN
 Install the core local skills:
 
 ```bash
-for skill in python python-web typescript-web docs quality security git hooks rtk; do
+for skill in python python-web typescript-web project-state verification docs quality security git hooks rtk; do
   npx skills add "https://github.com/oornnery/agents" --skill "$skill" "${SKILL_AGENT_FLAGS[@]}" -y
 done
 ```
@@ -40,7 +40,7 @@ done
 Install optional local skills when needed:
 
 ```bash
-for skill in arch design building-agents cicd httpx sqlmodel rich polars textual skill-builder; do
+for skill in arch design agent-harness python-cli python-library uv-script building-agents cicd httpx sqlmodel rich polars textual skill-builder; do
   npx skills add "https://github.com/oornnery/agents" --skill "$skill" "${SKILL_AGENT_FLAGS[@]}" -y
 done
 ```
@@ -117,6 +117,16 @@ mkdir -p .opencode
 cp .agents/templates/project/variants/AGENTS.base.md AGENTS.md
 ```
 
+Optional state files for non-trivial projects:
+
+```bash
+cp .agents/templates/project/SPEC.md .
+cp .agents/templates/project/DESIGN.md .
+cp .agents/templates/project/TODO.md .
+cp -R .agents/templates/project/.spec .
+cp -R .agents/templates/project/.mem .
+```
+
 Then add the relevant stack overlay into the project `AGENTS.md`:
 
 ```md
@@ -129,6 +139,23 @@ Use OpenCode-specific config in your dotfiles when you want global agents, comma
 plugins, and permissions. This repo provides the reusable content; it does not own
 machine-local OpenCode config.
 
+## Hook Compatibility
+
+Hook scripts in `hooks/*.sh` are shell entrypoints intended to be portable across
+agent runners. `templates/settings/local.hooks.json` is the Claude Code-style
+wiring template.
+
+For Codex and OpenCode, wire the same scripts through the runner's local hook
+mechanism when available:
+
+- session start: `hooks/session-context.sh`
+- pre-tool shell rewrite/safety: `hooks/rtk-rewrite.sh`, `hooks/git-safety-gate.sh`
+- post-edit helpers: `hooks/autofix.sh`
+- stop reminders: `hooks/stop-reminders.sh`, `hooks/project-state-reminder.sh`
+
+When a runner does not support lifecycle hooks, use the equivalent commands:
+`onboard`, `state`, `verify`, and `commit`.
+
 ## Layout
 
 | Path                                        | Purpose                                    |
@@ -139,7 +166,8 @@ machine-local OpenCode config.
 | `commands/`                                 | workflow entrypoints                       |
 | `agents/`                                   | focused role agents                        |
 | `hooks/`                                    | RTK, safety, autofix, lifecycle helpers    |
-| `templates/`                                | project, stack, CI, and settings templates |
+| `templates/project/`                        | AGENTS, SPEC, DESIGN, TODO, .spec, .mem    |
+| `templates/settings/`                       | local settings and hook wiring templates   |
 | `skills-lock.json`                          | active upstream skill reinstall lockfile   |
 
 ## Active Layers
@@ -162,11 +190,11 @@ Use the smallest stack overlay that fits the project:
 
 Core:
 
-`python`, `python-web`, `typescript-web`, `docs`, `quality`, `security`, `git`, `hooks`, `rtk`.
+`python`, `python-web`, `typescript-web`, `project-state`, `verification`, `docs`, `quality`, `security`, `git`, `hooks`, `rtk`.
 
 Optional:
 
-`arch`, `design`, `building-agents`, `cicd`, `httpx`, `sqlmodel`, `rich`, `polars`, `textual`, `skill-builder`.
+`arch`, `design`, `agent-harness`, `python-cli`, `python-library`, `uv-script`, `building-agents`, `cicd`, `httpx`, `sqlmodel`, `rich`, `polars`, `textual`, `skill-builder`.
 
 `python-web` owns normal FastAPI/Jinja2/HTMX guidance. Standalone `jinja2` and `htmx`
 skills are retained as deeper references, not promoted as default setup.
@@ -175,7 +203,7 @@ skills are retained as deeper references, not promoted as default setup.
 
 Core workflows:
 
-`onboard`, `plan`, `build-fix`, `debug`, `review`, `verify`, `commit`, `compress`.
+`onboard`, `plan`, `state`, `build-fix`, `debug`, `review`, `verify`, `commit`, `compress`.
 
 Optional workflows:
 
@@ -223,6 +251,8 @@ lockfile entries, until the skills CLI can install them as skills.
 
 Use memory tooling as an optional layer, not as always-loaded instructions.
 
+- `.mem/`: repo-local durable memory for stable facts, decisions, and open loops
+- `.spec/`: repo-local active work state, validation notes, and handoff context
 - `cavemem`: local persistent memory CLI; install with `npm install -g cavemem`
 - `claude-mem`: Claude plugin path for persistent memory
 - OpenCode memory plugins: keep in dotfiles or machine-local config, not in this repo
@@ -230,6 +260,19 @@ Use memory tooling as an optional layer, not as always-loaded instructions.
 
 Memory rule: record stable preferences, project decisions, and validated facts; do not
 store secrets, unverified guesses, or noisy session transcripts.
+
+## Project State Pattern
+
+For non-trivial projects, keep `AGENTS.md` stable and put evolving project context in:
+
+- `SPEC.md`: objective, scope, requirements, success criteria, validation plan
+- `DESIGN.md`: architecture, API, UI, product/design decisions
+- `TODO.md`: current tasks, next steps, blocked items, completed work
+- `.spec/`: current state, checks, handoff
+- `.mem/`: stable memory, decisions, open loops
+
+Use `commands/state.md` and `skills/project-state/SKILL.md` to update these files.
+Hooks only remind; agents or users make explicit edits.
 
 ## External Pack Roles
 

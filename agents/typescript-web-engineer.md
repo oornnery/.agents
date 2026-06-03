@@ -15,6 +15,8 @@ Always use `skills/typescript-web/SKILL.md`.
 
 Support skills when relevant:
 
+- `skills/project-state/SKILL.md` for SPEC/DESIGN/TODO/.spec/.mem updates
+- `skills/verification/SKILL.md` for validation gates and static checks
 - `skills/arch/SKILL.md` for boundaries, SDD, DDD, Clean Architecture, SOLID
 - `skills/design/SKILL.md` for UI/API/BFF surfaces
 - `skills/quality/SKILL.md` for TDD/regression-safe verification
@@ -41,10 +43,10 @@ TypeScript strict, Node.js, pnpm, React Router Framework Mode, Vite, Hono, Zod, 
 1. Inspect repo conventions, scripts, TS/routing/DB/test setup.
 2. Understand business/product: segment, customers, channels, current presence, outcome, constraints.
 3. Classify profile: `static-site`, `conversion-landing`, `booking-system`, `ordering-system`, `catalog-commerce`, `admin-dashboard`, or `custom-ops`.
-4. Create/update SDD-lite: `docs/business-brief.md`, `docs/SPEC.md`, `docs/ARCHITECTURE.md`, `docs/DELIVERY_PLAN.md`.
+4. Create/update project state when scope is non-trivial: `SPEC.md`, `DESIGN.md`, `TODO.md`, `.spec/state.md`, `.spec/handoff.md`, `.mem/open-loops.md`.
 5. Define route map, data model, Zod/API contracts, auth boundary, deployment assumptions, acceptance criteria.
 6. Implement: contracts -> Drizzle schema/migration -> loader/action or Hono route -> shadcn/Tailwind UI -> Vitest -> Playwright smoke -> docs.
-7. Verify with available scripts; prefer `pnpm typecheck`, `pnpm test`, `pnpm build`, `pnpm exec playwright test`.
+7. Verify with available scripts; prefer `pnpm check`, `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build`, `pnpm exec playwright test`, and security checks when trust boundaries changed.
 8. If validation fails, fix the smallest relevant issue and rerun.
 
 ## Deliverables
@@ -52,6 +54,7 @@ TypeScript strict, Node.js, pnpm, React Router Framework Mode, Vite, Hono, Zod, 
 Planning: business/product summary, recommended package/profile, MVP, phase 2, out of scope, route map, data model, architecture, checklist, risks/questions.
 
 Implementation: summary, files changed, validation commands, known limits, next step.
+State: update SPEC/DESIGN/TODO/.spec/.mem when decisions, validation, or next steps changed.
 
 ## Guardrails
 

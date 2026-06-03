@@ -93,7 +93,17 @@ Security review is explicit, not part of the default validation order:
 uv run task sec
 ```
 
-### 5. Map the project before editing
+### 5. Inspect project state files
+
+Check for:
+
+- `SPEC.md`, `DESIGN.md`, `TODO.md`
+- `.spec/state.md`, `.spec/checks.md`, `.spec/handoff.md`
+- `.mem/hot.md`, `.mem/decisions.md`, `.mem/open-loops.md`
+
+Use `skills/project-state/SKILL.md` when these files exist or when work is multi-step.
+
+### 6. Map the project before editing
 
 Identify:
 
@@ -103,11 +113,17 @@ Identify:
 - where tests live and how they are grouped
 - recent momentum from `git log --oneline -10`
 
-### 6. Suggest the right local skills
+### 7. Suggest the right local skills
 
 Recommend only what fits repo:
 
+- `skills/project-state/SKILL.md` for SPEC/DESIGN/TODO/.spec/.mem context
+- `skills/verification/SKILL.md` for validation gate discovery
 - `skills/python/SKILL.md` for Python code and tooling
+- `skills/python-cli/SKILL.md` for Python CLI apps
+- `skills/python-library/SKILL.md` for Python package/API surface
+- `skills/uv-script/SKILL.md` for standalone uv inline scripts
+- `skills/agent-harness/SKILL.md` for agent runtimes, tools, memory, permissions, and traces
 - `skills/design/SKILL.md` for API, UI, or BFF work
 - `skills/arch/SKILL.md` for layering, DDD, or SDD
 - `skills/quality/SKILL.md` for TDD or RCA
@@ -127,6 +143,7 @@ Summarize:
 - toolchain status
 - dependency install status
 - valid entrypoints found
+- project state files found
 - repo layout and architecture notes
 - suggested local skills
 

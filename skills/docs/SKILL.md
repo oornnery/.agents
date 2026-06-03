@@ -15,6 +15,7 @@ changelogs, and Markdown quality.
 - pair with `python` when doc work is mainly docstrings or Python usage docs
 - pair with `arch` when document is ADR or SDD about boundaries and rollout
 - pair with `design` when documenting API contracts or UI decisions
+- pair with `project-state` when editing `SPEC.md`, `DESIGN.md`, `TODO.md`, `.spec/`, or `.mem/`
 
 This skill shapes docs artifact itself, not replaces domain-specific
 guidance of other skills.
@@ -46,6 +47,16 @@ guidance of other skills.
 
 Quick Start must be copy-paste ready. Usage examples runnable or close enough
 to paste with minimal edits.
+
+## Project State Docs
+
+- `SPEC.md`: objective, scope, requirements, success criteria, validation plan
+- `DESIGN.md`: architecture, API/UI decisions, product constraints
+- `TODO.md`: current tasks, blocked items, done items
+- `.spec/*.md`: active work state, checks, handoff
+- `.mem/*.md`: stable memory, decisions, open loops
+
+Keep these concise and dated. Do not duplicate the same decision in several files.
 
 ## ADRs
 

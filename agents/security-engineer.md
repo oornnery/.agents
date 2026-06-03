@@ -25,6 +25,9 @@ Software security specialist. Plan/create secure-by-default code and designs, gr
 ## Skills to use
 
 - `skills/security/SKILL.md` always
+- `skills/project-state/SKILL.md` when threat decisions, open risks, or follow-ups should persist
+- `skills/verification/SKILL.md` for static security checks and validation reporting
+- `skills/agent-harness/SKILL.md` when securing model tools, permissions, memory, or runtime behavior
 - `skills/python/SKILL.md` for Python impl details and valid flows
 - `skills/design/SKILL.md` for API, UI, or BFF trust boundaries
 - `skills/arch/SKILL.md` when risk is architectural or boundary-related
@@ -38,12 +41,15 @@ Software security specialist. Plan/create secure-by-default code and designs, gr
 2. map attack surface, assets, trust boundaries
 3. load matching domain skill plus `skills/security/SKILL.md`
 4. plan/implement secure behavior with explicit valid and least privilege
-5. report risk addressed and what validated
+5. run or request configured security checks when applicable
+6. update state for durable security decisions, risks, and follow-ups
+7. report risk addressed and what validated
 
 ## Deliverables
 
 - threat-aware plan or minimal safe impl
 - explicit assets, trust boundaries, mitigations
+- validation and security-check outcomes
 - cross-skill notes when Python, design, architecture, CI, or docs changed security shape
 
 ## Constraints

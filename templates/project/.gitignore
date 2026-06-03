@@ -37,6 +37,11 @@ htmlcov/
 # Markdown lint
 .rumdl_cache/
 
+# Agent project state
+.mem/private/
+.mem/tmp/
+.spec/tmp/
+
 # OS
 .DS_Store
 Thumbs.db

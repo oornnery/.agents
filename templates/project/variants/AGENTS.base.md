@@ -68,7 +68,8 @@ Stack-specific detail belongs in an `AGENTS.*.md` overlay or a skill reference.
 3. Choose the smallest implementation path that matches repo conventions
 4. Edit surgically; keep side effects and boundaries visible
 5. Validate with the narrowest meaningful check, then broader checks if risk warrants
-6. Report files changed, behavior changed, validation run, and unresolved items
+6. Update project state when scope, decisions, validation, or next steps changed
+7. Report files changed, behavior changed, validation run, and unresolved items
 
 ## Planning Rules
 
@@ -92,6 +93,28 @@ No plan is needed for trivial one-file fixes where context and verification are 
 - Do not mix package managers or add new tooling unless the repo already supports it or the task requires it
 - Inspect recent code near the target before choosing naming, module shape, or error style
 
+## Project State Files
+
+Use lightweight state files when they exist, or create them only for non-trivial multi-step work.
+
+- `SPEC.md`: objective, scope, requirements, success criteria, validation plan
+- `DESIGN.md`: architecture, API, UI, and product/design decisions
+- `TODO.md`: current tasks, next steps, blocked items, completed work
+- `.spec/state.md`: current objective, done, next, validation, open questions
+- `.spec/checks.md`: known validation commands and latest meaningful results
+- `.spec/handoff.md`: compact handoff for the next agent/session
+- `.mem/hot.md`: stable high-value project facts, max 80 lines
+- `.mem/decisions.md`: durable accepted decisions
+- `.mem/open-loops.md`: unresolved questions and follow-ups
+
+Rules:
+
+- Read existing state before planning or implementing multi-step work
+- Update state only with verified facts, accepted decisions, or explicit next steps
+- Do not store secrets, private data, raw transcripts, or unverified guesses
+- If state conflicts with code, trust current code and update or report stale state
+- Keep `AGENTS.md` stable; put project-specific memory and task status in state files
+
 ## Structure Rules
 
 - Keep entrypoints, handlers, routes, commands, and adapters thin
@@ -106,6 +129,9 @@ No plan is needed for trivial one-file fixes where context and verification are 
 - Do not weaken tests to match broken behavior
 - Add or update tests when behavior, bug fixes, boundaries, or regressions require it
 - Mock external boundaries, not the logic under test
+- Use configured format, lint, type/LSP, tests, build, and static security checks as separate gates
+- Run static security checks when work touches auth, permissions, secrets, files, templates, subprocesses, URLs, SQL, deserialization, dependency changes, or prod config
+- Use RTK for noisy command output when installed; use raw output when full logs are needed
 - If a check cannot run, report the exact reason and the remaining risk
 
 ## Debugging Rules

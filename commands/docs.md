@@ -15,10 +15,12 @@ Update docs to match current code, workflow, repo structure. Optimize clarity, s
 - docstrings (when requested)
 - local `SKILL.md`
 - local `commands/*.md`, `agents/*.md`
+- project state docs: `SPEC.md`, `DESIGN.md`, `TODO.md`, `.spec/*.md`, `.mem/*.md`
 
 ## Skills
 
 - `skills/docs/SKILL.md` — always
+- `skills/project-state/SKILL.md` — SPEC/DESIGN/TODO/.spec/.mem updates
 - `skills/python/SKILL.md` — docstrings, Python usage
 - `skills/arch/SKILL.md` — ADR, SDD
 - `skills/design/SKILL.md` — API, UI docs
@@ -34,6 +36,7 @@ Doc from real impl, not memory:
 - `.github/workflows/*.yml` — CI
 - `hooks/*.sh`, `templates/settings/local.hooks.json` — hook behavior, wiring
 - local `skills/*/SKILL.md`, `commands/*.md`, `agents/*.md` — operating docs
+- `SPEC.md`, `DESIGN.md`, `TODO.md`, `.spec/`, `.mem/` — project-specific state and memory
 
 ## Process
 

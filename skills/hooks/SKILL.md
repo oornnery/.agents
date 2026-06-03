@@ -14,6 +14,7 @@ Covers:
 - hook scripts in `hooks/*.sh`
 - hook wiring in `templates/settings/local.hooks.json`
 - local hook behavior: reminders, gates, autofix, lifecycle helpers
+- portability across Claude Code, Codex, and OpenCode when their hook systems can call shell scripts
 
 Not replace:
 
@@ -26,6 +27,7 @@ Not replace:
 - `hooks/autofix.sh` for file-type-aware formatting helpers
 - `hooks/git-safety-gate.sh` for unsafe git command blocking
 - `hooks/session-context.sh` for session-start context
+- `hooks/project-state-reminder.sh` for SPEC/DESIGN/TODO/.spec/.mem reminders
 - `hooks/compact-state.sh` and `hooks/compact-reminder.sh` for compaction lifecycle
 - `hooks/stop-reminders.sh` for end-of-session reminders
 - `hooks/rtk-rewrite.sh` for RTK integration
@@ -73,7 +75,8 @@ No broad automation hidden inside safety gate.
 
 ### 3. Wire it once
 
-Reflect in `templates/settings/local.hooks.json`:
+Reflect in `templates/settings/local.hooks.json` for Claude Code-style wiring, or
+the equivalent local hook config for Codex/OpenCode:
 
 - accurate matcher
 - short description
@@ -102,3 +105,4 @@ Smoke test changed hook with smallest reproducible input.
 - no turning reminder into blocker without concrete safety reason
 - no duplicating same policy in multiple hooks unless events differ
 - no network-dependent behavior in routine local hooks
+- no automatic memory writes from hooks; hooks may remind, agents update state explicitly

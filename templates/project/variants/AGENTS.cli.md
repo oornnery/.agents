@@ -2,18 +2,19 @@
 
 @.agents/templates/project/variants/AGENTS.base.md
 
-<!-- CLI app overlay. Terminal tools, interactive prompts, automation CLIs needing stronger UX/exit/output rules. -->
+<!-- Python CLI overlay. Keep CLI details in skills/python-cli. -->
 
 ## Project Description
 
-<!-- Who uses CLI, what workflows supported -->
+<!-- Who uses the CLI, key workflows, automation expectations -->
 
-## Stack
+## Stack Defaults
 
 - **Python**: 3.12+
+- **Package Manager**: uv
 - **Simple CLI**: argparse + rich-argparse
-- **Complex CLI**: Typer + Rich
-- **TUI**: Textual
+- **Command App**: Typer + Rich when multiple commands need richer UX
+- **TUI**: Textual only for real interactive terminal apps
 
 ## Quick Commands
 
@@ -26,98 +27,33 @@ uv run pytest -v
 
 ## Validation Entry Points
 
+Use configured commands only:
+
 ```bash
+uv run task check
 uv run ruff format --check .
 uv run ruff check .
 uv run ty check src
 uv run pytest -v
 ```
 
-## CLI UX Rules
+## Skill Routing
 
-- `--help` output accurate, scannable
-- exit `0` success, non-zero failure
-- machine-readable -> stdout, human-readable errors -> stderr
-- interactive prompts optional when automation expected
-- quiet by default; verbose opt-in
-- colors/rich formatting helpful, not required for correctness
+- Load `skills/python-cli/SKILL.md` for CLI contracts, UX, stdout/stderr, exit codes, and tests.
+- Load `skills/python/SKILL.md` for Python implementation details.
+- Load `skills/rich/SKILL.md` or `skills/textual/SKILL.md` only when terminal UX needs it.
+- Load `skills/verification/SKILL.md` before final checks.
+- Load `skills/project-state/SKILL.md` when CLI behavior, safety notes, or next steps need durable state.
 
-## CLI Technology Defaults
+## Always-On CLI Rules
 
-- `argparse` + `rich-argparse` for simple tools with few commands/flags
-- `Typer` + `Rich` for multiple subcommands, richer output, structured workflows
-- `Textual` for real TUI, not colored CLI
-- parsing, workflow execution, terminal rendering = separate concerns
-- no TUI when CLI sufficient
-
-## Command Design Rules
-
-- subcommands explicit, predictable
-- flags > hidden positional magic
-- destructive ops obvious before running
-- separate parsing, orchestration, output formatting
-
-## Output and Automation Rules
-
-- machine-readable output stable when promised
-- no mixing logs with pipeable output
-- interactive prompts skippable in CI/scripts
-- terminal formatting optional, not required for correctness
-
-## CLI Checklist
-
-### User Experience
-
-- [ ] `--help` accurate, readable
-- [ ] success -> stdout, errors -> stderr
-- [ ] exit codes consistent
-- [ ] verbose/debug opt-in
-
-### Automation
-
-- [ ] interactive prompts bypassable when scripting
-- [ ] machine-readable output stable if promised
-- [ ] errors actionable, not noisy
-
-### Safety
-
-- [ ] secrets never printed
-- [ ] dangerous ops require explicit intent
-- [ ] path handling, file writes validated
-
-### Verification
-
-- [ ] help text tested
-- [ ] stdout/stderr behavior tested
-- [ ] exit codes tested
-- [ ] interactive + non-interactive flows tested
-
-## Layout
-
-```text
-src/myapp/
-├── cli/             # command parsing, dispatch, and subcommands
-├── core/            # reusable business logic
-├── services/        # workflows and orchestration
-├── models/          # typed inputs, outputs, and config models
-└── views/           # terminal rendering helpers, prompts, and output formatting
-```
-
-## Testing Focus
-
-<!-- - help output -->
-<!-- - exit codes -->
-<!-- - stdout/stderr separation -->
-<!-- - interactive vs non-interactive mode -->
-<!-- - failure recovery and invalid input -->
-
-## Environment Variables
-
-<!-- | Variable | Description | Required | -->
-<!-- |----------|-------------|----------| -->
+- `--help` stays accurate.
+- Success uses stdout and exit `0`; errors use stderr and non-zero exit.
+- Interactive prompts must be skippable for automation.
+- Destructive commands require explicit intent.
+- Secrets are never printed.
 
 ## Project-Specific Guardrails
 
-<!-- - Never print secrets -->
 <!-- - Preserve machine-readable output shape -->
 <!-- - Keep prompts skippable for CI and scripts -->

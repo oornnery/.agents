@@ -16,6 +16,7 @@ Security reasoning, review order, threat modeling, and risk prioritization.
 - pair with `python` for secure Python code
 - pair with `design` for risk in API shape, BFF boundaries, or UI trust
 - pair with `quality` for RCA or regression guards after fix
+- pair with `verification` for Bandit, pip-audit, npm/pnpm audit, Semgrep, or repo security tasks
 
 Not for framework-specific secure coding notes.
 

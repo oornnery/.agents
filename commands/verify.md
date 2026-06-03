@@ -31,6 +31,7 @@ Read diff, classify change:
 
 Load only relevant skills for surface:
 
+- `skills/verification/SKILL.md` for check discovery and validation reporting
 - `skills/python/SKILL.md` for Python code, typing, valid commands, runtime behavior
 - `skills/design/SKILL.md` for API, UI, BFF contracts
 - `skills/security/SKILL.md` for auth, trust boundaries, abuse paths, exposure risk
@@ -43,6 +44,7 @@ Load only relevant skills for surface:
 Python repos, default order:
 
 ```bash
+uv run task check
 uv run ruff format --check .
 uv run ruff check .
 uv run rumdl check .
@@ -64,6 +66,8 @@ For security-sensitive Python changes, also run the explicit security task when 
 
 ```bash
 uv run task sec
+uv run bandit -r src
+uv run pip-audit
 ```
 
 Bandit findings require triage; do not hide them by folding Bandit into unrelated checks.

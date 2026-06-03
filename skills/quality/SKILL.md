@@ -7,6 +7,10 @@ description: Quality guidance for TDD and root cause analysis. Load when prevent
 
 Use skill when reliability = main concern: prevent defects before ship or understand why something broke.
 
+Use `skills/verification/SKILL.md` for selecting and reporting format, lint,
+type/LSP, test, build, and security gates. This skill is for test strategy,
+regression thinking, and root cause analysis.
+
 ## Pick the Mode
 
 | Situation                               | Read                                          |

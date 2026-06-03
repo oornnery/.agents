@@ -21,7 +21,7 @@ Prefer server-rendered HTML with FastAPI + Jinja2. Use HTMX for partial forms/up
 
 Covers:
 
-- public-data discovery, brief, scope, SDD-lite, route map, template map, data model, form contracts
+- public-data discovery, brief, scope, project state, route map, template map, data model, form contracts
 - FastAPI, Jinja2, Tailwind, HTMX/Alpine optional, Pydantic, SQLModel, Alembic
 - SQLite local, PostgreSQL/Supabase/managed Postgres production
 - responsive UI, accessibility, tests, deployment readiness
@@ -74,11 +74,13 @@ Pick one primary profile; list secondary modules separately.
 1. Inspect repo: uv/pyproject, scripts, FastAPI app, routes, templates, DB, migrations, tests. Reuse conventions.
 2. Build `Business Brief` if business context matters: confirmed facts, user facts, assumptions, unknowns, goals.
 3. Choose profile/package; define MVP, phase 2, out of scope.
-4. Produce/update SDD-lite before nontrivial code:
-   - `docs/business-brief.md`
-   - `docs/SPEC.md`
-   - `docs/ARCHITECTURE.md`
-   - `docs/DELIVERY_PLAN.md`
+4. Produce/update project state before nontrivial code:
+   - `SPEC.md`
+   - `DESIGN.md`
+   - `TODO.md`
+   - `.spec/state.md`
+   - `.spec/handoff.md`
+   - `.mem/open-loops.md`
 5. Define route map, template map, flows, entities/tables, form contracts, auth/deployment assumptions, acceptance criteria.
 6. Implement one vertical slice first: schema/model -> migration -> service -> FastAPI route -> Jinja page/partial -> validation states -> tests -> docs.
 7. Validate with repo scripts; prefer `uv run ruff format --check .`, `uv run ruff check .`, `uv run ty check`, `uv run pytest`; for DB, `uv run alembic upgrade head`.
@@ -119,6 +121,6 @@ Keep business rules testable; IO/framework/provider code stays at edges.
 
 ## Output
 
-Planning responses include: summary, package/profile, MVP, phase 2, out of scope, route map, template map, data model, architecture, checklist, risks/questions.
+Planning responses include: summary, package/profile, MVP, phase 2, out of scope, route map, template map, data model, architecture, checklist, risks/questions, and state files updated.
 
-Implementation responses include: files changed, behavior added, validation run, assumptions/remaining confirmations.
+Implementation responses include: files changed, behavior added, validation run, assumptions/remaining confirmations, and state updates when decisions or next steps changed.

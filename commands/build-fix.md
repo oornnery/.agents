@@ -9,6 +9,7 @@ Fix broken valid one surface at time. Minimal safe diffs, fast feedback per fix.
 
 ## Skills to use
 
+- `skills/verification/SKILL.md` for gate ordering and result reporting
 - `skills/python/SKILL.md` for `ruff`, `ty`, `pytest`, Python runtime issues
 - `skills/docs/SKILL.md` for `rumdl`, doc breakage
 - `skills/cicd/SKILL.md` for GitHub Actions workflow failures

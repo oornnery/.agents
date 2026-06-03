@@ -39,6 +39,8 @@ Read only enough to answer:
 
 Load supporting skills only when needed:
 
+- `skills/project-state/SKILL.md` for SPEC.md, DESIGN.md, TODO.md, .spec, or .mem updates
+- `skills/verification/SKILL.md` for validation plan and check selection
 - `skills/arch/SKILL.md` for DDD, Clean Arch, SOLID, patterns, and SDD
 - `skills/design/SKILL.md` for API, UI, or BFF surface work
 - `skills/python/SKILL.md` for impl and toolchain constraints
@@ -78,6 +80,9 @@ Use this shape:
 
 ## Success Criteria
 ```
+
+When the plan is intended to persist across sessions, write or update `SPEC.md`
+and `.spec/state.md` using `skills/project-state/SKILL.md`.
 
 ### 5. Keep it implementation-ready
 

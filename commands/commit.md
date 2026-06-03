@@ -35,6 +35,7 @@ git log --oneline -5
 - one commit per coherent feature, fix, refactor, docs, or test change
 - separate unrelated edits
 - if needed, stage hunks with `git add -p`
+- if work changed scope, decisions, validation, or next steps, update project state before staging
 
 ### 3. Stage by name
 
@@ -43,6 +44,7 @@ Stage files explicitly. Warn if sensitive files appear in diff:
 - `.env`
 - `*.pem`
 - `credentials.*`
+- `.mem/private/*`
 
 ### 4. Write the commit message
 

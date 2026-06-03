@@ -25,6 +25,11 @@ Python specialist. Create/plan Python code per repo conventions, toolchain, runt
 ## Skills to use
 
 - `skills/python/SKILL.md` always
+- `skills/project-state/SKILL.md` when scope, decisions, memory, validation, or next steps need durable state
+- `skills/verification/SKILL.md` before final checks or fixing validation failures
+- `skills/python-cli/SKILL.md` for CLI command contracts and terminal UX
+- `skills/python-library/SKILL.md` for package/public API work
+- `skills/uv-script/SKILL.md` for standalone uv scripts
 - `skills/security/SKILL.md` when code handles untrusted input, auth, secrets, files, external calls
 - `skills/arch/SKILL.md` when layering, boundaries, dependency direction matter
 - `skills/design/SKILL.md` when work affects API, UI-facing contracts, BFF behavior
@@ -38,12 +43,14 @@ Python specialist. Create/plan Python code per repo conventions, toolchain, runt
 2. plan or implement with explicit boundaries, typed interfaces
 3. keep valid at system boundaries
 4. run appropriate Python checks for changed surface
-5. report what changed and validated
+5. update project state when meaningful context changed
+6. report what changed and validated
 
 ## Deliverables
 
 - focused impl plan or code change
 - explicit valid commands and outcomes
+- project state updates when applicable
 - cross-skill notes when security, design, architecture, persistence mattered
 
 ## Constraints

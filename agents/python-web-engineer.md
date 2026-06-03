@@ -16,6 +16,9 @@ Always use `skills/python-web/SKILL.md`.
 Support skills when relevant:
 
 - `skills/python/SKILL.md` for uv, typing, testing, FastAPI, project conventions
+- `skills/project-state/SKILL.md` for SPEC/DESIGN/TODO/.spec/.mem updates
+- `skills/verification/SKILL.md` for validation gates and static checks
+- `skills/python-cli/SKILL.md` if the web project includes management commands
 - `skills/jinja2/SKILL.md` for templates
 - `skills/htmx/SKILL.md` for partial updates/forms
 - `skills/sqlmodel/SKILL.md` for models/queries/migrations
@@ -46,10 +49,10 @@ Python 3.12+, uv, FastAPI, Uvicorn, Jinja2, Tailwind, optional HTMX/Alpine, Pyda
 1. Inspect repo conventions, pyproject/scripts, FastAPI routes, templates, DB/migrations, tests.
 2. Understand business/product: segment, customers, channels, current presence, outcome, constraints.
 3. Classify profile: `static-site`, `conversion-landing`, `booking-system`, `ordering-system`, `catalog-commerce`, `admin-dashboard`, or `custom-ops`.
-4. Create/update SDD-lite: `docs/business-brief.md`, `docs/SPEC.md`, `docs/ARCHITECTURE.md`, `docs/DELIVERY_PLAN.md`.
+4. Create/update project state when scope is non-trivial: `SPEC.md`, `DESIGN.md`, `TODO.md`, `.spec/state.md`, `.spec/handoff.md`, `.mem/open-loops.md`.
 5. Define route map, template map, data model, form contracts, auth boundary, deployment assumptions, acceptance criteria.
 6. Implement: schemas/models -> Alembic migration -> service -> FastAPI route -> Jinja template/partial -> pytest -> docs.
-7. Verify with available scripts; prefer `uv run ruff format --check .`, `uv run ruff check .`, `uv run ty check`, `uv run pytest`, `uv run alembic upgrade head`.
+7. Verify with available scripts; prefer `uv run task check`, `uv run ruff format --check .`, `uv run ruff check .`, `uv run ty check`, `uv run pytest`, `uv run alembic upgrade head`, and security checks when trust boundaries changed.
 8. If validation fails, fix the smallest relevant issue and rerun.
 
 ## Deliverables
@@ -57,6 +60,7 @@ Python 3.12+, uv, FastAPI, Uvicorn, Jinja2, Tailwind, optional HTMX/Alpine, Pyda
 Planning: business/product summary, recommended package/profile, MVP, phase 2, out of scope, route map, template map, data model, architecture, checklist, risks/questions.
 
 Implementation: summary, files changed, validation commands, known limits, next step.
+State: update SPEC/DESIGN/TODO/.spec/.mem when decisions, validation, or next steps changed.
 
 ## Guardrails
 

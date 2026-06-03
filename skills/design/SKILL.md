@@ -23,10 +23,12 @@ Use skill when main question = how system presents to clients/users.
 3. keep naming, states, failure behavior explicit
 4. add BFF only if frontend needs aggregation/reshaping
 5. prefer stable patterns over clever shortcuts
-6. keep surface consistent across related endpoints/components
+6. update `DESIGN.md` when API, UI, BFF, or product/design decisions need to persist
+7. keep surface consistent across related endpoints/components
 
 ## Shared Rules
 
 - design happy path + failure path together
 - keep APIs/components predictable before flexible
 - add complexity only when real use case demands
+- durable design decisions belong in `DESIGN.md`; short active notes belong in `.spec/state.md`
