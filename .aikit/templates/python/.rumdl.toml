@@ -1,0 +1,26 @@
+# rumdl configuration file
+
+[global]
+disable = ["MD013", "MD033"]
+exclude = [
+    ".git",
+    ".github",
+    "node_modules",
+    "vendor",
+    "dist",
+    "build",
+    "target",
+    "CHANGELOG.md",
+    "LICENSE.md",
+]
+respect_gitignore = true
+
+[MD003]
+style = "atx"
+
+[MD007]
+indent = 4
+
+[MD060]
+enabled = true
+style = "aligned"

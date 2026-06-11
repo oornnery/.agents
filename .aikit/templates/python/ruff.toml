@@ -1,0 +1,96 @@
+# ruff.toml
+# Docs: https://docs.astral.sh/ruff/configuration/
+# Rules: https://docs.astral.sh/ruff/rules/
+# Run: uv run ruff check . && uv run ruff format .
+
+line-length = 100
+indent-width = 4
+target-version = "py312"
+fix = true
+src = ["src", "tests"]
+
+extend-exclude = [
+    ".venv",
+    "__pycache__",
+    "*.pyi",
+    "migrations",
+    "alembic/versions",
+    "build",
+    "dist",
+    ".pytest_cache",
+    ".ruff_cache",
+]
+
+[lint]
+select = [
+    "E",
+    "W",
+    "F",
+    "I",
+    "N",
+    "UP",
+    "B",
+    "C4",
+    "SIM",
+    "S",
+    "G",
+    "PT",
+    "RUF",
+    "PERF",
+    "TID",
+    "TCH",
+    "LOG",
+]
+
+ignore = ["E501", "B008", "B904", "SIM108", "S104", "S603", "S607", "RUF012"]
+
+unfixable = ["B", "SIM", "F841"]
+
+[lint.per-file-ignores]
+"tests/**/*.py" = ["S101"]
+"src/**/cli.py" = ["T201"]
+"scripts/**/*.py" = ["S", "T201"]
+"**/__init__.py" = ["F401"]
+"**/settings*.py" = ["S105", "S106"]
+
+[lint.isort]
+known-first-party = ["myapp"]  # troque para o nome real do pacote
+force-single-line = false
+split-on-trailing-comma = true
+combine-as-imports = true
+
+[lint.pep8-naming]
+ignore-names = ["i", "j", "k", "n", "x", "y", "e", "f", "_"]
+
+[lint.flake8-bugbear]
+extend-immutable-calls = [
+    "fastapi.Depends",
+    "fastapi.Query",
+    "fastapi.Body",
+    "fastapi.Header",
+    "fastapi.Path",
+    "fastapi.Cookie",
+    "fastapi.File",
+    "fastapi.Form",
+    "typer.Option",
+    "typer.Argument",
+]
+
+[lint.flake8-type-checking]
+runtime-evaluated-base-classes = ["pydantic.BaseModel", "sqlmodel.SQLModel"]
+runtime-evaluated-decorators = ["attrs.define", "attrs.frozen"]
+
+[lint.flake8-pytest-style]
+fixture-parentheses = false
+mark-parentheses = false
+parametrize-names-type = "tuple"
+
+[lint.mccabe]
+max-complexity = 10
+
+[format]
+quote-style = "single"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+docstring-code-format = true

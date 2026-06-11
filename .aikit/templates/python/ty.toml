@@ -1,0 +1,52 @@
+# ty.toml
+# Docs: https://docs.astral.sh/ty/reference/configuration/
+# Run: uv run ty check
+
+[environment]
+# Com uv run, geralmente não precisa fixar o caminho da venv.
+# Se quiser forçar manualmente, descomente:
+# python = ".venv"
+
+# Deve acompanhar o requires-python do projeto.
+python-version = "3.12"
+
+# src.root foi depreciado; use environment.root.
+root = ["./src"]
+
+# Opcional:
+# Se o projeto precisa ser válido em qualquer OS, use "all".
+# python-platform = "all"
+
+[terminal]
+# "full" | "concise" | "github" | "junit"
+output-format = "full"
+
+[rules]
+# baseline
+all = "error"
+
+# relaxamentos pontuais
+possibly-missing-attribute = "warn"
+possibly-missing-import = "warn"
+possibly-unresolved-reference = "warn"
+
+# regras úteis para manter rígidas
+division-by-zero = "error"
+ignore-comment-unknown-rule = "error"
+unused-type-ignore-comment = "error"
+unused-ignore-comment = "error"
+undefined-reveal = "error"
+unused-awaitable = "error"
+
+# opcional em projetos com libs dinâmicas
+# unresolved-attribute = "warn"
+
+# opcional em metaprogramação pesada
+# unsupported-dynamic-base = "warn"
+
+[[overrides]]
+include = ["tests/**", "**/test_*.py"]
+
+[overrides.rules]
+possibly-unresolved-reference = "warn"
+possibly-missing-import = "warn"
