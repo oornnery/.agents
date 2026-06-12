@@ -1,0 +1,36 @@
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Git
+.git/
+.gitignore
+
+# Tests
+tests/
+test/
+
+# Coverage
+.coverage
+htmlcov/
+
+# Node
+node_modules/
+
+# Project tooling and evidence
+.aikit/
+.omo/
+
+# Build artifacts
+*.egg-info/
+dist/
+build/

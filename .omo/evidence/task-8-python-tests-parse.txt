@@ -1,0 +1,17 @@
+# QA Evidence: Python Test Files Syntax Check
+# Generated: task-8-python-tests
+
+## Files Checked
+- .aikit/templates/python/tests/conftest.py
+- .aikit/templates/python/tests/test_app.py
+
+## Syntax Check Method
+python3 -c "import ast; ast.parse(open(FILE).read())"
+
+## Results
+- conftest.py: PASS
+- test_app.py: PASS
+
+## Additional Validation
+- No inline double quotes found in either file
+- All string literals use single quotes

@@ -1,0 +1,18 @@
+=== Single Quote Check ===
+Double quote occurrences (should be 0 or only docstrings):
+.aikit/templates/python/src/myapp/main.py:1:"""FastAPI application entrypoint.
+.aikit/templates/python/src/myapp/main.py:6:"""
+.aikit/templates/python/src/myapp/main.py:17:    """Return service health status.
+.aikit/templates/python/src/myapp/main.py:21:    """
+.aikit/templates/python/src/myapp/main.py:27:    """Return example tasks demonstrating the Task Management API pattern.
+.aikit/templates/python/src/myapp/main.py:32:    """
+.aikit/templates/python/src/myapp/__init__.py:1:"""myapp package root.
+.aikit/templates/python/src/myapp/__init__.py:5:"""
+
+=== Type Hint Check ===
+16:async def health_check() -> dict[str, str]:
+26:async def list_tasks() -> list[dict[str, str]]:
+
+=== Return Type Annotations ===
+16:async def health_check() -> dict[str, str]:
+26:async def list_tasks() -> list[dict[str, str]]:

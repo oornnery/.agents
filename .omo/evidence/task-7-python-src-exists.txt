@@ -1,0 +1,11 @@
+=== Files Exist ===
+total 16
+drwxr-xr-x 2 oornnery oornnery 4096 Jun 12 10:56 .
+drwxr-xr-x 3 oornnery oornnery 4096 Jun 12 10:56 ..
+-rw-r--r-- 1 oornnery oornnery  204 Jun 12 10:56 __init__.py
+-rw-r--r-- 1 oornnery oornnery 1056 Jun 12 10:56 main.py
+
+=== Syntax Check main.py ===
+PASS
+=== Syntax Check __init__.py ===
+PASS

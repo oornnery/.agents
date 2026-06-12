@@ -1,0 +1,24 @@
+QA Evidence: GHCR workflow configuration
+Generated: $(date -Iseconds)
+
+=== Registry Configuration ===
+Registry: ghcr.io
+Image: ghcr.io/${{ github.repository }}
+
+=== Authentication ===
+Method: GITHUB_TOKEN only (no additional secrets)
+Username: ${{ github.actor }}
+Token: ${{ secrets.GITHUB_TOKEN }}
+
+=== Tag Strategy ===
+- Branch refs for main pushes
+- Semver full version (e.g., v1.2.3)
+- Semver minor version (e.g., v1.2)
+
+=== Dockerfile Location ===
+Path: docker/Dockerfile
+Context: .
+
+=== Caching ===
+Backend: GitHub Actions cache (gha)
+Mode: max

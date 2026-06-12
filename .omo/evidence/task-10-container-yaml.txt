@@ -1,0 +1,40 @@
+QA Evidence: container.yml validation
+Generated: $(date -Iseconds)
+
+=== YAML Validation ===
+YAML_VALID: true
+
+=== Required Structure ===
+name: Container (line 1)
+on: (line 3)
+jobs: (line 8)
+
+=== Triggers ===
+branches: [main] (line 5)
+tags: ["v*"] (line 6)
+
+=== Standard Actions ===
+actions/checkout@v4 (line 15)
+docker/setup-buildx-action@v3 (line 17)
+docker/login-action@v3 (line 19)
+docker/metadata-action@v5 (line 25)
+docker/build-push-action@v6 (line 34)
+
+=== GHCR Login ===
+registry: ghcr.io (line 21)
+username: ${{ github.actor }} (line 22)
+password: ${{ secrets.GITHUB_TOKEN }} (line 23)
+
+=== Dockerfile Reference ===
+file: docker/Dockerfile (line 37)
+
+=== Permissions ===
+contents: read
+packages: write
+
+=== Build and Push ===
+push: true (line 38)
+tags: ${{ steps.meta.outputs.tags }} (line 39)
+labels: ${{ steps.meta.outputs.labels }} (line 40)
+cache-from: type=gha (line 41)
+cache-to: type=gha,mode=max (line 42)

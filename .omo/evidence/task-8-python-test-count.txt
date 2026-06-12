@@ -1,0 +1,25 @@
+# QA Evidence: Python Test Count
+# Generated: task-8-python-tests
+
+## Test Functions (test_app.py)
+- Total test functions: 5
+  - test_health_check
+  - test_get_tasks_returns_list
+  - test_create_task_with_valid_payload
+  - test_create_task_rejects_invalid_payload
+  - test_async_health_probe (async)
+
+## Fixtures (conftest.py)
+- Total fixtures: 5
+  - app: FastAPI application instance
+  - client: TestClient wired to the app
+  - sample_task: representative task payload
+  - sample_tasks: list of task payloads
+  - mock_async_service: async mock for boundary services
+
+## Requirements Coverage
+- [x] conftest.py has at least 2 fixtures (has 5)
+- [x] test_app.py has at least 3 test functions (has 5)
+- [x] Tests use arrange/act/assert pattern
+- [x] At least one async test using pytest-asyncio (test_async_health_probe)
+- [x] All code uses type hints and single quotes

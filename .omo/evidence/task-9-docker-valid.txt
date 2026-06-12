@@ -1,0 +1,10 @@
+YAML validation: PASS
+Top-level keys: ['services', 'volumes']
+Services: ['app', 'db']
+App build context: ..
+App build dockerfile: docker/Dockerfile
+App ports: ['${APP_PORT:-8000}:8000']
+DB image: postgres:16-alpine
+DB volumes: ['postgres_data:/var/lib/postgresql/data']
+Volumes declared: ['postgres_data']
+Non-comment patterns in .dockerignore: 21
