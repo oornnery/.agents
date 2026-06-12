@@ -1,0 +1,17 @@
+QA: task-19-js-misc-exists
+Date: 2026-06-12
+
+Files created:
+- .aikit/templates/nodejs/js/scripts/init.sh
+- .aikit/templates/nodejs/js/README.md
+- .aikit/templates/nodejs/js/.gitignore
+- .aikit/templates/nodejs/js/.env.example
+
+Checks:
+- init.sh exists: YES
+- README.md exists: YES
+- .gitignore exists: YES
+- .env.example exists: YES
+- README.md line count: 111 (required >= 50)
+- .gitignore non-comment patterns: 24 (required >= 8)
+- .env.example variable count: 4 (required >= 4)

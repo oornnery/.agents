@@ -1,0 +1,37 @@
+=== No Build Step Evidence ===
+Dockerfile build step (RUN npm run build / tsc): NONE FOUND
+CI type checking step (typecheck / tsc / type-check): NONE FOUND
+
+=== Dockerfile Content ===
+# Single-stage build for Node.js JavaScript
+FROM node:20-slim
+WORKDIR /app
+ENV NODE_ENV=production
+COPY package.json package-lock.json* ./
+RUN npm ci --omit=dev
+COPY src/ ./src/
+EXPOSE 3000
+CMD ["node", "src/index.js"]
+
+Note: No RUN npm run build or TypeScript compilation step.
+Pure JavaScript — source files run directly with node.
+
+=== CI Content ===
+name: CI
+on:
+  pull_request:
+  push:
+    branches: [main, dev]
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run check
+
+Note: No typecheck, tsc, or type-check step present.

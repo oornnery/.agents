@@ -1,0 +1,11 @@
+node_modules
+.git
+tests
+.env
+coverage
+.aikit
+.omo
+*.md
+.dockerignore
+Dockerfile
+compose.yml

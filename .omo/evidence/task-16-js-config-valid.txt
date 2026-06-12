@@ -1,0 +1,7 @@
+QA: Config files valid
+
+- package.json: valid JSON (verified with node JSON.parse)
+- eslint.config.js: syntax OK (verified with node --check)
+- .prettierrc: valid JSON (verified with node JSON.parse)
+- vitest.config.js: exists (verified with test -f)
+- All 4 required files present in .aikit/templates/nodejs/js/

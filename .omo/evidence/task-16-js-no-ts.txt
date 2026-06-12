@@ -1,0 +1,5 @@
+QA: No TypeScript dependencies or tsconfig.json
+
+- grep for 'typescript|@typescript-eslint|@types/' in package.json: no matches
+- tsconfig.json does not exist in .aikit/templates/nodejs/js/ (verified with test ! -f)
+- devDependencies in package.json: eslint, prettier, vitest only

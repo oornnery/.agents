@@ -1,0 +1,20 @@
+=== YAML Validation Evidence ===
+compose.yml: VALID (Python yaml.safe_load passed)
+ci.yml: VALID (Python yaml.safe_load passed)
+
+=== File Checks ===
+Dockerfile exists: .aikit/templates/nodejs/js/docker/Dockerfile
+compose.yml exists: .aikit/templates/nodejs/js/docker/compose.yml
+.dockerignore exists: .aikit/templates/nodejs/js/docker/.dockerignore
+ci.yml exists: .aikit/templates/nodejs/js/.github/ci.yml
+
+=== Service Checks ===
+compose.yml has 'app' service: YES
+compose.yml has 'db' service: YES
+compose.yml maps port 3000: YES
+
+=== CI Checks ===
+ci.yml has checkout step: YES (actions/checkout@v4)
+ci.yml has setup-node step: YES (actions/setup-node@v4 with node-version 20)
+ci.yml has npm ci step: YES
+ci.yml has npm run check step: YES

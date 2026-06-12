@@ -1,0 +1,5 @@
+QA: No "type" script in package.json scripts
+
+- scripts in package.json: fmt, lint, test, check
+- "type" script NOT present in scripts (verified with node JSON.parse check)
+- Note: "type": "module" at root level IS present (required for ESM)

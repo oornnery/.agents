@@ -1,0 +1,10 @@
+QA: task-19-js-init-syntax
+Date: 2026-06-12
+
+Command: bash -n .aikit/templates/nodejs/js/scripts/init.sh
+Result: SYNTAX_OK
+
+Script content summary:
+- Runs npm install
+- Runs npm run check
+- Uses set -euo pipefail

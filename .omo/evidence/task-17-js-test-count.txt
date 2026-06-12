@@ -1,0 +1,8 @@
+Test case count:
+4
+
+Test names:
+26:  it('GET /health returns 200 and status ok', async () => {
+36:  it('GET /tasks returns a list of tasks', async () => {
+49:  it('GET /unknown returns 404', async () => {
+59:  it('POST /tasks returns 405 method not allowed', async () => {
