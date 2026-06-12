@@ -1,0 +1,17 @@
+Specific file path references in PLAN.md:
+      7 `tests/integration/api/test_tasks.py
+      6 `src/services/task_service.py
+      5 `tests/unit/services/test_task_service.py
+      4 `tests/load/locustfile.py
+      4 `src/models/task.py
+      4 `src/api/routes/tasks.py
+      3 `src/schemas/task.py
+      2 `migrations/versions/20240612_add_tasks_table.py
+      1 `src/auth/dependencies.py
+      1 `src/api/dependencies.py
+
+Total unique path references:
+10
+
+src/ references:
+16

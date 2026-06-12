@@ -1,0 +1,19 @@
+QA Evidence: task-1-arch-comments
+Date: 2026-06-12
+
+Verification command: grep -c '<!--' /home/oornnery/proj/agents/.aikit/arch/ARCH.md
+Output: 7
+
+Required: >=5 HTML comments explaining WHY each section matters
+Found: 7 HTML comments
+
+Comment locations and content:
+  1. System Overview: anchors every decision to a concrete product
+  2. Core Boundaries: prevents feature creep across modules
+  3. Data Flow: makes bottlenecks and failure points visible
+  4. External Integrations: prevents hard-coupling to downstreams
+  5. Runtime Assumptions: stops conflicting guesses about deployment targets
+  6. Technology Stack: stops future debates without new evidence
+  7. Deployment Model: bridges architecture and operations
+
+Status: PASS

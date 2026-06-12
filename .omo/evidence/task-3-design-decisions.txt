@@ -1,0 +1,8 @@
+Decision rows (excluding header):
+4
+---
+Decision entries:
+| 2025-03-10 | Use JWT for auth | Stateless, horizontally scalable, industry standard | No session store needed; tokens expire client-side |
+| 2025-03-12 | PostgreSQL over SQLite | Concurrent writers, team size exceeds SQLite comfort zone | Requires managed DB or container in local dev |
+| 2025-03-15 | REST over GraphQL | Team familiarity, simpler HTTP caching, fewer moving parts | Slightly more round-trips for nested data acceptable |
+| 2025-03-18 | SQLModel over raw SQL | Type safety, Pydantic integration, reduces boilerplate | Slight ORM learning curve for new contributors |

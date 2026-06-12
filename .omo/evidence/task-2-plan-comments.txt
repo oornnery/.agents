@@ -1,0 +1,10 @@
+HTML comment blocks in PLAN.md:
+7
+
+7:<!-- WHY: Overview grounds every decision maker in the problem and boundaries before diving into files and phases. Without it, reviewers cannot judge whether later choices are proportionate. -->
+22:<!-- WHY: Requirements are listed explicitly so the plan can be audited against the spec. If a phase does not map to a requirement, it should be cut. -->
+34:<!-- WHY: Naming structure changes up front prevents mid-implementation debates about where files belong and keeps the repository layout predictable. -->
+72:<!-- WHY: A file path summary acts as a checklist during review and prevents orphaned work. Reviewers can confirm every new file has a clear owner and that no path duplicates existing conventions. -->
+83:<!-- WHY: Dependencies are listed with minimum versions so the team can assess supply-chain risk and ensure the CI environment matches before merging any phase. -->
+100:<!-- WHY: Testing strategy is defined before coding so that reviewers can reject any phase that lacks a verifiable exit criteria. -->
+110:<!-- WHY: Success criteria turn the plan into a contract. If every box is checked, the feature is done; if not, the remaining work is explicit. -->

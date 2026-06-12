@@ -1,0 +1,6 @@
+-rw-r--r-- 1 oornnery oornnery 6105 Jun 12 10:52 /home/oornnery/proj/agents/.aikit/plan/PLAN.md
+-rw-r--r-- 1 oornnery oornnery  479 Jun 12 10:51 /home/oornnery/proj/agents/.aikit/plan/README.md
+
+  12 /home/oornnery/proj/agents/.aikit/plan/README.md
+ 110 /home/oornnery/proj/agents/.aikit/plan/PLAN.md
+ 122 total

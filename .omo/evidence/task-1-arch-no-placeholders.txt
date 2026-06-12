@@ -1,0 +1,10 @@
+QA Evidence: task-1-arch-no-placeholders
+Date: 2026-06-12
+
+Verification command: grep -n 'UNKNOWN\|YYYY-MM-DD' /home/oornnery/proj/agents/.aikit/arch/ARCH.md
+Output: No placeholders found
+
+Verification command: grep -n 'UNKNOWN\|YYYY-MM-DD' /home/oornnery/proj/agents/.aikit/arch/README.md
+Output: No placeholders found
+
+Status: PASS

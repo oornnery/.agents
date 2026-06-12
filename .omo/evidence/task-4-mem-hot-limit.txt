@@ -1,0 +1,13 @@
+QA Evidence: task-4-mem-hot-limit
+Generated: 2024-03-22
+
+Verification: hot.md does not exceed the 80-line maximum.
+
+Command run:
+  wc -l < .aikit/mem/hot.md
+
+Result:
+  35
+
+Check: 35 <= 80
+Status: PASS

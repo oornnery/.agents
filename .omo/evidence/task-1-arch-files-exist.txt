@@ -1,0 +1,16 @@
+QA Evidence: task-1-arch-files-exist
+Date: 2026-06-12
+
+Verification command: ls -la /home/oornnery/proj/agents/.aikit/arch/
+Result: Both files exist
+
+  /home/oornnery/proj/agents/.aikit/arch/README.md  (10 lines, <=20)
+  /home/oornnery/proj/agents/.aikit/arch/ARCH.md   (92 lines, 80-200 range)
+
+Verification command: wc -l /home/oornnery/proj/agents/.aikit/arch/README.md /home/oornnery/proj/agents/.aikit/arch/ARCH.md
+Output:
+  10 /home/oornnery/proj/agents/.aikit/arch/README.md
+  92 /home/oornnery/proj/agents/.aikit/arch/ARCH.md
+  102 total
+
+Status: PASS

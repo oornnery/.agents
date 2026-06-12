@@ -1,0 +1,14 @@
+GET references:
+1
+POST references:
+1
+PUT references:
+1
+DELETE references:
+1
+---
+Concrete endpoints found:
+  - `POST /tasks` accepts `{ title: str, description: str, assignee_id: int, priority: low|medium|high }`
+  - `GET /tasks` accepts query params `status`, `assignee_id`, `page`, `limit`
+  - `PUT /tasks/:id` accepts partial updates to any writable task field
+  - `DELETE /tasks/:id` accepts no body; returns `204` on success and is idempotent on missing resources

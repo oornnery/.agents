@@ -1,0 +1,19 @@
+QA Evidence: task-5-spec-real-commands
+Generated: 2025-06-12
+
+Verification that checks.md contains actual validation commands from the Python template.
+
+Commands referenced in checks.md (requirement: >= 6 distinct command references):
+  1. uv run ruff format .
+  2. uv run ruff check . --fix
+  3. uv run ty check src && uv run pyright
+  4. uv run pytest -v
+  5. uv run docker build -t task-api .
+  6. uv run bandit -r src
+  7. uv run rumdl check .
+  8. uv run pip-audit
+
+Total command references in checks.md: 16
+Distinct tools: uv run, ruff, ty, pyright, pytest, docker, bandit, rumdl, pip-audit
+
+Result: PASS (>= 6 command references)
