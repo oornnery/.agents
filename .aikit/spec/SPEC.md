@@ -74,7 +74,7 @@ Build a RESTful Task Management API that lets users create, organize, and track 
 ## Constraints
 
 - Technical:
-  - Python 3.11+ with FastAPI and SQLModel
+  - Python 3.12+ with FastAPI and SQLModel
   - Deployed as a containerized service behind an HTTPS reverse proxy
 - Product:
   - No real-time features in the initial release

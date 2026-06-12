@@ -42,17 +42,15 @@ Task updates follow the same path. Reads skip the service layer when no business
 | System | Purpose | Protocol | Failure Mode |
 | ------ | ------- | -------- | ------------ |
 | PostgreSQL | Persistent task, user, and project storage | TCP/SQL | Return 503, retry on transient errors |
-| Redis | Session token cache and rate-limit counters | TCP | Degrade to database lookup for sessions |
-| SMTP relay | Email notifications for task assignments | TCP/TLS | Log failure, do not block the API response |
+| SMTP relay | Future: email notifications for task assignments (out of scope v1) | TCP/TLS | Log failure, do not block the API response |
 
-All external calls use connection pooling and explicit timeouts. The API remains available if Redis or email is down.
+All external calls use connection pooling and explicit timeouts. The API remains available if external email services are down.
 
 <!-- External integrations document failure expectations. This prevents the API from hard-coupling to every downstream and defines graceful degradation. -->
 
 ## Runtime Assumptions
 
 - PostgreSQL 15+ with row-level locking on concurrent task updates
-- Redis 7+ with eviction policy set to `allkeys-lru`
 - API processes run behind a reverse proxy that handles TLS termination
 - Clock skew between API nodes is under one second for token expiry checks
 - File uploads are not supported; attachments use presigned URLs to object storage
@@ -63,11 +61,10 @@ All external calls use connection pooling and explicit timeouts. The API remains
 
 | Layer | Choice | Rationale |
 | ----- | ------ | --------- |
-| Language | Python 3.11+ | Team expertise, strong async ecosystem |
+| Language | Python 3.12+ | Team expertise, strong async ecosystem |
 | Web framework | FastAPI | Native OpenAPI generation, async support |
 | ORM | SQLModel | Type-safe models shared with Pydantic schemas |
 | Database | PostgreSQL 15 | ACID compliance, JSON support for flexible metadata |
-| Cache | Redis 7 | Session store and rate limiting |
 | Migrations | Alembic | Version-controlled schema changes |
 | Testing | pytest with httpx | Async test client, database fixtures |
 
@@ -77,7 +74,7 @@ No additional languages or runtimes are required for core operation.
 
 ## Deployment Model
 
-The API runs as a stateless container fleet behind a load balancer. Each container connects to the same PostgreSQL and Redis instances.
+The API runs as a stateless container fleet behind a load balancer. Each container connects to the same PostgreSQL instance.
 
 | Environment | Nodes | Purpose |
 | ----------- | ----- | ------- |

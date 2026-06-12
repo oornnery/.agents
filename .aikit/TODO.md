@@ -4,16 +4,12 @@
 
 ## Now
 
-- [ ] Implement task pagination endpoint (`GET /tasks?page=1&limit=20`)
-  - Cursor-based pagination for stable ordering under concurrent edits.
-  - Validate against 10k task dataset; target p95 < 50ms.
+- [ ] Add sorting by due date and priority to task list endpoint
+  - Compose with existing pagination and filtering.
 
 <!-- Next = verified, ready-to-start work queued behind Now. These keep momentum when the current task completes. -->
 
 ## Next
-
-- [ ] Add task filtering by status, priority, and assignee (`GET /tasks?status=open&priority=high`)
-  - Compose with existing pagination; index-backed filters only.
 
 - [ ] Write integration tests for auth flow (JWT login, refresh, logout)
   - Cover token expiry edge cases and concurrent refresh race.
@@ -33,3 +29,9 @@
 
 - [x] Add OAuth2 password flow and JWT token generation (2025-06-10)
   - Validation: token payload verified with `jose` library; refresh token rotation tested.
+
+- [x] Implement task pagination endpoint (2025-06-12)
+  - Validation: cursor-based pagination tested against 10k task dataset; p95 < 50ms.
+
+- [x] Add task filtering by status, priority, and assignee (2025-06-12)
+  - Validation: index-backed filters composed with pagination; integration tests pass.

@@ -11,7 +11,7 @@ Build a REST API for managing tasks with CRUD operations, status transitions, an
 - Functional:
   - Create, read, update, and delete tasks
   - Filter tasks by status, assignee, and due date
-  - Validate state transitions (todo -> in_progress -> done)
+  - Validate state transitions (todo -> in_progress -> in_review -> done)
 - Non-functional:
   - Response time under 200ms for list queries
   - JSON:API compliant error responses
