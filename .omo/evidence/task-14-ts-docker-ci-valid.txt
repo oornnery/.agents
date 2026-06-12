@@ -1,0 +1,42 @@
+# QA Evidence: Node.js TypeScript Docker and CI Validation
+
+## YAML Validation
+
+compose.yml: VALID
+ci.yml: VALID
+
+## ci.yml Verification
+
+- Uses actions/checkout@v4: YES
+- Uses actions/setup-node@v4 with node-version '20': YES
+- Runs npm ci: YES
+- Runs npm run check: YES
+- Triggers on pull_request and push to [main, dev]: YES
+
+## compose.yml Verification
+
+- Has 'app' service: YES
+- Builds from docker/Dockerfile: YES
+- Maps port 3000: YES (with APP_PORT fallback)
+- Has optional 'db' service (PostgreSQL): YES
+
+## .dockerignore Verification
+
+Exclusion patterns count: 15
+- node_modules/
+- dist/
+- build/
+- .git/
+- .gitignore
+- tests/
+- test/
+- *.test.ts
+- *.spec.ts
+- .env
+- .env.*
+- coverage/
+- .nyc_output/
+- .aikit/
+- .omo/
+- *.log
+- npm-debug.log*

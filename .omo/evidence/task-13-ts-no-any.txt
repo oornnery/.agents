@@ -1,0 +1,7 @@
+=== task-13-ts-no-any ===
+
+Search for 'any' type in src/ and tests/:
+(none found - PASS)
+
+Search for 'any' keyword:
+(none found - PASS)

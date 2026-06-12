@@ -1,0 +1,7 @@
+QA: task-15-ts-init-syntax
+Date: 2026-06-12
+
+Command: bash -n .aikit/templates/nodejs/ts/scripts/init.sh
+Result: SYNTAX_OK
+
+The init.sh script passes bash syntax validation.

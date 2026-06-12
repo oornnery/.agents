@@ -1,0 +1,25 @@
+{
+  "name": "myapp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "fmt": "prettier --write .",
+    "lint": "eslint .",
+    "type": "tsc --noEmit",
+    "test": "vitest run",
+    "check": "npm run fmt && npm run lint && npm run type && npm run test"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "eslint": "^9.0.0",
+    "prettier": "^3.0.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.0.0"
+  }
+}

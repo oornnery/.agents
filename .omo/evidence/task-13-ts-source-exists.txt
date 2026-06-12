@@ -1,0 +1,26 @@
+=== task-13-ts-source-exists ===
+
+File: src/index.ts
+-rw-r--r-- 1 oornnery oornnery 4660 Jun 12 11:04 src/index.ts
+
+Health check route:
+45:function healthCheck(): HealthResponse {
+90:    if (method === 'GET' && url === '/health') {
+91:      const payload = healthCheck();
+
+GET /tasks route:
+97:    if (method === 'GET' && url === '/tasks') {
+
+Error handling:
+24:interface ErrorResponse {
+58:function logError(method: string, url: string, error: Error): void {
+76:function sendError(res: ServerResponse, statusCode: number, message: string): void {
+77:  const payload: ErrorResponse = { error: message };
+105:      sendError(res, 405, 'Method not allowed');
+106:      logRequest(method, url, 405);
+110:    sendError(res, 404, 'Not found');
+111:    logRequest(method, url, 404);
+112:  } catch (err) {
+113:    const error = err instanceof Error ? err : new Error(String(err));
+114:    logError(method, url, error);
+115:    sendError(res, 500, 'Internal server error');

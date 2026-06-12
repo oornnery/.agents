@@ -1,0 +1,24 @@
+# QA Evidence: Dockerfile Multi-Stage Build Verification
+
+## Stage 1: builder
+
+FROM node:20-slim AS builder
+- Base image: node:20-slim
+- Installs dependencies with npm ci
+- Copies source and builds with npm run build
+
+## Stage 2: production
+
+FROM node:20-slim
+- Base image: node:20-slim
+- Sets NODE_ENV=production
+- Installs production dependencies only (npm ci --omit=dev)
+- Copies built artifacts from builder stage (/app/dist)
+- Exposes port 3000
+- Runs with CMD ["node", "dist/index.js"]
+
+## Multi-Stage Pattern Confirmed
+
+- Uses AS builder label: YES
+- Uses COPY --from=builder: YES
+- Total stages: 2

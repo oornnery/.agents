@@ -1,0 +1,41 @@
+=== task-13-ts-test-count ===
+
+Test file: tests/index.test.ts
+
+Test cases (it() blocks):
+25:  it('GET /health returns 200 and status ok', async () => {
+35:  it('GET /tasks returns a list of tasks', async () => {
+48:  it('GET /unknown returns 404', async () => {
+58:  it('POST /tasks returns 405 method not allowed', async () => {
+
+Count: 4
+
+Vitest run result:
+
+ RUN  v2.1.9 /home/oornnery/proj/agents/.aikit/templates/nodejs/ts
+
+stdout | tests/index.test.ts > HTTP Server
+Server listening on port 0
+
+stdout | tests/index.test.ts > HTTP Server > GET /health returns 200 and status ok
+{"timestamp":"2026-06-12T14:08:28.056Z","method":"GET","url":"/health","statusCode":200}
+
+stdout | tests/index.test.ts > HTTP Server > GET /tasks returns a list of tasks
+{"timestamp":"2026-06-12T14:08:28.075Z","method":"GET","url":"/tasks","statusCode":200}
+
+stdout | tests/index.test.ts > HTTP Server > GET /unknown returns 404
+{"timestamp":"2026-06-12T14:08:28.080Z","method":"GET","url":"/unknown","statusCode":404}
+
+stdout | tests/index.test.ts > HTTP Server > POST /tasks returns 405 method not allowed
+{"timestamp":"2026-06-12T14:08:28.085Z","method":"POST","url":"/tasks","statusCode":405}
+
+ ✓ tests/index.test.ts > HTTP Server > GET /health returns 200 and status ok
+ ✓ tests/index.test.ts > HTTP Server > GET /tasks returns a list of tasks
+ ✓ tests/index.test.ts > HTTP Server > GET /unknown returns 404
+ ✓ tests/index.test.ts > HTTP Server > POST /tasks returns 405 method not allowed
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  11:08:27
+   Duration  594ms (transform 67ms, setup 0ms, collect 64ms, tests 66ms, environment 0ms, prepare 128ms)
+

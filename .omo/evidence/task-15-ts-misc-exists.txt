@@ -1,0 +1,10 @@
+QA: task-15-ts-misc-exists
+Date: 2026-06-12
+
+Files created:
+- .aikit/templates/nodejs/ts/scripts/init.sh
+- .aikit/templates/nodejs/ts/README.md
+- .aikit/templates/nodejs/ts/.gitignore
+- .aikit/templates/nodejs/ts/.env.example
+
+All 4 required files exist.
