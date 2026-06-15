@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from collections.abc import AsyncGenerator
-from typing import Any
 from unittest.mock import AsyncMock
 
 import pytest
@@ -27,21 +26,21 @@ def client(app: FastAPI) -> TestClient:
 
 
 @pytest.fixture
-def sample_task() -> dict[str, Any]:
+def sample_task() -> dict[str, str]:
     """Return a representative task payload for arrange/act/assert tests."""
     return {
-        'id': 1,
+        'id': '1',
         'title': 'write tests',
-        'done': False,
+        'status': 'pending',
     }
 
 
 @pytest.fixture
-def sample_tasks() -> list[dict[str, Any]]:
+def sample_tasks() -> list[dict[str, str]]:
     """Return a list of task payloads for list-endpoint tests."""
     return [
-        {'id': 1, 'title': 'write tests', 'done': False},
-        {'id': 2, 'title': 'refactor code', 'done': True},
+        {'id': '1', 'title': 'write tests', 'status': 'pending'},
+        {'id': '2', 'title': 'refactor code', 'status': 'done'},
     ]
 
 

@@ -34,9 +34,9 @@ This pins Python 3.13, syncs the lockfile, installs dev tools (ruff, ty, pyright
 ├── src/
 │   └── myapp/
 │       ├── __init__.py
-│       └── main.py
+│       ├── main.py
+│       └── routes.py
 ├── tests/
-│   ├── __init__.py
 │   ├── conftest.py
 │   └── test_app.py
 ├── docker/

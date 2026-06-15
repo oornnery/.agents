@@ -14,7 +14,7 @@
 | lint     | `uv run ruff check . --fix`           | before completion      | catches bugs and style violations  |
 | type/LSP | `uv run ty check src && uv run pyright` | typed code changes     | two-pass type checking for safety  |
 | tests    | `uv run pytest -v`                    | behavior changes       | runs unit and integration suites   |
-| build    | `uv run docker build -t task-api .`   | app/package changes    | verifies container image builds    |
+| build    | `docker build -f docker/Dockerfile -t task-api .` | app/package changes | verifies container image builds |
 | security | `uv run bandit -r src`                | trust-boundary changes | scans for known Python vulnerabilities |
 | markdown | `uv run rumdl check .`                | doc changes            | lints markdown files               |
 | audit    | `uv run pip-audit`                    | dependency changes     | checks for CVEs in dependencies    |
@@ -31,4 +31,5 @@
 | 2025-06-12 | `uv run pytest -v`                    | PASS   | 42 tests, 85% coverage, 2 skipped          |
 | 2025-06-12 | `uv run bandit -r src`                | PASS   | no high-severity issues found              |
 | 2025-06-12 | `uv run rumdl check .`                | PASS   | 0 markdown lint errors                     |
+| 2025-06-12 | `docker build -f docker/Dockerfile -t task-api .` | PASS | image builds cleanly from lockfile |
 | 2025-06-11 | `uv run pip-audit`                    | PASS   | 0 known CVEs in locked dependencies        |

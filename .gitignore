@@ -7,3 +7,5 @@ settings.json
 .vibe/
 .agents/
 *__pycache__/
+node_modules/
+.omo/

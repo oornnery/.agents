@@ -91,7 +91,7 @@ Build a RESTful Task Management API that lets users create, organize, and track 
 - Lint: `uv run ruff check . --fix` to enforce style and catch common bugs
 - Type/LSP: `uv run ty check src && uv run pyright` for static type correctness
 - Tests: `uv run pytest -v` for unit, integration, and edge-case coverage
-- Build: `uv run docker build -t task-api .` for container integrity
+- Build: `docker build -f docker/Dockerfile -t task-api .` for container integrity
 - Security: `uv run bandit -r src` and dependency audit with `uv run pip-audit`
 
 ## Open Questions

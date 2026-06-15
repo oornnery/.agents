@@ -43,7 +43,7 @@ Small product and engineering squads use this Task Management API to coordinate 
 - Accessibility:
   - API returns consistent JSON shapes and readable, structured error messages so client developers can build accessible frontends.
 - Responsive behavior:
-  - Pagination on list endpoints with a default of 20 items per page.
+  - Pagination on list endpoints with a default of 20 items per page (cursor-based for real-time task feeds, offset for simple admin endpoints — see `.mem/decisions.md`).
   - `429` rate-limit headers returned under overload.
 
 <!-- API and Data Contracts are the binding agreement between backend and clients; changing them breaks integrations, so explicit documentation prevents accidental drift. -->
@@ -74,10 +74,10 @@ Small product and engineering squads use this Task Management API to coordinate 
 
 | Date | Decision | Reason | Impact |
 | ---- | -------- | ------ | ------ |
-| 2025-03-10 | Use JWT for auth | Stateless, horizontally scalable, industry standard | No session store needed; tokens expire client-side |
-| 2025-03-12 | PostgreSQL over SQLite | Concurrent writers, team size exceeds SQLite comfort zone | Requires managed DB or container in local dev |
-| 2025-03-15 | REST over GraphQL | Team familiarity, simpler HTTP caching, fewer moving parts | Slightly more round-trips for nested data acceptable |
+| 2025-03-15 | PostgreSQL over SQLite | Concurrent writers, team size exceeds SQLite comfort zone | Requires managed DB or container in local dev |
+| 2025-03-18 | Use JWT for auth | Stateless, horizontally scalable, industry standard | No session store needed; tokens expire client-side |
 | 2025-03-18 | SQLModel over raw SQL | Type safety, Pydantic integration, reduces boilerplate | Slight ORM learning curve for new contributors |
+| 2025-03-19 | REST over GraphQL | Team familiarity, simpler HTTP caching, fewer moving parts | Slightly more round-trips for nested data acceptable |
 
 <!-- Risks surface assumptions early so the team can monitor or mitigate instead of being surprised in production. -->
 

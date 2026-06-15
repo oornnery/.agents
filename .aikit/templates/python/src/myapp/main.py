@@ -1,7 +1,7 @@
 """FastAPI application entrypoint.
 
 Keeps HTTP wiring thin so business logic stays testable outside
-of the web framework.  Routes validate at the boundary and delegate
+of the web framework. Routes validate at the boundary and delegate
 to plain functions.
 """
 
@@ -9,28 +9,20 @@ from __future__ import annotations
 
 from fastapi import FastAPI
 
-app = FastAPI(title='myapp', version='0.0.1')
+from myapp import __version__
+from myapp.routes import router
 
 
-@app.get('/health')
-async def health_check() -> dict[str, str]:
-    """Return service health status.
+def create_app() -> FastAPI:
+    """Build and configure the FastAPI application.
 
-    Used by orchestrators and load balancers to decide whether
-traffic should be routed to this instance.
+    A factory keeps tests isolated: each test builds a fresh app
+    instead of sharing mutable module state.
     """
-    return {'status': 'ok'}
+    app = FastAPI(title='myapp', version=__version__)
+    app.include_router(router)
+    return app
 
 
-@app.get('/tasks')
-async def list_tasks() -> list[dict[str, str]]:
-    """Return example tasks demonstrating the Task Management API pattern.
-
-    In a real implementation this would delegate to a repository
-layer and accept pagination/filter parameters.  The skeleton shows
-where boundary validation stops and core logic begins.
-    """
-    return [
-        {'id': '1', 'title': 'Learn FastAPI', 'status': 'pending'},
-        {'id': '2', 'title': 'Build something cool', 'status': 'in_progress'},
-    ]
+# Module-level instance for `fastapi run src/myapp/main.py` (see docker/Dockerfile).
+app = create_app()

@@ -7,4 +7,4 @@ Use `.arch/` for system boundaries, data flow, technology choices, and deploymen
 Contents:
 
 - `ARCH.md`: living architecture document with examples
-- `decisions/`: accepted architecture decision records (ADRs)
+- `decisions/` (optional): create for formal ADRs when `ARCH.md` tables are not enough; durable decisions otherwise live in `.mem/decisions.md`

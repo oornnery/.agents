@@ -511,10 +511,13 @@ This project uses a layered memory system. Do not duplicate content across layer
    - `state.md`: Current objective, done, next, validation, open questions.
    - `checks.md`: Known validation commands and latest meaningful results.
    - `handoff.md`: Compact handoff for the next agent/session.
-4. **Root Docs** (Reference as needed):
+4. **`.arch/` and `.plan/`** (Read before structural work):
+   - `.arch/ARCH.md`: System boundaries, data flow, technology stack, deployment model. Consult before changing structure; update when boundaries move.
+   - `.plan/`: Phased implementation plans, one per feature. Read the active plan before coding; plans name specific files and verifiable success criteria.
+5. **Root Docs** (Reference as needed):
    - `SPEC.md`: Objective, scope, requirements, success criteria, validation plan.
    - `DESIGN.md`: Architecture, API, UI, and product/design decisions.
    - `TODO.md`: Current tasks, next steps, blocked items, completed work.
-5. **Cavemem** (Machine-managed): Persistent session/continuity memory for cross-session context recovery.
+6. **Cavemem** (Machine-managed): Persistent session/continuity memory for cross-session context recovery.
 
 When in conflict, `AGENTS.md` rules override all. For active feature work, `SPEC.md` or `.spec/state.md` is the single source of truth. You MUST never duplicate stable facts into Cavemem or session logs.

@@ -28,7 +28,7 @@ def test_health_check(client: TestClient) -> None:
     assert data.get('status') == expected_status
 
 
-def test_get_tasks_returns_list(client: TestClient, sample_tasks: list[dict[str, Any]]) -> None:
+def test_get_tasks_returns_list(client: TestClient, sample_tasks: list[dict[str, str]]) -> None:
     """GET /tasks returns the stored task list."""
     # Arrange
     with patch('myapp.routes.task_store', sample_tasks):
@@ -43,7 +43,7 @@ def test_get_tasks_returns_list(client: TestClient, sample_tasks: list[dict[str,
     assert data[0]['title'] == 'write tests'
 
 
-def test_create_task_with_valid_payload(client: TestClient, sample_task: dict[str, Any]) -> None:
+def test_create_task_with_valid_payload(client: TestClient, sample_task: dict[str, str]) -> None:
     """POST /tasks creates a task and returns it with an assigned id."""
     # Arrange
     payload = {'title': sample_task['title']}
@@ -56,7 +56,7 @@ def test_create_task_with_valid_payload(client: TestClient, sample_task: dict[st
     data: dict[str, Any] = response.json()
     assert data['title'] == payload['title']
     assert 'id' in data
-    assert data.get('done') is False
+    assert data.get('status') == 'pending'
 
 
 def test_create_task_rejects_invalid_payload(client: TestClient) -> None:
